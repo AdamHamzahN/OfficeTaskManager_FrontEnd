@@ -26,7 +26,8 @@ const Login = () => {
         // return history.push("/app/page_example_1");
     };
 
-    return <div style={{width: '100vw', display: 'flex', justifyContent: 'center'}}>
+    return <div style={{width: '100vw', display: 'flex', justifyContent: 'flex-end', padding: '85px'}}>
+        <img src="/background.svg" alt="bck" />
         <Row justify={'center'}>
             <Col>
                 <div style={{
@@ -47,15 +48,15 @@ const Login = () => {
                                 color: "#413d3e",
                             }}
                         >
-                            Boilerplate
+                            {/* Office Task Manager */}
                         </Typography.Paragraph>
                     </div>
                     <Card
                         style={{width: 320, textAlign: 'center'}}
-                        headStyle={{fontSize: 13, fontWeight: 200}}
+                        headStyle={{fontSize: 30, fontWeight: 200}}
                         className={"shadow"}
                         bordered={true}
-                        title={'Sign in to your account'}
+                        title={'Login'}
                     >
                         <Form
                             layout={'vertical'}
@@ -64,15 +65,15 @@ const Login = () => {
                             onFinish={onFinish}
                         >
                             <Form.Item
-                                label="Email"
-                                name="email"
+                                label="Username"
+                                name="username"
                                 // size={'large'}
                                 rules={[{required: false, message: 'Please input your Username!'}]}
                             >
                                 <Input
                                     prefix={<UserOutlined className="site-form-item-icon"/>}
                                     type="text"
-                                    placeholder="Email"/>
+                                    placeholder="Username"/>
                             </Form.Item>
 
                             <Form.Item
@@ -97,16 +98,16 @@ const Login = () => {
                                     padding: 0
                                 }}
                                 // label="Password"
-                                name="forgot-password"
+                                // name="forgot-password"
                                 // size={'small'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
+                                // rules={[{required: false, message: 'Please input your Password!'}]}
                             >
-                                <a className="login-form-forgot" href="">
+                                {/* <a className="login-form-forgot" href="">
                                     Forgot password
-                                </a>
+                                </a> */}
                             </Form.Item>
 
-                            <Form.Item
+                            {/* <Form.Item
                                 style={{
                                     marginBottom: 5,
                                     textAlign: 'left'
@@ -114,7 +115,7 @@ const Login = () => {
                                 <Form.Item name="remember" valuePropName="checked" noStyle>
                                     <Checkbox>Remember me</Checkbox>
                                 </Form.Item>
-                            </Form.Item>
+                            </Form.Item> */}
 
                             <Form.Item
                                 style={{
@@ -123,7 +124,7 @@ const Login = () => {
                                 <Button type="primary"
                                         block
                                         loading={loading}
-                                        htmlType="submit"
+                                        htmlType="submit"    
                                         size={'large'}
                                         onSubmit={enterLoading}
                                         className="login-form-button">
