@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined } from '@ant-design/icons';
+import { DashboardOutlined, ProjectOutlined, HistoryOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -22,24 +22,19 @@ const {
 
 const items: MenuProps['items'] = [
     {
-      key: '/team-lead/dashboard',
+      key: '/karyawan/dashboard',
       icon: <DashboardOutlined/>,
       label: 'Dashboard',
     },
     {
-      key: '/team-lead/karyawan',
-      icon: <TeamOutlined/>,
-      label: 'Karyawan',
-    },
-    {
-      key: '/team-lead/jobs',
-      icon: <IdcardOutlined/>,
-      label: 'Jobs',
-    },
-    {
-      key: '/team-lead/project',
+      key: '/karyawan/project',
       icon: <ProjectOutlined/>,
       label: 'Project',
+    },
+    {
+      key: '/karyawan/history',
+      icon: <HistoryOutlined/>,
+      label: 'History',
     }
   ]
   
@@ -65,8 +60,13 @@ const items: MenuProps['items'] = [
         </Sider>
   
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} />
-          <Content style={{ margin: '24px 16px 0' }}>
+        <Header style={{ padding: 0, background: colorBgContainer }}>
+          <div style={{marginLeft: 890, fontSize: 20}}>
+          Karyawan
+          <UserOutlined style={{fontSize: 30, marginLeft: 10}}/>
+          </div>
+          </Header>
+        <Content style={{ margin: '24px 16px 0' }}>
             <div
               style={{
                 padding: 24,
