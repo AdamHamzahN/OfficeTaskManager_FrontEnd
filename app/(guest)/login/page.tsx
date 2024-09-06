@@ -1,9 +1,9 @@
 "use client";
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 // import {observer} from 'mobx-react-lite';
-import {Button, Card, Checkbox, Col, Form, Input, Row, Typography} from 'antd';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import { Button, Card, Checkbox, Col, Form, Input, Row, Typography } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 // import ParticlesLayout from "../components/Layout/ParticlesLayout";
 
 const Login = () => {
@@ -17,7 +17,7 @@ const Login = () => {
         enterLoading(values).then(res => {
             console.log(res, "awasaa");
         }).catch((error) => {
-            console.log({error}, "awasaa error");
+            console.log({ error }, "awasaa error");
         });
     };
 
@@ -26,88 +26,89 @@ const Login = () => {
         // return history.push("/app/page_example_1");
     };
 
-    return <div style={{width: '100vw', display: 'flex', justifyContent: 'flex-end', padding: '85px'}}>
-        <img src="/background.svg" alt="bck" />
-        <Row justify={'center'}>
-            <Col>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    marginTop: '5vh',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}>
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'stretch'}}>
-                        <Typography.Paragraph
-                            style={{
-                                margin: 0,
-                                padding: 0,
-                                fontSize: 20,
-                                marginLeft: 5,
-                                fontWeight: 600,
-                                color: "#413d3e",
-                            }}
-                        >
-                            {/* Office Task Manager */}
-                        </Typography.Paragraph>
-                    </div>
-                    <Card
-                        style={{width: 320, textAlign: 'center'}}
-                        headStyle={{fontSize: 30, fontWeight: 200}}
-                        className={"shadow"}
-                        bordered={true}
-                        title={'Login'}
-                    >
-                        <Form
-                            layout={'vertical'}
-                            name="normal_login"
-                            className="login-form"
-                            onFinish={onFinish}
-                        >
-                            <Form.Item
-                                label="Username"
-                                name="username"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Please input your Username!'}]}
+    return (
+        <div style={{ width: '100vw', display: 'flex', justifyContent: 'center', padding: '85px' ,textAlign:'center' }}>
+            <img src="/background.svg" alt="bck" />
+            <Row justify={'center'}>
+                <Col>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        marginTop: '5vh',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
+                            <Typography.Paragraph
+                                style={{
+                                    margin: 0,
+                                    padding: 0,
+                                    fontSize: 20,
+                                    marginLeft: 5,
+                                    fontWeight: 600,
+                                    color: "#413d3e",
+                                }}
                             >
-                                <Input
-                                    prefix={<UserOutlined className="site-form-item-icon"/>}
-                                    type="text"
-                                    placeholder="Username"/>
-                            </Form.Item>
+                                {/* Office Task Manager */}
+                            </Typography.Paragraph>
+                        </div>
+                        <Card
+                            style={{ width: 320, textAlign: 'center' }}
+                            headStyle={{ fontSize: 30, fontWeight: 200 }}
+                            className={"shadow"}
+                            bordered={true}
+                            title={'Login'}
+                        >
+                            <Form
+                                layout={'vertical'}
+                                name="normal_login"
+                                className="login-form"
+                                onFinish={onFinish}
+                            >
+                                <Form.Item
+                                    label="Username"
+                                    name="username"
+                                    // size={'large'}
+                                    rules={[{ required: false, message: 'Please input your Username!' }]}
+                                >
+                                    <Input
+                                        prefix={<UserOutlined className="site-form-item-icon" />}
+                                        type="text"
+                                        placeholder="Username" />
+                                </Form.Item>
 
-                            <Form.Item
-                                style={{
-                                    marginBottom: 0,
-                                }}
-                                label="Password"
-                                name="password"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
-                            >
-                                <Input.Password
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="password"
-                                    placeholder="Password"
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                style={{
-                                    marginTop: 0,
-                                    marginBottom: 20,
-                                    padding: 0
-                                }}
+                                <Form.Item
+                                    style={{
+                                        marginBottom: 0,
+                                    }}
+                                    label="Password"
+                                    name="password"
+                                    // size={'large'}
+                                    rules={[{ required: false, message: 'Please input your Password!' }]}
+                                >
+                                    <Input.Password
+                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                        type="password"
+                                        placeholder="Password"
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    style={{
+                                        marginTop: 0,
+                                        marginBottom: 20,
+                                        padding: 0
+                                    }}
                                 // label="Password"
                                 // name="forgot-password"
                                 // size={'small'}
                                 // rules={[{required: false, message: 'Please input your Password!'}]}
-                            >
-                                {/* <a className="login-form-forgot" href="">
+                                >
+                                    {/* <a className="login-form-forgot" href="">
                                     Forgot password
                                 </a> */}
-                            </Form.Item>
+                                </Form.Item>
 
-                            {/* <Form.Item
+                                {/* <Form.Item
                                 style={{
                                     marginBottom: 5,
                                     textAlign: 'left'
@@ -117,27 +118,28 @@ const Login = () => {
                                 </Form.Item>
                             </Form.Item> */}
 
-                            <Form.Item
-                                style={{
-                                    marginBottom: 0,
-                                }}>
-                                <Button type="primary"
+                                <Form.Item
+                                    style={{
+                                        marginBottom: 0,
+                                    }}>
+                                    <Button type="primary"
                                         block
                                         loading={loading}
-                                        htmlType="submit"    
+                                        htmlType="submit"
                                         size={'large'}
                                         onSubmit={enterLoading}
                                         className="login-form-button">
-                                    Sign In
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    </Card>
-                </div>
-            </Col>
-        </Row>
+                                        Sign In
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </Card>
+                    </div>
+                </Col>
+            </Row>
 
-    </div>;
+        </div>
+        )
 };
 
 export default Login;
