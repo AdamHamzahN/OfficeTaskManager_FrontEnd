@@ -6,13 +6,14 @@ import { Card, Space } from 'antd';
 interface CardDashboardProps {
   children: React.ReactNode;
   style?: React.CSSProperties; 
+  title?:string;
 }
 
 
-const CardDashboard: React.FC<CardDashboardProps> = ({ children ,style}) => {
+const CardDashboard: React.FC<CardDashboardProps> = ({ children ,style,title}) => {
   return (
     <Space direction="vertical" size={10}>
-      <Card title="Default size card" headStyle={{ backgroundColor: 'blue', color: 'white',fontSize: 20 }} style={{textAlign:"center",...style}}>
+      <Card title={title} headStyle={{ backgroundColor: 'blue', color: 'white',fontSize: 20 }} style={{textAlign:"center",...style}}>
         {children}
       </Card>
     </Space>

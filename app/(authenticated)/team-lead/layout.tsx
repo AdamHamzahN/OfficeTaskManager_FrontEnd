@@ -4,7 +4,7 @@ import React from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -14,9 +14,10 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   const router = useRouter();
-  const pathname = usePathname() || '';  // Berikan string kosong sebagai nilai default jika `pathname` adalah `null`
+  const pathname = usePathname() || '';
 
-
+  const searchParams = useSearchParams();
+  const idUser = searchParams?.get('idUser') || '';
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -24,27 +25,27 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
   const items: MenuProps['items'] = [
     {
-      key: '/team-lead/dashboard',
+      key: `/team-lead/${idUser}/dashboard`,
       icon: <DashboardOutlined style={{ fontSize: 23 }} />,
       label: 'Dashboard',
     },
     {
-      key: '/team-lead/karyawan',
+      key: `/team-lead/${idUser}/karyawan`,
       icon: <TeamOutlined style={{ fontSize: 23 }} />,
       label: 'Karyawan',
     },
     {
-      key: '/team-lead/jobs',
+      key: `/team-lead/${idUser}/jobs`,
       icon: <IdcardOutlined style={{ fontSize: 23 }} />,
       label: 'Jobs',
     },
     {
-      key: '/team-lead/project',
+      key: `/team-lead/${idUser}/project`,
       icon: <ProjectOutlined style={{ fontSize: 23 }} />,
       label: 'Project',
     }
   ]
-  
+
 
   return (
     <Layout>
@@ -82,7 +83,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         <Menu theme="dark" mode="inline" selectedKeys={[pathname]} items={items}
           onClick={({ key }) => {
             router.push(key);
-            // console.log(`key ${key} route not found`);
           }}
         />
       </Sider>
