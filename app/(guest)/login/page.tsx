@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 // import {observer} from 'mobx-react-lite';
-import { Button, Card, Checkbox, Col, Form, Input, Row, Typography } from 'antd';
+import { Button, Card, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 // import ParticlesLayout from "../components/Layout/ParticlesLayout";
+
 
 const Login = () => {
     // const store = useStore();
@@ -27,8 +28,13 @@ const Login = () => {
     };
 
     return (
-        <div style={{ width: '100vw', display: 'flex', justifyContent: 'center', padding: '85px' ,textAlign:'center' }}>
-            <img src="/background.svg" alt="bck" />
+        
+        <div style={{ width: '90vw', display: 'flex', justifyContent: 'center', padding: '85px' ,textAlign:'center' }}>
+            {/* <header> */}
+                <img src="/logo.svg" alt="" style={{ width: 200, height: 100, margin: 20, position: 'absolute', top: 0, left: 0}} />
+            {/* </header> */}
+            <img src="/background.svg" alt="background" />
+            
             <Row justify={'center'}>
                 <Col>
                     <div style={{
@@ -37,7 +43,7 @@ const Login = () => {
                         marginTop: '5vh',
                         flexDirection: 'column',
                         alignItems: 'center',
-                    }}>
+                        }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
                             <Typography.Paragraph
                                 style={{
@@ -92,31 +98,25 @@ const Login = () => {
                                         placeholder="Password"
                                     />
                                 </Form.Item>
+
                                 <Form.Item
                                     style={{
                                         marginTop: 0,
                                         marginBottom: 20,
                                         padding: 0
                                     }}
-                                // label="Password"
-                                // name="forgot-password"
-                                // size={'small'}
-                                // rules={[{required: false, message: 'Please input your Password!'}]}
                                 >
-                                    {/* <a className="login-form-forgot" href="">
-                                    Forgot password
-                                </a> */}
                                 </Form.Item>
 
                                 {/* <Form.Item
-                                style={{
-                                    marginBottom: 5,
-                                    textAlign: 'left'
-                                }}>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox>Remember me</Checkbox>
-                                </Form.Item>
-                            </Form.Item> */}
+                                    style={{
+                                        marginBottom: 5,
+                                        textAlign: 'left'
+                                    }}>
+                                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                                        <Checkbox>Remember me</Checkbox>
+                                    </Form.Item>
+                                </Form.Item> */}
 
                                 <Form.Item
                                     style={{
