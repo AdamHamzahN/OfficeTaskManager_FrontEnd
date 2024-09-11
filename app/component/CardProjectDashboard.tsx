@@ -1,14 +1,15 @@
 import { Card } from "antd";
 import Link from "next/link";
-import { CalendarOutlined } from '@ant-design/icons';
+import { CalendarOutlined, RightOutlined } from '@ant-design/icons';
+import { link } from "fs";
 
 const CardProjectDashboard: React.FC<{
-    title: React.ReactNode,
     link: string,
+    title: React.ReactNode,
     teamLead: React.ReactNode,
     startDate: string,
     endDate: string
-}> = ({ title, link, teamLead, startDate, endDate }) => (
+}> = ({ link, title, teamLead, startDate, endDate }) => (
     <Card style={{ width: '100%' }}>
         <div style={{
             display: 'flex',
@@ -16,6 +17,7 @@ const CardProjectDashboard: React.FC<{
             alignItems: 'center',
             fontWeight: 'bold',
             fontSize: '20px',
+            fontFamily: 'Plus Jakarta Sans'
         }}>
             <div style={{
                 overflow: 'hidden',
@@ -27,24 +29,24 @@ const CardProjectDashboard: React.FC<{
             </div>
             <span style={{ fontWeight: 'bold', marginLeft: '10px', textDecoration: 'none' }}>
                 <Link href={link} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    &gt;
+                    <RightOutlined />
                 </Link>
             </span>
         </div>
         <div style={{ fontSize: 15, fontWeight: 'bold' }}>
-            {teamLead}
+            <span style={{ fontWeight: 'bold' }}>{teamLead}</span>
         </div>
         <div style={{ backgroundColor: 'rgba(242, 246, 249, 1)', display: 'flex', borderRadius: 8, marginTop: 5 }}>
             <div style={{ padding: 10, marginRight: 5 }}>
                 <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined />Start Date</h4>
-                {startDate}
+                <span style={{ fontWeight: 'bold' }}>{startDate}</span>
             </div>
             <div style={{ height: '100%', alignItems: 'center', margin: 20, fontSize: 20, color: 'rgba(109, 117, 128, 0.15)' }}>
                 <span>|</span>
             </div>
             <div style={{ padding: 10 }}>
                 <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined />End Date</h4>
-                {endDate}
+                <span style={{ fontWeight: 'bold' }}> {endDate}</span>
             </div>
         </div>
     </Card>

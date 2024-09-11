@@ -4,7 +4,7 @@ import React from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -15,9 +15,9 @@ interface AuthenticatedLayoutProps {
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname() || '';
+  const params = useParams();
+  const idUser = params?.idUser as string | undefined;
 
-  const searchParams = useSearchParams();
-  const idUser = searchParams?.get('idUser') || '';
 
   const {
     token: { colorBgContainer, borderRadiusLG },
