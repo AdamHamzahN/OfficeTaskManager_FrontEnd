@@ -1,123 +1,12 @@
-// "use client";
-
-// import React from 'react';
-// import {HomeFilled, InfoCircleFilled, LaptopOutlined, NotificationOutlined, UserOutlined} from '@ant-design/icons';
-// import type {MenuProps} from 'antd';
-// import {Breadcrumb, Layout, Menu, theme} from 'antd';
-// import {useRouter} from "next/navigation";
-
-// const {Header, Content, Sider} = Layout;
-
-// const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-//   key,
-//   label: `nav ${key}`,
-// }));
-
-// const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-//   (icon, index) => {
-//     const key = String(index + 1);
-
-//     return {
-//       key: `sub${key}`,
-//       icon: React.createElement(icon),
-//       label: `subnav ${key}`,
-
-//       children: new Array(4).fill(null).map((_, j) => {
-//         const subKey = index * 4 + j + 1;
-//         return {
-//           key: subKey,
-//           label: `option${subKey}`,
-//         };
-//       }),
-//     };
-//   },
-// );
-
-// interface AuthenticatedLayoutProps {
-//   children: React.ReactNode
-// }
-
-// const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({children}) => {
-//   const router = useRouter();
-
-//   const {
-//     token: {colorBgContainer},
-//   } = theme.useToken();
-
-//   const menu: MenuProps['items'] = [
-//     {
-//       key: `/home`,
-//       icon: <HomeFilled/>,
-//       label: `Home`,
-//     },
-//     {
-//       key: `/about`,
-//       icon: <InfoCircleFilled/>,
-//       label: `About`,
-//     }
-//   ]
-
-//   return (
-//     <Layout>
-//       <Header className="header flex">
-//         <div className={"text-white"}>y</div>
-//         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[]} items={items1} className={"flex-1"}/>
-//       </Header>
-//       <Layout>
-//         <Sider width={200} style={{background: colorBgContainer}}>
-//           <Menu
-//             mode="inline"
-//             defaultSelectedKeys={['1']}
-//             defaultOpenKeys={['sub1']}
-//             style={{height: '100%', borderRight: 0}}
-//             items={menu.concat(items2)}
-//             onClick={({key}) => {
-//               router.push(key);
-//               // console.log(`key ${key} route not found`);
-//             }}
-//           />
-//         </Sider>
-//         <Layout style={{padding: '0 24px 24px', height: 'calc(100vh - 64px)'}}>
-//           <Content
-//             style={{
-//               padding: 24,
-//               margin: '16px 0 0 0',
-//               minHeight: 280,
-//               background: colorBgContainer,
-//             }}
-//           >
-//             {children}
-//           </Content>
-//         </Layout>
-//       </Layout>
-//     </Layout>
-//   );
-// };
-
-// export default AuthenticatedLayout;
-
 "use client";
 
 import React from 'react';
 import { DashboardOutlined, UserOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const { Header, Content, Footer, Sider } = Layout;
-
-// const items = [DashboardOutlined, UserOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined].map(
-//   (icon, index) => ({
-//     key: String(index + 1),
-//     icon: React.createElement(icon),
-//     label: `nav ${index + 1}`,
-//   }),
-// );
-
-// const App: React.FC = () => {
-//   const {
-//     token: { colorBgContainer, borderRadiusLG },
-//   } = theme.useToken();
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode
@@ -125,7 +14,7 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({children}) => {
   const router = useRouter();
-
+  const pathname = usePathname() || '';
 
 const {
   token: {colorBgContainer, borderRadiusLG},
@@ -134,27 +23,31 @@ const {
 const items: MenuProps['items'] = [
   {
     key: '/super-admin/dashboard',
-    icon: <DashboardOutlined style={{fontSize: 25}}/>,
+    icon: <DashboardOutlined style={{fontSize: 23}}/>,
     label: 'Dashboard',
   },
   {
     key: '/super-admin/team-lead',
-    icon: <UserOutlined style={{fontSize: 25}}/>,
+    icon: <UserOutlined style={{fontSize: 23}}/>,
     label: 'Team Lead',
   },
   {
     key: '/super-admin/karyawan',
-    icon: <TeamOutlined style={{fontSize: 25}}/>,
+    icon: <TeamOutlined style={{fontSize: 23}}/>,
     label: 'Karyawan',
   },
   {
     key: '/super-admin/jobs',
-    icon: <IdcardOutlined style={{fontSize: 25}}/>,
+    icon: <IdcardOutlined style={{fontSize: 23}}/>,
     label: 'Jobs',
   },
   {
     key: '/super-admin/project',
+<<<<<<< HEAD
     icon: <ProjectOutlined style={{fontSize: 25}}/>,
+=======
+    icon: <ProjectOutlined style={{fontSize: 23}}/>,
+>>>>>>> f5f1ae546e95ac33efdf1bdef77239d69d5fab25
     label: 'Project',
   }
 ]
@@ -172,6 +65,7 @@ const items: MenuProps['items'] = [
         }}
       >
         <div className="rectangel"
+<<<<<<< HEAD
         style={{
           padding: 2,
           margin: 10,
@@ -183,10 +77,23 @@ const items: MenuProps['items'] = [
           zIndex: 1000,
         }}
       >
+=======
+          style={{
+            padding: 2,
+            margin: 10,
+            width: 180,
+            height: 80,
+            backgroundColor: '#FFFFFF33', /* Warna putih dengan 20% transparansi */
+            borderRadius: 5,
+            textAlign: 'center',
+            zIndex: 1000,
+          }}
+        >
+>>>>>>> f5f1ae546e95ac33efdf1bdef77239d69d5fab25
           <img src="/logo-otm.svg" alt="logo" style={{ width: '165px', height: '75.2px' }} />
         </div>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={[]} items={items} 
+        <Menu theme="dark" mode="inline" selectedKeys={[pathname]} items={items} 
           onClick={({key}) => {
             router.push(key);
             // console.log(`key ${key} route not found`);
@@ -213,11 +120,15 @@ const items: MenuProps['items'] = [
             {children}
           </div>
         </Content>
+<<<<<<< HEAD
+=======
+        <Footer style={{ textAlign: 'center' }}>
+          Office Task Manager ©{new Date().getFullYear()} Created by Ant UED
+        </Footer>
+>>>>>>> f5f1ae546e95ac33efdf1bdef77239d69d5fab25
       </Layout>
     </Layout>
   );
 };
-
-// export default App;
 
 export default AuthenticatedLayout;

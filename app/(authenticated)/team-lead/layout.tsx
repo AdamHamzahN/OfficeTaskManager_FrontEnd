@@ -99,6 +99,4 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   );
 };
 
-// export default App;
-
 export default AuthenticatedLayout;

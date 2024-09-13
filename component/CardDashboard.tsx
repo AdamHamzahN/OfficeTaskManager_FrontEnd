@@ -13,7 +13,7 @@ interface CardDashboardProps {
 const CardDashboard: React.FC<CardDashboardProps> = ({ children ,style,title}) => {
   return (
     <Space direction="vertical" size={10}>
-      <Card title={title} headStyle={{ backgroundColor: 'blue', color: 'white',fontSize: 20 }} style={{textAlign:"center",...style}}>
+      <Card title={title} headStyle={{ backgroundColor: '#1890FF', color: 'white',fontSize: 20 }} style={{textAlign:"center",...style}}>
         {children}
       </Card>
     </Space>
