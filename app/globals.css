@@ -2,3 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-table .ant-table-thead > tr > th {
+    background-color: rgba(24, 144, 255, 1); 
+    color: white; 
+}
+

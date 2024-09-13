@@ -15,6 +15,7 @@ export const Provider = ({children}: any) => {
     theme={{
       token: {
         colorPrimary: '#1890FF',
+        // fontFamily:'Roboto'
       },
     }}
   >
