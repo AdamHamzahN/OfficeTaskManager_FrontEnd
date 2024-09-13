@@ -1,9 +1,21 @@
 import {http} from "#/utils/http";
+import { get } from "superagent";
 import useSWR from "swr";
 
 // const baseURL = process.env.NEXT_PUBLIC_API || 'http://localhost:3222';
 
 const url = {
+    getUpdateProjectSuperAdminTerbaru() {   // super admin
+        return '/project/update-terbaru';
+    },
+    getProjectDalamProses() {
+        return '/project/count-onprogress';
+    },
+    getProjectSelesai() {
+        return '/project/count-selesai';
+    },
+
+    // team lead
     getUpdateProjectTeamLeadTerbaru(id_user: string) {
         return `/project/team-lead/${id_user}/update-terbaru`;
     },
@@ -16,6 +28,17 @@ const url = {
 }
 
 const hooks = {
+    useUpdateProjectSuperAdminTerbaru() {   //super admin
+        return useSWR(url.getUpdateProjectSuperAdminTerbaru(), http.fetcher);
+    },
+    useProjectDalamProses() {
+        return useSWR(url.getProjectDalamProses(), http.fetcher);
+    },
+    useProjectSelesai() {
+        return useSWR(url.getProjectSelesai(), http.fetcher);
+    },
+    
+    // team lead
     useUpdateProjectTeamLeadTerbaru(id_user: string) {
         return useSWR(url.getUpdateProjectTeamLeadTerbaru(id_user), http.fetcher);
     },

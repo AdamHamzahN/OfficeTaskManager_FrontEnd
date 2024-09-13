@@ -6,7 +6,6 @@ import CardDashboard from "#/app/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { useParams } from "next/navigation";
 
-// Data dummy untuk tabel
 
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -22,7 +21,7 @@ const formatTimeStr = (dateStr: string) => {
 
 const columnProjectTerbaru = [
     {
-        title: 'Waktu Update',
+        title: 'Waktu Update',  
         dataIndex: 'updated_at',
         key: 'updated_at',
         render: (text: string) => formatTimeStr(text)
@@ -147,7 +146,7 @@ const Page: React.FC = () => {
                                     pagination={false}
                                     style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                                 />
-                            ) : (
+                            ) :  (
                                 <div style={{ textAlign: 'center', padding: '20px' }}>
                                     <p>No data available</p>
                                 </div>
@@ -162,7 +161,7 @@ const Page: React.FC = () => {
                             width: '100%',
                             minHeight: 400,
                             maxHeight: 400,
-                            display: 'flex',
+                            display: 'flex',      
                             flexDirection: 'column',
                             position: 'relative',
                             overflow: 'hidden'
@@ -189,10 +188,10 @@ const Page: React.FC = () => {
                     </CardDashboard>
                 </Col>
             </Row>
-            <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }} />
+            <hr style={{ height: '2px', backgroundColor: 'black', border: 'none', borderRadius: 10 }} />
 
             <div className="project-sedang-dikerjakan">
-                <div className="title" style={{ fontFamily: "revert", textAlign: "center", fontSize: 40 }}>
+                <div className="title" style={{ fontFamily: "Roboto, sans-serif", textAlign: "center", fontSize: 35 }}>
                     <h1>Sedang Dikerjakan</h1>
                 </div>
 

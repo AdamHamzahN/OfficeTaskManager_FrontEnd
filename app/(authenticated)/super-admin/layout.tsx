@@ -4,7 +4,7 @@ import React from 'react';
 import { DashboardOutlined, UserOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -14,7 +14,7 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({children}) => {
   const router = useRouter();
-
+  const pathname = usePathname() || '';
 
 const {
   token: {colorBgContainer, borderRadiusLG},
@@ -62,15 +62,20 @@ const items: MenuProps['items'] = [
       >
         <div className="rectangel"
           style={{
+            padding: 2,
             margin: 10,
             width: 180,
-            height: 90,
+            height: 80,
             backgroundColor: '#FFFFFF33', /* Warna putih dengan 20% transparansi */
             borderRadius: 5,
+            textAlign: 'center',
+            zIndex: 1000,
           }}
-        ></div>
+        >
+          <img src="/logo-otm.svg" alt="logo" style={{ width: '165px', height: '75.2px' }} />
+        </div>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={[]} items={items} 
+        <Menu theme="dark" mode="inline" selectedKeys={[pathname]} items={items} 
           onClick={({key}) => {
             router.push(key);
             // console.log(`key ${key} route not found`);
@@ -98,7 +103,7 @@ const items: MenuProps['items'] = [
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          Office Task Manager ©{new Date().getFullYear()} Created by Ant UED
         </Footer>
       </Layout>
     </Layout>
