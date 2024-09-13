@@ -3,7 +3,7 @@ import { useState } from "react";
 import { projectRepository } from "#/repository/project";
 import { Alert, Col, Row, Spin, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
-import ProjectList from "#/app/component/ProjectList";
+import ProjectList from "#/component/ProjectList";
 
 const { useProjectTeamLeadByStatus } = projectRepository.hooks;
 
@@ -59,10 +59,12 @@ const Page: React.FC = () => {
         <div>
             <div
                 style={{
-                    padding: 24,
+                    paddingRight: 24,
+                    paddingBottom: 24,
+                    paddingLeft: 24,
                     minHeight: '100vh',
                     backgroundColor: '#fff',
-                    borderRadius: 15
+                    borderRadius: 15,
                 }}
             >
                 <div>
