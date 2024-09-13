@@ -6,8 +6,6 @@ import CardDashboard from "#/app/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { useParams } from "next/navigation";
 
-// Data dummy untuk tabel
-
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
     const day = String(date.getDate()).padStart(2, '0');

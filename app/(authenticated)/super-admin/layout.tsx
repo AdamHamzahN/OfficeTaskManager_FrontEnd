@@ -154,7 +154,7 @@ const items: MenuProps['items'] = [
   },
   {
     key: '/super-admin/project',
-    icon: <ProjectOutlined/>,
+    icon: <ProjectOutlined style={{fontSize: 25}}/>,
     label: 'Project',
   }
 ]
@@ -172,14 +172,19 @@ const items: MenuProps['items'] = [
         }}
       >
         <div className="rectangel"
-          style={{
-            margin: 10,
-            width: 180,
-            height: 90,
-            backgroundColor: '#FFFFFF33', /* Warna putih dengan 20% transparansi */
-            borderRadius: 5,
-          }}
-        ></div>
+        style={{
+          padding: 2,
+          margin: 10,
+          width: 180,
+          height: 80,
+          backgroundColor: '#FFFFFF33',
+          borderRadius: 5,
+          textAlign: 'center',
+          zIndex: 1000,
+        }}
+      >
+          <img src="/logo-otm.svg" alt="logo" style={{ width: '165px', height: '75.2px' }} />
+        </div>
         <div className="demo-logo-vertical" />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[]} items={items} 
           onClick={({key}) => {
@@ -200,7 +205,7 @@ const items: MenuProps['items'] = [
           <div
             style={{
               padding: 24,
-              minHeight: 485,
+              minHeight: 560,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -208,9 +213,6 @@ const items: MenuProps['items'] = [
             {children}
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
       </Layout>
     </Layout>
   );
