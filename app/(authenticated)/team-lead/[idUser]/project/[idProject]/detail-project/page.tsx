@@ -1,26 +1,19 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import { Alert, Button, Row, Spin, Table, Tabs, TabsProps, Tag } from "antd";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined ,EyeOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { projectRepository } from "#/repository/project";
-import ModalComponent from "#/component/modal";
-import DetailTugas from "./detailTugas";
-
-interface DetailProjectProps {
-    nama_team: any,
-    idProject: any,
-    idUser: any,
-}
+import ModalComponent from "#/component/ModalComponent";
+import ModalDetailTugas from "./modalDetailTugas";
+import ModalCekTugas from "./modalCekTugas";
 
 interface tableDetailProps {
     idProject: any,
     nama_team: any,
 }
-const dataSource = [
-    { key: '1', nama_karyawan: 'Mike', nik: 32, job: '10 Downing Street', jumlah_tugas: 10, tugas_selesai: 10 },
-];
+
 
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -34,30 +27,47 @@ const formatTimeStr = (dateStr: string) => {
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
-const columns = [
-    { title: 'Nama karyawan', dataIndex: 'nama_karyawan', key: 'nama_karyawan' },
-    { title: 'NIK', dataIndex: 'nik', key: 'nik' },
-    { title: 'Job', dataIndex: 'job', key: 'job' },
-    { title: 'Jumlah Tugas', dataIndex: 'jumlah_tugas', key: 'jumlah_tugas' },
-    { title: 'Tugas Selesai', dataIndex: 'tugas_selesai', key: 'tugas_selesai' },
-];
 
-const ButtonExportExcel: React.FC = () => {
+const ButtonExportExcel: React.FC<{ status: string }> = ({ status }) => {
+    // Fungsi untuk menentukan gaya button berdasarkan status
+    const getButtonStyles = (status: string) => {
+        switch (status) {
+            case 'pending':
+                return { backgroundColor: 'rgba(255, 193, 7, 0.1)', borderColor: '#FFC107', color: '#FFC107' };
+            case 'on-progress':
+                return { backgroundColor: 'rgba(0, 188, 212, 0.1)', borderColor: '#00BCD4', color: '#00BCD4' };
+            case 'redo':
+                return { backgroundColor: 'rgba(244, 67, 54, 0.1)', borderColor: '#F44336', color: '#F44336' };
+            case 'done':
+                return { backgroundColor: 'rgba(33, 150, 243, 0.1)', borderColor: '#2196F3', color: '#2196F3' };
+            default:
+                return { backgroundColor: 'rgba(76, 175, 80, 0.1)', borderColor: '#4CAF50', color: '#4CAF50' };
+        }
+    };
+
     return (
         <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
             <button className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-2 px-6 border border-green-600 hover:border-transparent rounded text-justify">
                 <FileExcelOutlined style={{ fontSize: 15 }} /> Export To Excel
             </button>
-            <button className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-2 px-6 border border-blue-500 hover:border-transparent rounded">
-                <EditOutlined /> Ubah Status
-            </button>
-            <button className="border py-2 px-6 rounded" style={{ backgroundColor: 'rgba(0, 188, 212, 0.1)', borderColor: 'rgba(0, 188, 212, 1)', color: '#00BCD4' }}>
-                On Progress
+
+            {/* Tombol Ubah Status hanya muncul jika status bukan "approved" */}
+            {status !== 'approved' && (
+                <button className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-2 px-6 border border-blue-500 hover:border-transparent rounded">
+                    <EditOutlined /> Ubah Status
+                </button>
+            )}
+
+            {/* Tombol dengan gaya dinamis berdasarkan status */}
+            <button
+                className="border py-2 px-6 rounded"
+                style={getButtonStyles(status)}
+            >
+                {status}
             </button>
         </div>
     );
 };
-
 
 const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
     const { data: teamProject, error, isValidating: loading } = projectRepository.hooks.useTeamByProject(idProject);
@@ -179,14 +189,11 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
     )
 }
 
-const TableTask =  ({ idProject, nama_team }: tableDetailProps) => {
+const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
     const { data: tugasProject, error, isValidating: loading } = projectRepository.hooks.useGetTugasByProject(idProject);
-
-
     if (loading) {
         return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
     }
-
     if (error) {
         return <Alert message="Error fetching data" type="error" />;
     }
@@ -212,7 +219,7 @@ const TableTask =  ({ idProject, nama_team }: tableDetailProps) => {
                     }
                 };
 
-                return <Tag color={getColor()}>{status}</Tag>;
+                return <Tag color={getColor()} style={{ fontSize: '12px' }}>{status}</Tag>;
             }
         },
         {
@@ -227,15 +234,28 @@ const TableTask =  ({ idProject, nama_team }: tableDetailProps) => {
         },
         {
             title: 'Aksi',
-            dataIndex: 'tugas_selesai',
-            render:()=>{
+            key:'aksi',
+            render: (record:any) => {
+                const idTugas = record.id;
+
                 return (
                     <div>
-                        <ModalComponent title={'Detail Tugas'} content={
-                            <DetailTugas/>
-                        }/>
-                        <Button style={{backgroundColor:'rgba(244, 247, 254, 1)',color:'#1890FF',border:'none'}}><EyeOutlined/>detail</Button>
+                        <ModalComponent
+                            title={'Detail Tugas'}
+                            content={<ModalDetailTugas idTugas={idTugas} />}
+                            footer={(handleCancel) => (
+                                <div>
+                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button type="primary" onClick={handleCancel}>Ok</Button>
+                                </div>
+                            )}
+                        >
+                            <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
+                                <EyeOutlined /> Detail
+                            </Button>
+                        </ModalComponent>
                     </div>
+
                 );
             }
         },
@@ -267,22 +287,76 @@ const TableTask =  ({ idProject, nama_team }: tableDetailProps) => {
     )
 }
 
-
-const DetailProject = ({ nama_team, idProject, idUser }: DetailProjectProps) => {
+const DetailProject: React.FC<{
+    nama_team: any,
+    idProject: any,
+    idUser: any,
+}> = ({ nama_team, idProject, idUser }) => {
     return (
         <div>
-            <TableTeam idProject={idProject} nama_team={nama_team}/>
-            <TableTask idProject={idProject} nama_team={nama_team}/>
+            <TableTeam idProject={idProject} nama_team={nama_team} />
+            <TableTask idProject={idProject} nama_team={nama_team} />
         </div>
     );
 };
 
-const TugasDiselesaikan = () => {
+const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
+
+    const { data, error, isValidating: loading } = projectRepository.hooks.useTugasSelesai(idProject);
+    if (loading) {
+        return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
+    }
+    if (error) {
+        return <Alert message="Error fetching data" type="error" />;
+    }
+    const columnTugasDiselesaikan = [
+        {
+            title: 'Tugas',
+            dataIndex: 'nama_tugas',
+            key: 'nama_tugas'
+        },
+        {
+            title: 'Nama Karyawan',
+            key: 'karyawan.nama',
+            render: (record: any) => record.karyawan ? record.karyawan.user.nama : 'N/A',
+        },
+        {
+            title: 'Waktu Update',
+            dataIndex: 'updated_at',
+            render: (text: string) => formatTimeStr(text)
+        },
+        {
+            title: 'Aksi',
+            dataIndex: 'jumlah_tugas',
+            render: () => {
+                return (
+                    <div>
+                        <ModalComponent
+                            title={'Detail Tugas'}
+                            content={<ModalCekTugas />}
+                            footer={(handleCancel) => (
+                                <div>
+                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button type="primary" onClick={handleCancel}>Ok</Button>
+                                </div>
+                            )}
+                        >
+                            <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
+                                <EyeOutlined /> Detail
+                            </Button>
+                        </ModalComponent>
+                    </div>
+
+                );
+            }
+        }
+    ];
+
     return (
         <div className="mt-5">
             <Table
-                dataSource={dataSource}
-                columns={columns}
+                dataSource={data}
+                columns={columnTugasDiselesaikan}
                 className="w-full custom-table"
                 pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />
@@ -317,7 +391,7 @@ const Page = () => {
                 idUser={idUser}
             />
         },
-        { key: 'TugasDiselesaikan', label: 'Tugas Diselesaikan', children: <TugasDiselesaikan /> },
+        { key: 'TugasDiselesaikan', label: 'Tugas Diselesaikan', children: <TugasDiselesaikan idProject={idProject} /> },
     ];
     // console.log(data?.data.nama_project || data);
 
@@ -334,7 +408,7 @@ const Page = () => {
                         {detailProject?.data.nama_project}
                     </h3>
                 </div>
-                <ButtonExportExcel />
+                <ButtonExportExcel status={detailProject?.data.status} />
             </div>
             <div
                 style={{
