@@ -14,6 +14,12 @@ const url = {
 	},
 	getTugasByProject(id_project: string) {
 		return `/tugas/${id_project}/tugas-project`
+	},
+	getTugasSelesai(id_project:string){
+		return `/tugas/${id_project}/tugas-selesai`
+	},
+	getTugasById(id_tugas:string){
+		return `/tugas/${id_tugas}/detail`
 	}
 }
 
@@ -29,6 +35,12 @@ const hooks = {
 	},
 	useGetTugasByProject(id_project: string) {
 		return useSWR(url.getTugasByProject(id_project), http.fetcher);
+	},
+	useTugasSelesai(id_project: string) {
+		return useSWR(url.getTugasSelesai(id_project), http.fetcher);
+	},
+	useGetTugasById(id_project: string) {
+		return useSWR(url.getTugasById(id_project), http.fetcher);
 	}
 }
 

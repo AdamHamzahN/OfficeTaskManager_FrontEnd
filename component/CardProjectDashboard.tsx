@@ -1,7 +1,6 @@
 import { Card } from "antd";
 import Link from "next/link";
 import { CalendarOutlined, RightOutlined } from '@ant-design/icons';
-import { link } from "fs";
 
 const CardProjectDashboard: React.FC<{
     link: string,
