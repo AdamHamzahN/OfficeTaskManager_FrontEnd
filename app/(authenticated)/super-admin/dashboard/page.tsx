@@ -5,7 +5,7 @@ import {Table, Tag, Row, Col, Spin, Alert, Card } from 'antd';
 import type { TableProps } from 'antd';
 import { format } from "path";
 import { title } from "process";
-import CardDashboard from "#/app/component/CardDashboard";
+import CardDashboard from "#/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 
 const formatTimeStr = (dateStr: string) => {

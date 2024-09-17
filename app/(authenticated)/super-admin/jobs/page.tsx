@@ -2,7 +2,10 @@
 import React, { useState } from 'react';
 import { Space, Table, Tag, Alert, Spin, Button, Modal, Form, Input } from 'antd';
 import type { TableProps } from 'antd';
+import { EyeOutlined } from "@ant-design/icons";
 import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
+import DetailTugas from '../../team-lead/[idUser]/project/[idProject]/detail-project/detailTugas';
+import ModalComponent from '#/component/modal';
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -57,32 +60,16 @@ const columnJobs: TableProps<DataType>['columns'] = [
     title: 'Aksi',
     key: 'aksi',
     dataIndex: 'aksi',
-    render: (_, { aksi }) => (
-      <>
-        {aksi.map((action) => {
-          let color: string;
-          switch (action) {
-            case 'edit':
-              color = 'volcano';
-              break;
-            case 'delete':
-              color = 'red';
-              break;
-            case 'view':
-              color = 'blue';
-              break;
-            default:
-              color = 'green';
-              break;
-          }
-          return (
-            <Tag color={color} key={action} style={{ margin: '4px' }}>
-              {action.toUpperCase()}
-            </Tag>
+    render:()=>{
+            return (
+              <div>
+              <ModalComponent title={'Detail Tugas'} content={
+                  <DetailTugas/>
+              }/>
+              <Button style={{backgroundColor:'rgba(244, 247, 254, 1)',color:'#1890FF',border:'none'}}><EyeOutlined/>detail</Button>
+          </div>
           );
-        })}
-      </>
-    ),
+        }
   },
 ];
 
