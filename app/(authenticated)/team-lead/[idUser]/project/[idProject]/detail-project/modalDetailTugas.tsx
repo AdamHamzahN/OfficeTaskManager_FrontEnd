@@ -47,11 +47,11 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
             />
 
             <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Detail Tugas</label>
-            <Link href={filePdfUrl}>
+            <a href={filePdfUrl} target="_blank" rel="noopener noreferrer">              
                 <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
                     <SearchOutlined /> Lihat Detail
                 </Button>
-            </Link>
+            </a>      
             {detailTugas.data.status === 'approved' && (
                 <>
                     <label htmlFor="waktu_selesai_approved" style={{ marginBottom: '8px', display: 'block' }}>Waktu Selesai</label>

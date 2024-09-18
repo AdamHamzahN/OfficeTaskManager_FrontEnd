@@ -45,7 +45,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 title={title}
                 open={isModalVisible}
                 onCancel={handleCancel}
-                footer={footer(handleCancel, handleOk)}  // Gunakan handleCancel dan handleOk
+                footer={footer ? footer(handleCancel, handleOk):null}  // Gunakan handleCancel dan handleOk
             >
                 {content}
             </Modal>
