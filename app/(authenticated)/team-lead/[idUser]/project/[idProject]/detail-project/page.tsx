@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Row, Spin, Table, Tabs, TabsProps, Tag } from "antd";
+import { Alert, Button, Modal, Row, Spin, Table, Tabs, TabsProps, Tag } from "antd";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -8,6 +8,7 @@ import { projectRepository } from "#/repository/project";
 import ModalComponent from "#/component/ModalComponent";
 import ModalDetailTugas from "./modalDetailTugas";
 import ModalCekTugas from "./modalCekTugas";
+import ModalTambahAnggota from "./modalTambahAnggota";
 
 interface tableDetailProps {
     idProject: any,
@@ -69,10 +70,13 @@ const ButtonExportExcel: React.FC<{ status: string }> = ({ status }) => {
     );
 };
 
+
 const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
-    const { data: teamProject, error, isValidating: loading } = projectRepository.hooks.useTeamByProject(idProject);
+    const { data: teamProject, error, isValidating: loading, mutate } = projectRepository.hooks.useTeamByProject(idProject);
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
+    const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchTugas = async () => {
@@ -105,14 +109,57 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
 
         if (teamProject) {
             fetchTugas();
+
         }
     }, [teamProject, idProject]);
+
+    const handleOk = async () => {
+        if (!selectedKaryawan) {
+            alert('Pilih Karyawan Terlebih Dahulu');
+            return;
+        }
+        try {
+            await projectRepository.api.createAnggotaTeam({
+                id_project: idProject,
+                id_karyawan: selectedKaryawan
+            });
+            await mutate();
+            setSelectedKaryawan(undefined); // Reset pilihan karyawan
+    
+            // Tampilkan Modal.confirm setelah berhasil
+            Modal.success({
+                title: 'Anggota Ditambahkan',
+                content: 'Berhasil menambahkan anggota ke dalam tim!',
+                okText: 'OK',
+                cancelText: 'Tutup',
+                onOk() {
+                    console.log('OK clicked');
+                },
+                onCancel() {
+                    console.log('Cancel clicked');
+                }
+            });
+        } catch (error) {
+            console.error('Gagal menambahkan anggota:', error);
+        }
+    };
+    const showModal = () => {
+        setIsModalOpen(true); // Buka modal sukses
+    };
+
+    const handleModalOk = () => {
+        setIsModalOpen(false); // Tutup modal setelah user klik OK
+    };
+
+    const handleModalCancel = () => {
+        setIsModalOpen(false); // Tutup modal jika user klik cancel atau close
+    };
+
 
     if (loading) {
         return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
     }
 
-    // Error handling
     if (error) {
         return <Alert message="Error fetching data" type="error" />;
     }
@@ -139,7 +186,6 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
             render: (record: any) => {
                 const idKaryawan = record.karyawan.id;
                 const data = countAll[idKaryawan] !== undefined ? countAll[idKaryawan] : 'Loading...';
-                // console.log(idKaryawan, data);
                 return data;
             },
         },
@@ -149,12 +195,10 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
             render: (record: any) => {
                 const idKaryawan = record.karyawan.id;
                 const data = countSelesai[idKaryawan] !== undefined ? countSelesai[idKaryawan] : 'Loading...';
-                // console.log(idKaryawan, data);
                 return data;
             },
         },
     ];
-
 
     return (
         <div>
@@ -166,9 +210,23 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
                     </h1>
                 </div>
                 <div>
-                    <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded">
-                        + Tambah Anggota
-                    </button>
+                    <ModalComponent
+                        title={'Tambah Anggota Team'}
+                        content={<ModalTambahAnggota onSelectKaryawan={setSelectedKaryawan} />}
+                        footer={(handleCancel, handleOk) => (
+                            <div>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                                <Button type="primary" onClick={handleOk}>Tambah</Button>
+                            </div>
+                        )}
+                        onOk={handleOk}
+                        onCancel={() => setSelectedKaryawan(undefined)}
+                    >
+                        <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded">
+                            + Tambah Anggota
+                        </button>
+                    </ModalComponent>
+                    
                 </div>
             </Row>
             <Row className="w-full">
@@ -186,8 +244,11 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
                 )}
             </Row>
         </div>
-    )
-}
+    );
+};
+
+
+
 
 const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
     const { data: tugasProject, error, isValidating: loading } = projectRepository.hooks.useGetTugasByProject(idProject);
@@ -234,8 +295,8 @@ const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
         },
         {
             title: 'Aksi',
-            key:'aksi',
-            render: (record:any) => {
+            key: 'aksi',
+            render: (record: any) => {
                 const idTugas = record.id;
 
                 return (
@@ -243,14 +304,22 @@ const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
                         <ModalComponent
                             title={'Detail Tugas'}
                             content={<ModalDetailTugas idTugas={idTugas} />}
-                            footer={(handleCancel) => (
+                            footer={(handleCancel, handleOk) => (
                                 <div>
                                     <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={handleCancel}>Ok</Button>
+                                    <Button type="primary" onClick={handleOk}>Ok</Button>
                                 </div>
                             )}
+                            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+                            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
                         >
-                            <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'rgba(244, 247, 254, 1)',
+                                    color: '#1890FF',
+                                    border: 'none',
+                                }}
+                            >
                                 <EyeOutlined /> Detail
                             </Button>
                         </ModalComponent>
@@ -276,12 +345,19 @@ const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
                 </div>
             </Row>
             <Row className="w-full">
-                <Table
-                    dataSource={tugasProject}
-                    columns={columns}
-                    className="w-full custom-table"
-                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
-                />
+                {tugasProject && tugasProject.length > 0 ? (
+                    <Table
+                        dataSource={tugasProject}
+                        columns={columns}
+                        className="w-full custom-table"
+                        pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                    />
+                ) : (
+                    <div style={{ textAlign: 'center', padding: '20px' }}>
+                        <p>No data available</p>
+                    </div>
+                )}
+
             </Row>
         </div>
     )
@@ -334,17 +410,32 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
                         <ModalComponent
                             title={'Detail Tugas'}
                             content={<ModalCekTugas />}
-                            footer={(handleCancel) => (
+                            footer={(handleCancel, handleOk) => (
                                 <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={handleCancel}>Ok</Button>
+                                    <Button type="primary" danger onClick={handleCancel}>
+                                        Redo
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        style={{ backgroundColor: 'green', borderColor: 'green' }}
+                                        onClick={handleOk} // Menggunakan handleOk untuk aksi "Approved"
+                                    >
+                                        Approved
+                                    </Button>
                                 </div>
                             )}
                         >
-                            <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
+                            <Button
+                                style={{
+                                    backgroundColor: 'rgba(244, 247, 254, 1)',
+                                    color: '#1890FF',
+                                    border: 'none',
+                                }}
+                            >
                                 <EyeOutlined /> Detail
                             </Button>
                         </ModalComponent>
+
                     </div>
 
                 );

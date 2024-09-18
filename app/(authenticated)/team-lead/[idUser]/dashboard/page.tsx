@@ -207,7 +207,7 @@ const formatTimeStr = (dateStr: string) => {
                                     <CardProjectDashboard
                                         title={<div>{project.nama_project}</div>}
                                         link={`/team-lead/${idUser}/project/${project.id}/detail-project`}
-                                        teamLead={<div>{project.user.username}</div>}
+                                        teamLead={<div>{project.user.nama}</div>}
                                         startDate={project.start_date}
                                         endDate={project.end_date}
                                     />

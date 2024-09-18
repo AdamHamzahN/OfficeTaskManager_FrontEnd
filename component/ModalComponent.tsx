@@ -1,43 +1,51 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 
-
-const ModalComponent: React.FC<{
+interface ModalComponentProps {
     content: React.ReactNode;
     title: string;
     children?: React.ReactNode;
-    footer?: (handleCancel: () => void, handleOk: () => void) => React.ReactNode;
-}> = ({ content, title, children, footer }) => {
-    const [loading, setLoading] = useState(false);
-    const [open, setOpen] = useState(false);
+    footer: (handleCancel: () => void, handleOk: () => void) => React.ReactNode;
+    onOk?: () => void;  
+    onCancel?: () => void;  
+    visible?: boolean;
+}
 
-    const showModal = () => {
-        setOpen(true);
+const ModalComponent: React.FC<ModalComponentProps> = ({
+    content,
+    title,
+    children,
+    footer,
+    onOk,
+    onCancel,
+    visible
+}) => {
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        if (onCancel) {
+            onCancel();  // Panggil onCancel jika ada
+        }
     };
 
     const handleOk = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            setOpen(false);
-        }, 3000);
-    };
-
-    const handleCancel = () => {
-        setOpen(false);
+        if (onOk) {
+            onOk();  // Panggil onOk jika ada
+        }
+        setIsModalVisible(false);
     };
 
     return (
         <>
-            <div onClick={showModal}>
-                {children || <Button type="primary">Open Modal</Button>}
+            <div onClick={() => setIsModalVisible(true)}>
+                {children}
             </div>
             <Modal
-                open={open}
                 title={title}
-                onOk={handleOk}
+                open={isModalVisible}
                 onCancel={handleCancel}
-                footer={footer ? footer(handleCancel, handleOk) : null}
+                footer={footer(handleCancel, handleOk)}  // Gunakan handleCancel dan handleOk
             >
                 {content}
             </Modal>

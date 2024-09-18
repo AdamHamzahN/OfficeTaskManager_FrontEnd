@@ -1,5 +1,5 @@
 import { http } from "#/utils/http";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 
 const url = {
@@ -15,12 +15,24 @@ const url = {
 	getTugasByProject(id_project: string) {
 		return `/tugas/${id_project}/tugas-project`
 	},
-	getTugasSelesai(id_project:string){
+	getTugasSelesai(id_project: string) {
 		return `/tugas/${id_project}/tugas-selesai`
 	},
-	getTugasById(id_tugas:string){
+	getTugasById(id_tugas: string) {
 		return `/tugas/${id_tugas}/detail`
+	},
+	getKaryawanAvailable() {
+		return `/karyawan/status-available`
+	},
+	createAnggotaTeam() {
+		return `/team/tambah`
+	},
+	updateStatusProjectKaryawan(id_karyawan: string) {
+		return `/karyawan/${id_karyawan}/update-status-keaktifan`
 	}
+	// updateStatusTugas(id_tugas: string) {
+	// 	return `/tugas/${id_tugas}/update-status-tugas`
+	// }
 }
 
 const hooks = {
@@ -41,14 +53,42 @@ const hooks = {
 	},
 	useGetTugasById(id_project: string) {
 		return useSWR(url.getTugasById(id_project), http.fetcher);
-	}
+	},
+	useGetKaryawanAvailable() {
+		return useSWR(url.getKaryawanAvailable(), http.fetcher);
+	},
+
 }
-
-
 
 const api = {
+	async createAnggotaTeam(body: any) {
+		try {
+			console.log('Request body:', body);
+			const status = { status: 'inactive' }; 
 
-}
+			// Request POST untuk menambahkan anggota tim
+			const teamResponse = await http.post(url.createAnggotaTeam(), body);
+			console.log('Response from createAnggotaTeam:', teamResponse.body);
+
+			const id_karyawan = teamResponse.body.data.karyawan;
+			console.log('id karyawan :',teamResponse.body.data.karyawan)
+
+			// Request PUT untuk memperbarui status project karyawan
+			const statusResponse = await http.put(url.updateStatusProjectKaryawan(id_karyawan), status);
+			console.log('Response from updateStatusProjectKaryawan:', statusResponse.status);
+
+			return {
+				teamResponse: teamResponse.body,
+				statusResponse: statusResponse.status
+			};
+		} catch (error) {
+			console.error('Error in createAnggotaTeam:', error);
+			throw new Error('Gagal menambahkan anggota tim atau memperbarui status.');
+		}
+	}
+};
+
+
 
 export const projectRepository = {
 	url, hooks, api
