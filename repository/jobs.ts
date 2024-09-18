@@ -8,6 +8,12 @@ const url = {
     },
     tambahJobs() {
         return '/job/tambah'
+    },
+    getJobById(id_job:string){
+		return `/job/${id_job}/detail`
+	},
+    editJobById(id_job:string){
+        return 'job/${id_job}/update'
     }
 }
 
@@ -17,7 +23,14 @@ const hooks = {
     },
     useTambahJobs() {
         return useSWR(url.tambahJobs(), http.fetcher);
+    },
+    useGetJobById(id_job: string) {
+        return useSWR(url.getJobById(id_job), http.fetcher);
+    },
+    useEditJobById(id_job: string) {
+        return useSWR(url.editJobById(id_job), http.fetcher);
     }
+
 }
 
 const api = {

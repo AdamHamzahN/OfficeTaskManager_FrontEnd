@@ -2,9 +2,9 @@
 import React from 'react';
 import { Space, Table, Tag, Alert, Spin, Button } from 'antd';
 import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
-import ModalComponent from '#/component/modal';
-import DetailTugas from '../project/[idProject]/detail-project/detailTugas';
 import { EyeOutlined } from "@ant-design/icons";
+import ModalComponent from '#/component/ModalComponent';
+import ModalDetailJobs from './modalDetailJobs';
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -58,22 +58,24 @@ const columnJobs = [
   {
     title: 'Aksi',
     key: 'aksi',
-    dataIndex: 'aksi',
-    render:()=>{
-          return (
-            <div>
-            <ModalComponent title={'Detail Tugas'} content={
-                <DetailTugas/>
-            }/>
-            <Button style={{backgroundColor:'rgba(244, 247, 254, 1)',color:'#1890FF',border:'none'}}><EyeOutlined/>detail</Button>
+    render: (record: any) => {
+      const idJob = record.job_id;
+      return (
+        <div>
+          <ModalComponent title={'Detail Tugas'} content={<ModalDetailJobs idJobs={idJob} />}>
+            <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
+              <EyeOutlined /> detail
+            </Button>
+          </ModalComponent>
         </div>
-    );
-        }
-},
+      );
+    },
+  },
 ];
+
 const Page: React.FC = () => {
   const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs();
-
+  console.log('api :', apiResponse);
   if (updateValidating) {
     return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
   }
@@ -81,15 +83,6 @@ const Page: React.FC = () => {
   if (updateError) {
     return <Alert message="Error fetching data" type="error" />;
   }
-
-  // Pastikan apiResponse memiliki field 'data' dan data adalah array
-  const data: DataType[] = apiResponse && apiResponse.data ? apiResponse.data.map((job: JobData) => ({
-    key: job.job_id, // Gunakan job_id sebagai key
-    job_nama_job: job.job_nama_job,
-    jumlah_karyawan: job.jumlah_karyawan,
-    job_created_at: job.job_created_at,
-    aksi: ['edit', 'delete', 'view'], // Sesuaikan aksi yang ingin ditampilkan
-  })) : [];
 
   return (
     <div
@@ -105,12 +98,13 @@ const Page: React.FC = () => {
           Daftar Job
         </h1>
       </Space>
-      {data.length > 0 ? (
+      {apiResponse?.data?.length > 0 ? (
         <Table
           columns={columnJobs}
-          dataSource={data}
+          dataSource={apiResponse.data}
           pagination={{ position: ['bottomCenter'] }}
           style={{ marginLeft: '20px' }}
+          className='custom-table'
         />
       ) : (
         <div style={{ textAlign: 'center', padding: '20px' }}>
