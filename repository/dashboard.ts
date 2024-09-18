@@ -21,14 +21,14 @@ const url = {
 
     // team lead
     getUpdateProjectTeamLeadTerbaru(id_user: string) {
-        return `/project/team-lead/${id_user}/update-terbaru`;
+        return `/project/team-lead/${id_user}/update-terbaru`;  
     },
     getUpdateTugasTeamLeadTerbaru(id_user: string) {
         return `/tugas/team-lead/${id_user}/update-terbaru`;
     },
     getUpdateProjectTeamLeadProgress(id_user: string) {
         return `/project/team-lead/${id_user}/data-onprogress`;
-    }
+    }   
 }
 
 const hooks = {

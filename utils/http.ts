@@ -17,6 +17,7 @@ let AuthIntercept = superagentIntercept((err: any, res: any) => {
 export const http = {
     get: (url: string, opts = {}) => {
         let req = superagent.get(config.baseUrl + url)
+            .set('Content-Type', 'application/json')
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
@@ -29,6 +30,7 @@ export const http = {
 
     post: (url: string, opts = {}) => {
         let req = superagent.post(config.baseUrl + url)
+            .send(opts)
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
@@ -40,6 +42,7 @@ export const http = {
 
     put: (url: string, opts = {}) => {
         let req = superagent.put(config.baseUrl + url)
+            .send(opts)
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 

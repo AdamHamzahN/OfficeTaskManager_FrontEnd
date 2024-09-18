@@ -23,17 +23,17 @@ const {
 const items: MenuProps['items'] = [
     {
       key: '/karyawan/dashboard',
-      icon: <DashboardOutlined/>,
+      icon: <DashboardOutlined style={{ fontSize: 23}}/>,
       label: 'Dashboard',
     },
     {
       key: '/karyawan/project',
-      icon: <ProjectOutlined/>,
+      icon: <ProjectOutlined style={{ fontSize: 23}}/>,
       label: 'Project',
     },
     {
       key: '/karyawan/history',
-      icon: <HistoryOutlined/>,
+      icon: <HistoryOutlined style={{ fontSize: 23}}/>,
       label: 'History',
     }
   ]
