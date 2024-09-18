@@ -5,7 +5,8 @@ import useSWR from "swr";
 // const baseURL = process.env.NEXT_PUBLIC_API || 'http://localhost:3222';
 
 const url = {
-    getUpdateProjectSuperAdminTerbaru() {   // super admin
+    // super admin
+    getUpdateProjectSuperAdminTerbaru() {   
         return '/project/update-terbaru';
     },
     getProjectDalamProses() {
@@ -13,6 +14,9 @@ const url = {
     },
     getProjectSelesai() {
         return '/project/count-selesai';
+    },
+    getProjectOnProgress() {
+        return '/project/data-onprogress'
     },
 
     // team lead
@@ -28,7 +32,8 @@ const url = {
 }
 
 const hooks = {
-    useUpdateProjectSuperAdminTerbaru() {   //super admin
+    //super admin
+    useUpdateProjectSuperAdminTerbaru() {   
         return useSWR(url.getUpdateProjectSuperAdminTerbaru(), http.fetcher);
     },
     useProjectDalamProses() {
@@ -36,6 +41,9 @@ const hooks = {
     },
     useProjectSelesai() {
         return useSWR(url.getProjectSelesai(), http.fetcher);
+    },
+    useProjectOnProgress() {
+        return useSWR(url.getProjectOnProgress(), http.fetcher);
     },
     
     // team lead

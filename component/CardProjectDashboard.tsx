@@ -17,7 +17,7 @@ const CardProjectDashboard: React.FC<{
             alignItems: 'center',
             fontWeight: 'bold',
             fontSize: '20px',
-            fontFamily: 'Plus Jakarta Sans'
+            fontFamily: 'Plus Jakarta Sans, sans-serif'
         }}>
             <div style={{
                 overflow: 'hidden',
@@ -38,14 +38,14 @@ const CardProjectDashboard: React.FC<{
         </div>
         <div style={{ backgroundColor: 'rgba(242, 246, 249, 1)', display: 'flex', borderRadius: 8, marginTop: 5 }}>
             <div style={{ padding: 10, marginRight: 5 }}>
-                <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined />Start Date</h4>
+                <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined /> Start Date</h4>
                 <span style={{ fontWeight: 'bold' }}>{startDate}</span>
             </div>
             <div style={{ height: '100%', alignItems: 'center', margin: 20, fontSize: 20, color: 'rgba(109, 117, 128, 0.15)' }}>
                 <span>|</span>
             </div>
             <div style={{ padding: 10 }}>
-                <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined />End Date</h4>
+                <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined /> End Date</h4>
                 <span style={{ fontWeight: 'bold' }}> {endDate}</span>
             </div>
         </div>

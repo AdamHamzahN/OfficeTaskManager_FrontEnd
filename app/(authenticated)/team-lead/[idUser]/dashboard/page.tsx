@@ -188,10 +188,10 @@
                         </CardDashboard>
                     </Col>
                 </Row>
-                <hr style={{ height: '2px', backgroundColor: 'black', border: 'none' }} />
+                <hr style={{ height: '2px', backgroundColor: 'black', border: 'none', borderRadius: 10 }} />
 
                 <div className="project-sedang-dikerjakan">
-                    <div className="title" style={{ fontFamily: "revert", textAlign: "center", fontSize: 40 }}>
+                    <div className="title" style={{ fontFamily: "Roboto, sans-serif", textAlign: "center", fontSize: 40 }}>
                         <h1>Sedang Dikerjakan</h1>
                     </div>
 
