@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import { Alert, Button, Modal, Row, Spin, Table, Tabs, TabsProps, Tag } from "antd";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { projectRepository } from "#/repository/project";
@@ -9,6 +9,8 @@ import ModalComponent from "#/component/ModalComponent";
 import ModalDetailTugas from "./modalDetailTugas";
 import ModalCekTugas from "./modalCekTugas";
 import ModalTambahAnggota from "./modalTambahAnggota";
+import { config } from "#/config/app";
+import ModalUbahStatusProject from "./modalUbahStatusProject";
 
 interface tableDetailProps {
     idProject: any,
@@ -29,8 +31,13 @@ const formatTimeStr = (dateStr: string) => {
 };
 
 
-const ButtonExportExcel: React.FC<{ status: string }> = ({ status }) => {
-    // Fungsi untuk menentukan gaya button berdasarkan status
+const ButtonExportExcel: React.FC<{
+    status: string,
+    file_project: string,
+    idProject: string,
+    nama_team: string,
+    nama_project: string
+}> = ({ status, file_project, idProject, nama_team, nama_project }) => {
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -45,23 +52,40 @@ const ButtonExportExcel: React.FC<{ status: string }> = ({ status }) => {
                 return { backgroundColor: 'rgba(76, 175, 80, 0.1)', borderColor: '#4CAF50', color: '#4CAF50' };
         }
     };
+    const filePdfUrl = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
+
 
     return (
         <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
-            <button className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-2 px-6 border border-green-600 hover:border-transparent rounded text-justify">
-                <FileExcelOutlined style={{ fontSize: 15 }} /> Export To Excel
-            </button>
+            <a href={filePdfUrl} target='_blank' rel="noopener noreferrer">
+                <button className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-3 px-6 border border-green-600 hover:border-transparent rounded text-justify">
+                    <FileExcelOutlined style={{ fontSize: 15 }} /> Export To Excel
+                </button>
+            </a>
 
             {/* Tombol Ubah Status hanya muncul jika status bukan "approved" */}
             {status !== 'approved' && (
-                <button className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-2 px-6 border border-blue-500 hover:border-transparent rounded">
-                    <EditOutlined /> Ubah Status
-                </button>
+                <>
+                    <ModalComponent
+                        title={'Ubah Status Project'}
+                        content={<ModalUbahStatusProject idProject={idProject} status_project={status} nama_team={nama_team} nama_project={nama_project} />}
+                        footer={(handleCancel, handleOk) => (
+                            <div>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                                <Button type="primary" onClick={handleOk}>Ok</Button>
+                            </div>
+                        )}
+                    >
+                        <button className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-3 px-6 border border-blue-500 hover:border-transparent rounded">
+                            <EditOutlined /> Ubah Status
+                        </button>
+                    </ModalComponent>
+                </>
             )}
 
             {/* Tombol dengan gaya dinamis berdasarkan status */}
             <button
-                className="border py-2 px-6 rounded"
+                className="border py-3 px-6 rounded"
                 style={getButtonStyles(status)}
             >
                 {status}
@@ -125,7 +149,7 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
             });
             await mutate();
             setSelectedKaryawan(undefined); // Reset pilihan karyawan
-    
+
             // Tampilkan Modal.confirm setelah berhasil
             Modal.success({
                 title: 'Anggota Ditambahkan',
@@ -226,7 +250,7 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
                             + Tambah Anggota
                         </button>
                     </ModalComponent>
-                    
+
                 </div>
             </Row>
             <Row className="w-full">
@@ -246,9 +270,6 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
         </div>
     );
 };
-
-
-
 
 const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
     const { data: tugasProject, error, isValidating: loading } = projectRepository.hooks.useGetTugasByProject(idProject);
@@ -378,13 +399,60 @@ const DetailProject: React.FC<{
 
 const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
 
-    const { data, error, isValidating: loading } = projectRepository.hooks.useTugasSelesai(idProject);
+    const { data, error, isValidating: loading ,mutate} = projectRepository.hooks.useTugasSelesai(idProject);
     if (loading) {
         return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
     }
     if (error) {
         return <Alert message="Error fetching data" type="error" />;
     }
+
+    const acceptTugas = async (id_tugas:string) => {
+        try {
+            await projectRepository.api.updateStatusTugas(id_tugas,{
+                status:'approved'
+            });
+            await mutate();
+            // Tampilkan Modal.confirm setelah berhasil
+            Modal.success({
+                title: 'Tugas Diterima',
+                content: 'Tugas sesuai dengan rancangan',
+                cancelText: 'Tutup',
+                onOk() {
+                    console.log('OK clicked');
+                },
+                onCancel() {
+                    console.log('Cancel clicked');
+                }
+            });
+        } catch (error) {
+            console.error('Gagal mengupdate Tugas', error);
+        }
+    };
+
+    const redoTugas = async (id_tugas:string) => {
+        try {
+            await projectRepository.api.updateStatusTugas(id_tugas,{
+                status:'redo'
+            });
+            await mutate();
+            Modal.error({
+                title: 'Tugas Ditolak',
+                content: 'Tugas tidak sesuai dengan rancangan',
+                cancelText: 'Tutup',
+                onOk() {
+                    console.log('OK clicked');
+                },
+                onCancel() {
+                    console.log('Cancel clicked');
+                }
+            });
+        } catch (error) {
+            console.error('Gagal mengupdate Tugas', error);
+        }
+    };
+
+
     const columnTugasDiselesaikan = [
         {
             title: 'Tugas',
@@ -399,26 +467,29 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
         {
             title: 'Waktu Update',
             dataIndex: 'updated_at',
+            key: 'updated_at',
             render: (text: string) => formatTimeStr(text)
         },
         {
             title: 'Aksi',
-            dataIndex: 'jumlah_tugas',
-            render: () => {
+            key: 'aksi',
+            render: (record: any) => {
+                const idTugas = record?.id;
+                console.log(idTugas)
                 return (
                     <div>
                         <ModalComponent
                             title={'Detail Tugas'}
-                            content={<ModalCekTugas />}
-                            footer={(handleCancel, handleOk) => (
+                            content={<ModalCekTugas idTugas={idTugas} />}
+                            footer={() => (
                                 <div>
-                                    <Button type="primary" danger onClick={handleCancel}>
+                                    <Button type="primary" danger onClick={() => redoTugas(idTugas)}>
                                         Redo
                                     </Button>
                                     <Button
                                         type="primary"
                                         style={{ backgroundColor: 'green', borderColor: 'green' }}
-                                        onClick={handleOk} // Menggunakan handleOk untuk aksi "Approved"
+                                        onClick={() => acceptTugas(idTugas)}
                                     >
                                         Approved
                                     </Button>
@@ -432,7 +503,7 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
                                     border: 'none',
                                 }}
                             >
-                                <EyeOutlined /> Detail
+                                <SearchOutlined /> Cek Tugas
                             </Button>
                         </ModalComponent>
 
@@ -499,7 +570,14 @@ const Page = () => {
                         {detailProject?.data.nama_project}
                     </h3>
                 </div>
-                <ButtonExportExcel status={detailProject?.data.status} />
+                <ButtonExportExcel
+                    status={detailProject?.data.status}
+                    file_project={detailProject?.data.file_project}
+                    idProject={detailProject?.data.id}
+                    nama_project={detailProject?.data.nama_project}
+                    nama_team={detailProject?.data.nama_team}
+
+                />
             </div>
             <div
                 style={{
