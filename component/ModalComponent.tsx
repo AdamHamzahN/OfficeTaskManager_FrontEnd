@@ -6,8 +6,8 @@ interface ModalComponentProps {
     title: string;
     children?: React.ReactNode;
     footer: (handleCancel: () => void, handleOk: () => void) => React.ReactNode;
-    onOk?: () => void;  
-    onCancel?: () => void;  
+    onOk?: () => void;
+    onCancel?: () => void;
     visible?: boolean;
 }
 
@@ -45,9 +45,11 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 title={title}
                 open={isModalVisible}
                 onCancel={handleCancel}
-                footer={footer ? footer(handleCancel, handleOk):null}  // Gunakan handleCancel dan handleOk
+                footer={footer ? footer(handleCancel, handleOk) : null}
             >
-                {content}
+                <div style={{borderTop:'1px solid gray',padding:'20px',borderBottom:'1px solid gray'}}>
+                    {content}
+                </div>
             </Modal>
         </>
     );

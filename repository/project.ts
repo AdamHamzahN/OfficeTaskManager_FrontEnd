@@ -29,10 +29,10 @@ const url = {
 	},
 	updateStatusProjectKaryawan(id_karyawan: string) {
 		return `/karyawan/${id_karyawan}/update-status-keaktifan`
+	},
+	updateStatusTugas(id_tugas: string) {
+		return `/tugas/${id_tugas}/update-status-tugas`
 	}
-	// updateStatusTugas(id_tugas: string) {
-	// 	return `/tugas/${id_tugas}/update-status-tugas`
-	// }
 }
 
 const hooks = {
@@ -64,14 +64,14 @@ const api = {
 	async createAnggotaTeam(body: any) {
 		try {
 			console.log('Request body:', body);
-			const status = { status: 'inactive' }; 
+			const status = { status: 'inactive' };
 
 			// Request POST untuk menambahkan anggota tim
 			const teamResponse = await http.post(url.createAnggotaTeam(), body);
 			console.log('Response from createAnggotaTeam:', teamResponse.body);
 
 			const id_karyawan = teamResponse.body.data.karyawan;
-			console.log('id karyawan :',teamResponse.body.data.karyawan)
+			console.log('id karyawan :', teamResponse.body.data.karyawan)
 
 			// Request PUT untuk memperbarui status project karyawan
 			const statusResponse = await http.put(url.updateStatusProjectKaryawan(id_karyawan), status);
@@ -84,6 +84,20 @@ const api = {
 		} catch (error) {
 			console.error('Error in createAnggotaTeam:', error);
 			throw new Error('Gagal menambahkan anggota tim atau memperbarui status.');
+		}
+	},
+
+	async updateStatusTugas(id_tugas: string, body: any) {
+		try {
+			console.log('Request body:', body);
+			const updateTugasResponse = await http.put(url.updateStatusTugas(id_tugas), body);
+			return {
+				updateTugasResponse: updateTugasResponse.body,
+			};
+		} catch (error) {
+			console.error('Error in update tugas :', error);
+			throw new Error('Gagal mengupdate status tugas');
+
 		}
 	}
 };

@@ -12,4 +12,8 @@
     background-color: #1890FF !important;
     color: white !important;
   }
+
+.ant-upload{
+    width: 100%;
+}
   
