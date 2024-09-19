@@ -9,7 +9,8 @@ import ModalDetailKaryawan from './modalDetailKaryawan';
 
 // Definisikan tipe untuk objek job yang diterima dari API
 interface KaryawanData {
-    idJob: any;
+    idKaryawan: any;
+
 }
 
 // Perbarui DataType untuk mencocokkan data yang diterima
