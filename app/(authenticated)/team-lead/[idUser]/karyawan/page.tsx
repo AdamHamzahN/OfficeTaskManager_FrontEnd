@@ -4,29 +4,12 @@ import { Space, Table, Tag, Alert, Spin, Button } from 'antd';
 import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
-import ModalDetailJobs from './modalDetailJobs';
+import ModalDetailKaryawan from './modalDetailKaryawan';
 
-const formatTimeStr = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-};
 
 // Definisikan tipe untuk objek job yang diterima dari API
-interface JobData {
-  job_id: string;
-  job_nama_job: string;
-  jumlah_karyawan: string;
-  job_created_at: string;
-  job_updated_at: string;
-  job_deleted_at: string | null;
-  aksi: string[];
+interface KaryawanData {
+    idJob: any;
 }
 
 // Perbarui DataType untuk mencocokkan data yang diterima
@@ -39,21 +22,20 @@ interface DataType {
 }
 
 const columnJobs = [
-  {
-    title: 'Nama Jobs',
-    dataIndex: 'job_nama_job',
-    key: 'job_nama_job',
-  },
-  {
-    title: 'Jumlah Karyawan',
-    dataIndex: 'jumlah_karyawan',
-    key: 'jumlah_karyawan',
+    {
+        title: 'Nama Karyawan',
+        dataIndex: 'job_nama_job',
+        key: 'job_nama_job',
+      },
+    {
+    title: 'NIK',
+    dataIndex: 'nik',
+    key: 'nik',
   },
   {
     title: 'Tanggal Di Tambahkan',
     dataIndex: 'job_created_at',
     key: 'job_created_at',
-    render: (text: string) => formatTimeStr(text),
   },
   {
     title: 'Aksi',
@@ -65,7 +47,7 @@ const columnJobs = [
         <div>
           <ModalComponent 
           title={'Detail Tugas'} 
-          content={<ModalDetailJobs idJobs={idJob} />}
+          content={<ModalDetailKaryawan idJobs={idJob} />}
             footer={(handleCancel, handleOk) => (
                                 <div>
                                     <Button onClick={handleCancel}>Cancel</Button>

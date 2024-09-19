@@ -310,9 +310,9 @@ const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
                                     <Button type="primary" onClick={handleOk}>Ok</Button>
                                 </div>
                             )}
-                            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
-                            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
-                        >
+                                onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+                                onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+                            >
                             <Button
                                 style={{
                                     backgroundColor: 'rgba(244, 247, 254, 1)',

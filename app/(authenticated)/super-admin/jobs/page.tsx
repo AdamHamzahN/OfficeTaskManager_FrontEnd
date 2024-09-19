@@ -64,13 +64,36 @@ const columnJobs = [
       const idJob = record.job_id;
       return (
         <div>
-          <ModalComponent title={'Detail Jobs'} content={<ModalDetailJobs idJobs={idJob} />}>
+          <ModalComponent 
+          title={'Detail Jobs'} 
+          content={<ModalDetailJobs idJobs={idJob} />}
+            footer={(handleCancel, handleOk) => (
+                          <div>
+                            <Button onClick={handleCancel}>Cancel</Button>
+                           <Button type="primary" onClick={handleOk}>Ok</Button>
+                          </div>
+                    )}
+                            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+                            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+                          >
             <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
               <EyeOutlined /> detail
             </Button>
           </ModalComponent>
-          <ModalComponent title={'Edit Jobs'} content={<ModalEditJobs idJobs={idJob} />}>
-            <Button style={{ backgroundColor: '', color: '#EA7D2A', border: 'none' }}>
+
+          <ModalComponent 
+          title={'Edit Jobs'} 
+          content={<ModalEditJobs idJobs={idJob} />}
+          footer={(handleCancel, handleOk) => (
+            <div>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type="primary" onClick={handleOk}>Ok</Button>
+            </div>
+        )}
+            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+        >
+            <Button style={{ backgroundColor: 'rgba(254, 243, 232, 1)', color: '#EA7D2A', border: 'none' }}>
               <EditOutlined/> edit
             </Button>
           </ModalComponent>
