@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react';
-import { Divider, Table, Button, Switch, Tag } from 'antd';
+// import React from 'react';
+import React, { useState } from 'react';
+import { Divider, Table, Button, Switch, Tag, Modal, Input, Space  } from 'antd';
 import type { TableColumnsType } from 'antd';
-import { PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { teamleadRepository } from '#/repository/teamlead';
 
 interface DataType {
@@ -12,6 +13,25 @@ interface DataType {
   age: number;
   address: string;
 }
+
+const Page: React.FC = () => {
+
+    
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  
 // keaktifanUser = 
 const columns: TableColumnsType<DataType> = [
   {
@@ -31,12 +51,25 @@ const columns: TableColumnsType<DataType> = [
     title: 'Aksi',
     dataIndex: 'address',
     render: () => (
-        <Tag bordered={false} color="orange">
+      <Tag
+        bordered={false}
+        color="orange"
+        style={{ cursor: 'pointer' }}  
+        onClick={showModal}
+      >
         <EditOutlined /> Edit Password
-        </Tag>
+      </Tag>
+        // <Tag bordered={false} color="orange">
+        // <EditOutlined /> Edit Passwor
+        // </Tag>
     )
   },
 ];
+
+// const handleEditPasswordClick = () => {
+//   console.log('Edit Password clicked');
+//   // Tambahkan logika lain di sini, seperti navigasi atau membuka modal
+// };
 
 const data: DataType[] = [
   {
@@ -59,9 +92,27 @@ const data: DataType[] = [
   },
 ];
 
+// const handleEditPasswordClick = () => {
+//   console.log('Edit Password clicked');
+//   // Tambahkan logika lain di sini, seperti navigasi atau membuka modal
+// };
 
-const Page: React.FC = () => {
-    
+
+  // const Page: React.FC = () => {
+      
+  //   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //   const showModal = () => {
+  //     setIsModalOpen(true);
+  //   };
+
+  //   const handleOk = () => {
+  //     setIsModalOpen(false);
+  //   };
+
+  //   const handleCancel = () => {
+  //     setIsModalOpen(false);
+  //   };
     // const { data: statusKeaktifan } = teamleadRepository.hooks.useStatusKeaktifan();
 
 //   <>
@@ -74,6 +125,7 @@ const Page: React.FC = () => {
 //   </>
 
     return (
+      
         <div>
             <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>Daftar Team Lead
                 <Button type="primary" style={{ marginLeft: 720}}>
@@ -84,11 +136,31 @@ const Page: React.FC = () => {
             <Table 
                 columns={columns} 
                 dataSource={data} 
-                size="middle"  
+                size="middle"
+                pagination={{ position: ['bottomCenter'] }}
                 />
+
+            <Modal title="Ubah Password" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+              <p>Masukkan Password Baru</p>
+              {/* <Input placeholder="Masukkan Password" /> */}
+              <Input.Password placeholder="Masukkan Password" />
+              {/* <Space direction="vertical">
+                <Input.Password
+                  placeholder="input password"
+                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                />
+              </Space> */}
+              
+              {/* <Space direction="vertical">
+                <Input.Password
+                  placeholder="input password"
+                  visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
+                />
+              </Space> */}
+            </Modal>
         </div>
         
-    )
+    );
 };
 
 export default Page;
