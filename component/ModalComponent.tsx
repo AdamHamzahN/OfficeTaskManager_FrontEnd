@@ -43,9 +43,10 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
             </div>
             <Modal
                 title={title}
-                open={isModalVisible}
+                open={visible !== undefined ? visible : isModalVisible}
                 onCancel={handleCancel}
                 footer={footer ? footer(handleCancel, handleOk) : null}
+                // visible={visible !== undefined ? visible : isModalVisible}
             >
                 <div style={{borderTop:'1px solid gray',padding:'20px',borderBottom:'1px solid gray'}}>
                     {content}

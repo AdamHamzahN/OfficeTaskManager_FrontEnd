@@ -32,6 +32,12 @@ const url = {
 	},
 	updateStatusTugas(id_tugas: string) {
 		return `/tugas/${id_tugas}/update-status-tugas`
+	},
+	updateNoteTugas(id_tugas: string) {
+		return `/tugas/${id_tugas}/update-note`
+	},
+	updateNamaTeam(id_project: string){
+		return`/project/${id_project}/update-nama-team`
 	}
 }
 
@@ -61,6 +67,7 @@ const hooks = {
 }
 
 const api = {
+	//perlu perbaikan
 	async createAnggotaTeam(body: any) {
 		try {
 			console.log('Request body:', body);
@@ -87,19 +94,40 @@ const api = {
 		}
 	},
 
-	async updateStatusTugas(id_tugas: string, body: any) {
+	async updateStatusTugas(id_tugas: string, body: { status: string, note?: string }) {
+		const { status, note } = body;
+
 		try {
 			console.log('Request body:', body);
-			const updateTugasResponse = await http.put(url.updateStatusTugas(id_tugas), body);
+			const updateTugasResponse = await http.put(url.updateStatusTugas(id_tugas), { status });
+
+			let updateNoteResponse;
+			if (note !== undefined && note !== null) {
+				updateNoteResponse = await http.put(url.updateNoteTugas(id_tugas), { note });
+			}
 			return {
 				updateTugasResponse: updateTugasResponse.body,
+				updateNoteResponse: updateNoteResponse ? updateNoteResponse.body : null,  // Handle optional note response
 			};
 		} catch (error) {
-			console.error('Error in update tugas :', error);
+			console.error('Error in updating tugas:', error);
 			throw new Error('Gagal mengupdate status tugas');
+		}
+	},
 
+	async updateNamaTeam(id_project: string, body:any) {
+		try {
+			const teamResponse = await http.put(url.updateNamaTeam(id_project), body);
+			console.log('Response from createAnggotaTeam:', teamResponse.body);
+			return {
+				teamResponse: teamResponse.body,
+			};
+		} catch (error) {
+			throw new Error('Gagal mengubah nama team');
 		}
 	}
+
+
 };
 
 

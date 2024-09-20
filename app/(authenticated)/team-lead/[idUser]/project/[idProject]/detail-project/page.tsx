@@ -11,17 +11,13 @@ import ModalCekTugas from "./modalCekTugas";
 import ModalTambahAnggota from "./modalTambahAnggota";
 import { config } from "#/config/app";
 import ModalUbahStatusProject from "./modalUbahStatusProject";
-
-interface tableDetailProps {
-    idProject: any,
-    nama_team: any,
-}
-
+import TextArea from "antd/es/input/TextArea";
+import ModalUbahNamaTeam from "./modalUbahNamaTeam";
 
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -29,7 +25,6 @@ const formatTimeStr = (dateStr: string) => {
 
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
-
 
 const ButtonExportExcel: React.FC<{
     status: string,
@@ -82,8 +77,6 @@ const ButtonExportExcel: React.FC<{
                     </ModalComponent>
                 </>
             )}
-
-            {/* Tombol dengan gaya dinamis berdasarkan status */}
             <button
                 className="border py-3 px-6 rounded"
                 style={getButtonStyles(status)}
@@ -95,18 +88,18 @@ const ButtonExportExcel: React.FC<{
 };
 
 
-const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
-    const { data: teamProject, error, isValidating: loading, mutate } = projectRepository.hooks.useTeamByProject(idProject);
+const TableTeam: React.FC<{ data: any, nama_team: string, idProject: string, refreshTable: () => void }> = ({ data, nama_team, idProject, refreshTable }) => {
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [old_nama_team, setNamaTeam] = useState('');
+    const [newNamaTeam, setNewNamaTeam] = useState(nama_team);
 
     useEffect(() => {
         const fetchTugas = async () => {
             try {
-                if (teamProject) {
-                    const counts = await Promise.all(teamProject.map(async (record: any) => {
+                if (data) {
+                    const counts = await Promise.all(data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
                         const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
                         const data = await response.json();
@@ -131,13 +124,13 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
             }
         };
 
-        if (teamProject) {
+        if (data) {
             fetchTugas();
 
         }
-    }, [teamProject, idProject]);
+    }, [data, idProject]);
 
-    const handleOk = async () => {
+    const tambahKaryawan = async () => {
         if (!selectedKaryawan) {
             alert('Pilih Karyawan Terlebih Dahulu');
             return;
@@ -147,10 +140,9 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
                 id_project: idProject,
                 id_karyawan: selectedKaryawan
             });
-            await mutate();
-            setSelectedKaryawan(undefined); // Reset pilihan karyawan
+            setSelectedKaryawan(undefined);
 
-            // Tampilkan Modal.confirm setelah berhasil
+            refreshTable()
             Modal.success({
                 title: 'Anggota Ditambahkan',
                 content: 'Berhasil menambahkan anggota ke dalam tim!',
@@ -167,25 +159,30 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
             console.error('Gagal menambahkan anggota:', error);
         }
     };
-    const showModal = () => {
-        setIsModalOpen(true); // Buka modal sukses
-    };
 
-    const handleModalOk = () => {
-        setIsModalOpen(false); // Tutup modal setelah user klik OK
-    };
+    const ubahNamaTeam = async () => {
+        if (newNamaTeam === undefined || newNamaTeam === null) {
+            alert('Masukkan Nama Team terlebih dahulu!')
+        }
+        try {
+            await projectRepository.api.updateNamaTeam(idProject, {
+                nama_team: newNamaTeam
+            })
+            refreshTable()
+            Modal.success({
+                title: 'Berhasil',
+                content: 'Berhasil mengubah nama team',
+                onOk() {
+                    console.log('OK clicked');
+                },
+                onCancel() {
+                    console.log('Cancel clicked');
+                }
+            });
 
-    const handleModalCancel = () => {
-        setIsModalOpen(false); // Tutup modal jika user klik cancel atau close
-    };
-
-
-    if (loading) {
-        return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-    }
-
-    if (error) {
-        return <Alert message="Error fetching data" type="error" />;
+        } catch (error) {
+            console.error('Gagal mengubah nama team:', error);
+        }
     }
 
     const columnTeam = [
@@ -230,20 +227,36 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
                 <div>
                     <h1 className="text-xl flex items-center">
                         <span className="text-2xl">{nama_team}</span>
-                        <Link href={'/'}><EditOutlined className="ml-2 text-xl" /></Link>
+                        <ModalComponent
+                            title={'Ubah Nama Team'}
+                            content={<ModalUbahNamaTeam nama_team={nama_team} onNamaTeamChange={setNewNamaTeam} />}
+                            footer={(handleCancel) => (
+                                <div>
+                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button type="primary" onClick={ubahNamaTeam}>Ubah</Button>
+                                </div>
+                            )}
+                            onOk={ubahNamaTeam}
+                            onCancel={() => setNewNamaTeam(nama_team)}
+                        >
+                            <a>
+                                <EditOutlined className="ml-2 text-xl" />
+                            </a>
+                        </ModalComponent>
+
                     </h1>
                 </div>
                 <div>
                     <ModalComponent
                         title={'Tambah Anggota Team'}
                         content={<ModalTambahAnggota onSelectKaryawan={setSelectedKaryawan} />}
-                        footer={(handleCancel, handleOk) => (
+                        footer={(handleCancel) => (
                             <div>
                                 <Button onClick={handleCancel}>Cancel</Button>
-                                <Button type="primary" onClick={handleOk}>Tambah</Button>
+                                <Button type="primary" onClick={tambahKaryawan}>Tambah</Button>
                             </div>
                         )}
-                        onOk={handleOk}
+                        onOk={tambahKaryawan}
                         onCancel={() => setSelectedKaryawan(undefined)}
                     >
                         <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded">
@@ -254,9 +267,9 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
                 </div>
             </Row>
             <Row className="w-full">
-                {teamProject && teamProject.length > 0 ? (
+                {data && data.length > 0 ? (
                     <Table
-                        dataSource={teamProject}
+                        dataSource={data}
                         columns={columnTeam}
                         className="w-full custom-table"
                         pagination={{ position: ['bottomCenter'], pageSize: 5 }}
@@ -271,15 +284,7 @@ const TableTeam = ({ idProject, nama_team }: tableDetailProps) => {
     );
 };
 
-const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
-    const { data: tugasProject, error, isValidating: loading } = projectRepository.hooks.useGetTugasByProject(idProject);
-    if (loading) {
-        return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-    }
-    if (error) {
-        return <Alert message="Error fetching data" type="error" />;
-    }
-
+const TableTask: React.FC<{ data: any, refreshTable: () => void }> = ({ data, refreshTable }) => {
     const columns = [
         {
             title: 'Tugas',
@@ -366,9 +371,9 @@ const TableTask = ({ idProject, nama_team }: tableDetailProps) => {
                 </div>
             </Row>
             <Row className="w-full">
-                {tugasProject && tugasProject.length > 0 ? (
+                {data && data.length > 0 ? (
                     <Table
-                        dataSource={tugasProject}
+                        dataSource={data}
                         columns={columns}
                         className="w-full custom-table"
                         pagination={{ position: ['bottomCenter'], pageSize: 5 }}
@@ -388,35 +393,32 @@ const DetailProject: React.FC<{
     nama_team: any,
     idProject: any,
     idUser: any,
-}> = ({ nama_team, idProject, idUser }) => {
+    teamData: any,
+    tugasData: any,
+    refreshTable: () => void
+}> = ({ nama_team, idProject, idUser, teamData, tugasData, refreshTable }) => {
     return (
         <div>
-            <TableTeam idProject={idProject} nama_team={nama_team} />
-            <TableTask idProject={idProject} nama_team={nama_team} />
+            <TableTeam idProject={idProject} nama_team={nama_team} data={teamData} refreshTable={refreshTable} />
+            <TableTask data={tugasData} refreshTable={refreshTable} />
         </div>
     );
 };
 
-const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
+const TugasDiselesaikan: React.FC<{ data: any, refreshTable: () => void }> = ({ data, refreshTable }) => {
+    const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
+    const [currentTugasId, setCurrentTugasId] = useState<string | null>(null);
+    const [note, setNote] = useState<string>('');
 
-    const { data, error, isValidating: loading ,mutate} = projectRepository.hooks.useTugasSelesai(idProject);
-    if (loading) {
-        return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-    }
-    if (error) {
-        return <Alert message="Error fetching data" type="error" />;
-    }
-
-    const acceptTugas = async (id_tugas:string) => {
+    const acceptTugas = async (id_tugas: string) => {
         try {
-            await projectRepository.api.updateStatusTugas(id_tugas,{
-                status:'approved'
+            await projectRepository.api.updateStatusTugas(id_tugas, {
+                status: 'approved'
             });
-            await mutate();
-            // Tampilkan Modal.confirm setelah berhasil
+            await refreshTable();
             Modal.success({
                 title: 'Tugas Diterima',
-                content: 'Tugas sesuai dengan rancangan',
+                content: 'Tugas Telah Diterima',
                 cancelText: 'Tutup',
                 onOk() {
                     console.log('OK clicked');
@@ -430,15 +432,16 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
         }
     };
 
-    const redoTugas = async (id_tugas:string) => {
+    const redoTugas = async (id_tugas: string, note: any) => {
         try {
-            await projectRepository.api.updateStatusTugas(id_tugas,{
-                status:'redo'
+            await projectRepository.api.updateStatusTugas(id_tugas, {
+                status: 'redo',
+                note: note
             });
-            await mutate();
+            await refreshTable();
             Modal.error({
-                title: 'Tugas Ditolak',
-                content: 'Tugas tidak sesuai dengan rancangan',
+                title: 'Tugas Dikembalikan',
+                content: 'Tugas telah dikembalikan ke karyawan',
                 cancelText: 'Tutup',
                 onOk() {
                     console.log('OK clicked');
@@ -450,6 +453,32 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
         } catch (error) {
             console.error('Gagal mengupdate Tugas', error);
         }
+    };
+
+    const openNote = (id_tugas: string) => {
+        setCurrentTugasId(id_tugas);
+        setIsNoteModalVisible(true);
+    };
+
+    const handleNoteSubmit = async () => {
+        if (currentTugasId && note.trim()) {
+            await redoTugas(currentTugasId, note);
+            setIsNoteModalVisible(false);
+            setNote('');
+            setCurrentTugasId(null);
+        } else {
+            // Tampilkan peringatan jika catatan kosong
+            Modal.warning({
+                title: 'Catatan Diperlukan',
+                content: 'Harap masukkan catatan sebelum menolak tugas.',
+                okText: 'OK',
+            });
+        }
+    };
+    const handleNoteCancel = () => {
+        setIsNoteModalVisible(false);
+        setNote('');
+        setCurrentTugasId(null);
     };
 
 
@@ -483,7 +512,7 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
                             content={<ModalCekTugas idTugas={idTugas} />}
                             footer={() => (
                                 <div>
-                                    <Button type="primary" danger onClick={() => redoTugas(idTugas)}>
+                                    <Button type="primary" danger onClick={() => openNote(idTugas)}>
                                         Redo
                                     </Button>
                                     <Button
@@ -522,24 +551,68 @@ const TugasDiselesaikan: React.FC<{ idProject: any }> = ({ idProject }) => {
                 className="w-full custom-table"
                 pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />
+            <ModalComponent
+                title={'Catatan Redo Tugas'}
+                content={
+                    <div>
+                        <p>Masukkan Note :</p>
+                        <TextArea
+                            rows={4}
+                            placeholder="Masukkan catatan..."
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                        />
+                    </div>
+                }
+                footer={() => (
+                    <div>
+                        <Button onClick={handleNoteCancel}>
+                            Batal
+                        </Button>
+                        <Button type="primary" onClick={handleNoteSubmit}>
+                            Submit
+                        </Button>
+                    </div>
+                )}
+                visible={isNoteModalVisible}
+            />
         </div>
     );
 };
 
-
 // Page Component
 const Page = () => {
     const params = useParams();
-    const idUser = params?.idUser as string | undefined;
-    const idProject = params?.idProject as string | undefined;
-
-    const { data: detailProject, error, isValidating: validatedDetail } = idProject
-        ? projectRepository.hooks.useDetailProject(idProject)
-        : { data: null, error: null, isValidating: false };
-
-    const loading = validatedDetail;
-
+    const idUser = params?.idUser as string;
+    const idProject = params?.idProject as string;
     const [activeKey, setActiveKey] = useState<string>('DetailProject');
+
+    const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate: mutateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
+
+    const { data: tugasSelesai, error: errorTugasSelesai, isValidating: validateTugasSelesai, mutate: mutateTugasSelesai } = projectRepository.hooks.useTugasSelesai(idProject);
+
+    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
+
+    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = projectRepository.hooks.useGetTugasByProject(idProject);
+
+    const loading = validateDetailProject || validateTugasSelesai || validateTeam || validateTugas;
+    const error = errorDetailProject || errorTugasSelesai || errorTeam || errorTugas;
+    // const mutate = mutateDetailProject && mutateTugasSelesai;
+
+
+    if (loading) {
+        return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
+    }
+    if (error) {
+        return <Alert message="Error fetching data" type="error" />;
+    }
+
+    const refreshTable = async () => {
+        await mutateDetailProject();
+        await mutateTugasSelesai();
+        await mutateTeam();
+        await mutateTugas();
+    };
 
     const onChange: TabsProps['onChange'] = (key) => {
         setActiveKey(key);
@@ -551,11 +624,13 @@ const Page = () => {
                 nama_team={detailProject?.data.nama_team}
                 idProject={idProject}
                 idUser={idUser}
+                teamData={teamProject}
+                tugasData={tugasProject}
+                refreshTable={refreshTable}
             />
         },
-        { key: 'TugasDiselesaikan', label: 'Tugas Diselesaikan', children: <TugasDiselesaikan idProject={idProject} /> },
+        { key: 'TugasDiselesaikan', label: 'Tugas Diselesaikan', children: <TugasDiselesaikan data={tugasSelesai} refreshTable={refreshTable} /> },
     ];
-    // console.log(data?.data.nama_project || data);
 
     return (
         <div>
