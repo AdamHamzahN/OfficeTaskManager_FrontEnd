@@ -7,7 +7,7 @@ interface Karyawan {
     user: { nama: string };
     job: { nama_job: string };
 }
-
+    
 interface ModalTambahAnggotaProps {
     onSelectKaryawan: (id: string) => void;
 }
