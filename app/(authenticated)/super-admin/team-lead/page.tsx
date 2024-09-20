@@ -2,7 +2,7 @@
 
 // import React from 'react';
 import React, { useState } from 'react';
-import { Divider, Table, Button, Switch, Tag, Modal, Input, Space  } from 'antd';
+import { Divider, Table, Button, Switch, Tag, Modal, Input, Form, Row, Col, Select  } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { PlusOutlined, EditOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { teamleadRepository } from '#/repository/teamlead';
@@ -16,20 +16,45 @@ interface DataType {
 
 const Page: React.FC = () => {
 
-    
+  // state modal edit password
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // state modal tambah team lead
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
+  
+  const showAddModal = () => {
+    setIsAddModalOpen (true);
+  }
 
-  const handleOk = () => {
+  // const handleOk = () => {
+  //   setIsModalOpen(false);
+  // };
+
+  const handleSuccess = () => {
     setIsModalOpen(false);
+    Modal.success({
+      content: 'Password team lead berhasil diubah...',
+    });
+  };
+
+  const handleAddSuccess = () => {
+    setIsAddModalOpen(false);
+    Modal.success({
+      content: 'Team Lead baru berhasil ditambahkan...'
+    });
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const handleAddCancel = () => {
+    setIsAddModalOpen(false);
+  }
 
   
 // keaktifanUser = 
@@ -128,8 +153,9 @@ const data: DataType[] = [
       
         <div>
             <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>Daftar Team Lead
-                <Button type="primary" style={{ marginLeft: 720}}>
+                <Button type="primary" style={{ marginLeft: 720}} onClick={showAddModal}>
                 <PlusOutlined />Tambah
+                  
                 </Button>
             </h1>
             
@@ -140,24 +166,44 @@ const data: DataType[] = [
                 pagination={{ position: ['bottomCenter'] }}
                 />
 
-            <Modal title="Ubah Password" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <Modal title="Ubah Password" open={isModalOpen} onOk={handleSuccess} onCancel={handleCancel}>
               <p>Masukkan Password Baru</p>
               {/* <Input placeholder="Masukkan Password" /> */}
               <Input.Password placeholder="Masukkan Password" />
-              {/* <Space direction="vertical">
-                <Input.Password
-                  placeholder="input password"
-                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                />
-              </Space> */}
-              
-              {/* <Space direction="vertical">
-                <Input.Password
-                  placeholder="input password"
-                  visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
-                />
-              </Space> */}
             </Modal>
+
+            <Modal title="Tambah Team Lead" open={isAddModalOpen} onOk={handleAddSuccess} onCancel={handleAddCancel}>
+              <p>Tambah Team Lead</p>
+              {/* <Input placeholder="Masukkan Password" /> */}
+              {/* <Input.Password placeholder="Masukkan Password" /> */}
+              <Form>
+                
+                    <Form.Item
+                      label="Nama"
+                      style={{ width: '100%' }}
+                      // rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                      <Input placeholder='Masukkan nama' style={{ marginLeft: 25, width: 397 }}/>
+                    </Form.Item>
+                  
+                    <Form.Item
+                      label="Username"
+                      // rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                      <Input placeholder='Masukkan username' />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Email"
+                      // rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                      <Input placeholder='Masukkan email' style={{ marginLeft: 29, width: 398 }}/>
+                    </Form.Item>
+
+                
+              </Form>
+            </Modal>
+
         </div>
         
     );
