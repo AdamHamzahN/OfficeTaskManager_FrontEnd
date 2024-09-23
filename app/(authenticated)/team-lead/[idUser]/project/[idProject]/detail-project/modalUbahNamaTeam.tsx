@@ -1,6 +1,4 @@
 import { Button, Input } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import { SearchOutlined } from "@ant-design/icons";
 
 const ModalUbahNamaTeam:React.FC<{nama_team:string,onNamaTeamChange:any}> = ({ nama_team, onNamaTeamChange }) => {
     return (

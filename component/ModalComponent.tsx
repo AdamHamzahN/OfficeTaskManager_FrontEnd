@@ -47,6 +47,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 onCancel={handleCancel}
                 footer={footer ? footer(handleCancel, handleOk) : null}
                 // visible={visible !== undefined ? visible : isModalVisible}
+                destroyOnClose={true}
             >
                 <div style={{borderTop:'1px solid gray',padding:'20px',borderBottom:'1px solid gray'}}>
                     {content}

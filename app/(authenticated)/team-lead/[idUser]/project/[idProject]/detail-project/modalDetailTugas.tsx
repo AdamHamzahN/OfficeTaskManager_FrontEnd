@@ -31,6 +31,8 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
         return <div>Error loading data</div>; // Tangani error jika ada
     }
     const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
+
+    const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti.replace(/\\/g, '/')}`;
     return (
         <div style={{ borderTop: '2px ' }}>
             <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>
@@ -52,20 +54,22 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
             />
 
             <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Detail Tugas</label>
-            <a href={fileDetailTugas} target="_blank" rel="noopener noreferrer">              
+            <a href={fileDetailTugas} target="_blank" rel="noopener noreferrer">
                 <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
                     <SearchOutlined /> Lihat Detail
                 </Button>
-            </a>      
+            </a>
             {detailTugas.data.status === 'approved' && (
                 <>
                     <label htmlFor="waktu_selesai_approved" style={{ marginBottom: '8px', display: 'block' }}>Waktu Selesai</label>
-                    <Input id="waktu_selesai_approved" value={formatTimeStr(detailTugas.data.waktuSelesai)}  style={{ marginBottom: '16px' }} />
+                    <Input id="waktu_selesai_approved" value={formatTimeStr(detailTugas.data.updated_at)} style={{ marginBottom: '16px' }} />
 
                     <label htmlFor="bukti_pengerjaan_approved" style={{ marginBottom: '8px', display: 'block' }}>Bukti Hasil Pengerjaan</label>
-                    <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
-                        <SearchOutlined /> Lihat Hasil
-                    </Button>
+                    <a href={fileHasilTugas} target="_blank" rel="noopener noreferrer">
+                        <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
+                            <SearchOutlined /> Lihat Hasil
+                        </Button>
+                    </a>
                 </>
             )}
         </div>

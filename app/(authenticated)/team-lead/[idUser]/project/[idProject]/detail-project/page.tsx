@@ -13,6 +13,7 @@ import { config } from "#/config/app";
 import ModalUbahStatusProject from "./modalUbahStatusProject";
 import TextArea from "antd/es/input/TextArea";
 import ModalUbahNamaTeam from "./modalUbahNamaTeam";
+import { mutate } from "swr";
 
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -31,8 +32,9 @@ const ButtonExportExcel: React.FC<{
     file_project: string,
     idProject: string,
     nama_team: string,
-    nama_project: string
-}> = ({ status, file_project, idProject, nama_team, nama_project }) => {
+    nama_project: string,
+    refreshTable: () => void
+}> = ({ status, file_project, idProject, nama_team, nama_project ,refreshTable}) => {
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -47,37 +49,80 @@ const ButtonExportExcel: React.FC<{
                 return { backgroundColor: 'rgba(76, 175, 80, 0.1)', borderColor: '#4CAF50', color: '#4CAF50' };
         }
     };
-    const filePdfUrl = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
 
+    const filePdfUrl = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
+    const [formData, setFormData] = useState<{ status: string; file_bukti: File | null }>({
+        status: status,
+        file_bukti: null,
+    });
+
+    const updateStatus = async () => {
+        const { status, file_bukti } = formData;
+
+        if (!status) {
+            alert('Masukkan Status terlebih dahulu!');
+            return;
+        }
+
+        try {
+            console.log('Updating status to:', status);
+            await projectRepository.api.updateStatusProject(idProject, {
+                status_project: status,
+                file_bukti: file_bukti
+            });
+
+            Modal.success({
+                title: 'Berhasil',
+                content: 'Berhasil mengubah status project',
+                onOk() {
+                    console.log('OK clicked');
+                    refreshTable();
+                },
+                onCancel() {
+                    console.log('Cancel clicked');
+                }
+            });
+        } catch (error) {
+            console.error('Gagal mengubah status project:', error);
+        }
+    };
 
     return (
         <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
             <a href={filePdfUrl} target='_blank' rel="noopener noreferrer">
-                <button className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-3 px-6 border border-green-600 hover:border-transparent rounded text-justify">
+                <button type="button" className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-3 px-6 border border-green-600 hover:border-transparent rounded text-justify">
                     <FileExcelOutlined style={{ fontSize: 15 }} /> Export To Excel
                 </button>
             </a>
 
             {/* Tombol Ubah Status hanya muncul jika status bukan "approved" */}
             {status !== 'approved' && (
-                <>
-                    <ModalComponent
-                        title={'Ubah Status Project'}
-                        content={<ModalUbahStatusProject idProject={idProject} status_project={status} nama_team={nama_team} nama_project={nama_project} />}
-                        footer={(handleCancel, handleOk) => (
-                            <div>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                                <Button type="primary" onClick={handleOk}>Ok</Button>
-                            </div>
-                        )}
-                    >
-                        <button className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-3 px-6 border border-blue-500 hover:border-transparent rounded">
-                            <EditOutlined /> Ubah Status
-                        </button>
-                    </ModalComponent>
-                </>
+                <ModalComponent
+                    title={'Ubah Status Project'}
+                    content={
+                        <ModalUbahStatusProject 
+                            idProject={idProject}
+                            status_project={status}
+                            nama_team={nama_team}
+                            nama_project={nama_project}
+                            update_status_project={(status, file_bukti) => setFormData({ status, file_bukti })}
+                        />
+                    }
+                    footer={(handleCancel) => (
+                        <div>
+                            <Button htmlType="button" onClick={handleCancel}>Cancel</Button>
+                            <Button type="primary" onClick={updateStatus}>Ok</Button>
+                        </div>
+                    )}
+                >
+                    <button type="button" className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-3 px-6 border border-blue-500 hover:border-transparent rounded">
+                        <EditOutlined /> Ubah Status
+                    </button>
+                </ModalComponent>
             )}
+
             <button
+                type="button"
                 className="border py-3 px-6 rounded"
                 style={getButtonStyles(status)}
             >
@@ -87,12 +132,15 @@ const ButtonExportExcel: React.FC<{
     );
 };
 
-
-const TableTeam: React.FC<{ data: any, nama_team: string, idProject: string, refreshTable: () => void }> = ({ data, nama_team, idProject, refreshTable }) => {
+const TableTeam: React.FC<{
+    data: any,
+    nama_team: string,
+    idProject: string,
+    refreshTable: () => void
+}> = ({ data, nama_team, idProject, refreshTable }) => {
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
-    const [old_nama_team, setNamaTeam] = useState('');
     const [newNamaTeam, setNewNamaTeam] = useState(nama_team);
 
     useEffect(() => {
@@ -129,7 +177,6 @@ const TableTeam: React.FC<{ data: any, nama_team: string, idProject: string, ref
 
         }
     }, [data, idProject]);
-
     const tambahKaryawan = async () => {
         if (!selectedKaryawan) {
             alert('Pilih Karyawan Terlebih Dahulu');
@@ -267,18 +314,12 @@ const TableTeam: React.FC<{ data: any, nama_team: string, idProject: string, ref
                 </div>
             </Row>
             <Row className="w-full">
-                {data && data.length > 0 ? (
-                    <Table
-                        dataSource={data}
-                        columns={columnTeam}
-                        className="w-full custom-table"
-                        pagination={{ position: ['bottomCenter'], pageSize: 5 }}
-                    />
-                ) : (
-                    <div style={{ textAlign: 'center', padding: '20px' }}>
-                        <p>No data available</p>
-                    </div>
-                )}
+                <Table
+                    dataSource={data}
+                    columns={columnTeam}
+                    className="w-full custom-table"
+                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                />
             </Row>
         </div>
     );
@@ -336,9 +377,9 @@ const TableTask: React.FC<{ data: any, refreshTable: () => void }> = ({ data, re
                                     <Button type="primary" onClick={handleOk}>Ok</Button>
                                 </div>
                             )}
-                                onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
-                                onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
-                            >
+                            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+                            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+                        >
                             <Button
                                 style={{
                                     backgroundColor: 'rgba(244, 247, 254, 1)',
@@ -371,19 +412,12 @@ const TableTask: React.FC<{ data: any, refreshTable: () => void }> = ({ data, re
                 </div>
             </Row>
             <Row className="w-full">
-                {data && data.length > 0 ? (
-                    <Table
-                        dataSource={data}
-                        columns={columns}
-                        className="w-full custom-table"
-                        pagination={{ position: ['bottomCenter'], pageSize: 5 }}
-                    />
-                ) : (
-                    <div style={{ textAlign: 'center', padding: '20px' }}>
-                        <p>No data available</p>
-                    </div>
-                )}
-
+                <Table
+                    dataSource={data}
+                    columns={columns}
+                    className="w-full custom-table"
+                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                />
             </Row>
         </div>
     )
@@ -597,7 +631,6 @@ const Page = () => {
 
     const loading = validateDetailProject || validateTugasSelesai || validateTeam || validateTugas;
     const error = errorDetailProject || errorTugasSelesai || errorTeam || errorTugas;
-    // const mutate = mutateDetailProject && mutateTugasSelesai;
 
 
     if (loading) {
@@ -651,6 +684,7 @@ const Page = () => {
                     idProject={detailProject?.data.id}
                     nama_project={detailProject?.data.nama_project}
                     nama_team={detailProject?.data.nama_team}
+                    refreshTable={refreshTable}
 
                 />
             </div>

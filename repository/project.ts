@@ -28,7 +28,7 @@ const url = {
 		return `/team/tambah`
 	},
 	updateStatusProjectKaryawan(id_karyawan: string) {
-		return `/karyawan/${id_karyawan}/update-status-keaktifan`
+		return `/karyawan/${id_karyawan}/update-status-project`
 	},
 	updateStatusTugas(id_tugas: string) {
 		return `/tugas/${id_tugas}/update-status-tugas`
@@ -38,6 +38,12 @@ const url = {
 	},
 	updateNamaTeam(id_project: string){
 		return`/project/${id_project}/update-nama-team`
+	},
+	updateStatusProject(id_project: string){
+		return `/project/${id_project}/update-status`
+	},
+	uploadFileHasiProject(id_project: string){
+		return `/project/${id_project}/upload-file-hasil`
 	}
 }
 
@@ -71,7 +77,7 @@ const api = {
 	async createAnggotaTeam(body: any) {
 		try {
 			console.log('Request body:', body);
-			const status = { status: 'inactive' };
+			const status = { status_project: 'unavailable' };
 
 			// Request POST untuk menambahkan anggota tim
 			const teamResponse = await http.post(url.createAnggotaTeam(), body);
@@ -124,6 +130,23 @@ const api = {
 			};
 		} catch (error) {
 			throw new Error('Gagal mengubah nama team');
+		}
+	},
+
+	async updateStatusProject(id_project: string, body:{status_project:string,file_bukti?:any}) {
+		try{
+			const updateStatusResponse = await http.put(url.updateStatusProject(id_project),body);
+			console.log('Response from updateStatusProject:', updateStatusResponse.body);
+			const uploadFileBuktiResponse = '';
+			if(body.file_bukti !== null && body.file_bukti !== undefined){
+				const uploadFileBuktiResponse = await http.put(url.uploadFileHasiProject(id_project),body.file_bukti);
+			}
+			
+			return{
+				updateStatusResponse: updateStatusResponse.body,
+			}
+		}catch (error) {
+			throw new Error('Gagal mengubah status project');
 		}
 	}
 

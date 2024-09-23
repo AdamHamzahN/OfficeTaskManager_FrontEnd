@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Input, Select, Button, Upload } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Input, Select, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -8,37 +8,35 @@ const MyComponent: React.FC<{
     idProject: string,
     status_project: string,
     nama_project: string,
-    nama_team: string
-}> = ({idProject , status_project, nama_project, nama_team}) => {
-    const [status, setStatus] = React.useState<string>('');
-    const [error, setError] = React.useState<string>('');
+    nama_team: string,
+    update_status_project: (status: string, file_bukti: File | null) => void,
+}> = ({ idProject, status_project, nama_project, nama_team, update_status_project }) => {
+    const [status, setStatus] = useState<string>(status_project);
+    const [fileBukti, setFileBukti] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleButtonClick = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();  // Trigger file input click
-        }
+    const handleButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+        fileInputRef.current?.click(); 
     };
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            console.log('Selected file:', file);
-        }
+    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
     };
-
-    const handleStatusChange = (value: string) => {
+    
+    const handleSelectChange = (value: string) => {
         setStatus(value);
+        update_status_project(value, fileBukti);
     };
-    const handleSubmit = () => {
-        if (!status) {
-            setError('Status is required');
-            return;
-        }
-    }
+    const handleFileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        const file = event.target.files?.[0] || null;
+        setFileBukti(file);
+        update_status_project(status, file);
+    };
+    
 
     return (
-        <div>
+        <form  onSubmit={handleFormSubmit}>
             <label htmlFor="nama_project" style={{ marginBottom: '8px', display: 'block' }}>
                 Nama Project
             </label>
@@ -56,13 +54,8 @@ const MyComponent: React.FC<{
                 id="status"
                 placeholder="Select Status"
                 style={{ width: '100%', marginBottom: '16px' }}
-                defaultValue={status_project}
-                onChange={(value) => {
-                    setStatus(value);
-                    if (error) {
-                        setError('');  // Clear error if value is selected
-                    }
-                }}
+                value={status}
+                onChange={handleSelectChange}
             >
                 <Option value="pending">Pending</Option>
                 <Option value="on-progress">On Progress</Option>
@@ -76,18 +69,17 @@ const MyComponent: React.FC<{
                     </label>
                     <input
                         type="file"
+                        onChange={handleFileUploadChange}
+                        accept="application/pdf"
+                        style={{ display:'none' }}
                         ref={fileInputRef}
-                        style={{ display: 'none' }} // Hide the default file input
-                        onChange={handleFileChange}
                     />
-                    <Button block onClick={handleButtonClick}>
-                        <UploadOutlined /> Kirim Hasil Project
+                    <Button htmlType='button' block onClick={handleButtonClick} style={{ marginTop: '8px',width:'100%' }}>
+                        <UploadOutlined /> Pilih Hasil Project
                     </Button>
                 </>
-            )
-            }
-
-        </div >
+            )}
+        </form>
     );
 };
 
