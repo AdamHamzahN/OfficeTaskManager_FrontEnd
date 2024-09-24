@@ -13,7 +13,7 @@ const url = {
 		return `/job/${id_job}/detail`
 	},
     editJobById(id_job:string){
-        return 'job/${id_job}/update'
+        return `/job/${id_job}/update`
     }
 }
 
@@ -34,8 +34,31 @@ const hooks = {
 }
 
 const api = {
-
-}
+    async tambahJobs(body:any) {
+        const bodyValue = (body.newJob)
+		try {
+			const teamResponse = await http.post(url.tambahJobs(), bodyValue);
+			console.log('Response from createAnggotaTeam:', teamResponse.body);
+			return {
+				teamResponse: teamResponse.body,
+			};
+		} catch (error) {
+			throw new Error('Gagal mengubah nama jobs');
+		}
+	},
+    async editJobById(id_job:string ,body:any) {
+        const bodyValue = (body.newJob)
+		try {
+			const teamResponse = await http.post(url.editJobById(id_job), bodyValue);
+			console.log('Response from createAnggotaTeam:', teamResponse.body);
+			return {
+				teamResponse: teamResponse.body,
+			};
+		} catch (error) {
+			throw new Error('Gagal mengubah nama jobs');
+		}
+	}
+}    
 
 export const jobsRepository = {
 	url,
