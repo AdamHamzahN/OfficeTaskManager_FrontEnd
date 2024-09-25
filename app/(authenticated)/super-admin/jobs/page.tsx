@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import { Space, Table, Tag, Alert, Spin, Button, Modal } from 'antd';
-import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
+import { Space, Table, Alert, Spin, Button, Modal } from 'antd';
+import { jobsRepository } from '#/repository/jobs';
 import { EyeOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailJobs from './modalDetailJobs';
@@ -20,7 +20,6 @@ const formatTimeStr = (dateStr: string) => {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
-// Definisikan tipe untuk objek job yang diterima dari API
 interface JobData {
   job_id: string;
   job_nama_job: string;
@@ -28,10 +27,8 @@ interface JobData {
   job_created_at: string;
   job_updated_at: string;
   job_deleted_at: string | null;
-  aksi: string[];
 }
 
-// Perbarui DataType untuk mencocokkan data yang diterima
 interface DataType {
   key: string;
   job_nama_job: string;
@@ -45,13 +42,13 @@ const Page: React.FC = () => {
     nama_job: '',
     deskripsi_job: '',
   });
-
-  const [editJob, setEditJob] = useState<{ nama_job: string; deskripsi_job: string }>({
+  
+  const [editsJob, setEditsJob] = useState<{ nama_job: string; deskripsi_job: string }>({
     nama_job: '',
     deskripsi_job: '',
   });
+  console.log(editsJob)
 
-  // Tambahkan state untuk menyimpan idJob
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   const columnJobs = [
@@ -74,45 +71,46 @@ const Page: React.FC = () => {
     {
       title: 'Aksi',
       key: 'aksi',
-      render: (record: any) => {
+      render: (record: JobData) => {
         const idJob = record.job_id;
         return (
           <div>
-            <ModalComponent 
-              title={'Detail Jobs'} 
+            <ModalComponent
+              title={'Detail Jobs'}
               content={<ModalDetailJobs idJobs={idJob} />}
-              footer={(handleCancel, handleOk) => (
+              footer={(handleCancel) => (
                 <div>
                   <Button onClick={handleCancel}>Cancel</Button>
-                  <Button type="primary" onClick={handleOk}>Ok</Button>
+                  <Button type="primary" onClick={() => console.log('Ok clicked')}>Ok</Button>
                 </div>
               )}
-              onOk={() => console.log('Ok clicked')}
               onCancel={() => console.log('Cancel clicked')}
             >
               <Button
                 style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}
-                onClick={() => setSelectedJobId(idJob)} // Set idJob saat klik
+                onClick={() => setSelectedJobId(idJob)}
               >
                 <EyeOutlined /> Detail
               </Button>
             </ModalComponent>
-  
-            <ModalComponent 
-              title={'Edit Jobs'} 
-              content={<ModalEditJobs editjob={idJob} />}
-              footer={(handleCancel, editJobs) => (
+
+            <ModalComponent
+              title={'Edit Jobs'}
+              content={<ModalEditJobs editjob={setEditsJob} />}
+              footer={(handleCancel) => (
                 <div>
                   <Button onClick={handleCancel}>Cancel</Button>
-                  <Button type="primary" onClick={editJobs}>Ok</Button>
+                  <Button type="primary" onClick={handleEditJobs}>Ok</Button>
                 </div>
               )}
-              onOk={() => console.log('Ok clicked')}
               onCancel={() => console.log('Cancel clicked')}
             >
               <Button
                 style={{ backgroundColor: 'rgba(254, 243, 232, 1)', color: '#EA7D2A', border: 'none' }}
-                onClick={() => setSelectedJobId(idJob)} // Set idJob saat klik
+                onClick={() => {
+                  setSelectedJobId(idJob);
+                  setEditsJob({ nama_job: record.job_nama_job, deskripsi_job: '' }); // Mengisi data edit
+                }}
               >
                 <EditOutlined /> Edit
               </Button>
@@ -126,57 +124,35 @@ const Page: React.FC = () => {
   const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs();
 
   const tambahJob = async () => {
-    if (!newJob) {
-      alert('Pilih Karyawan Terlebih Dahulu');
+    if (!newJob.nama_job || !newJob.deskripsi_job) {
+      alert('Lengkapi data Job Terlebih Dahulu');
       return;
     }
     try {
       await jobsRepository.api.tambahJobs({ newJob });
       Modal.success({
-        title: 'Anggota Ditambahkan',
-        content: 'Berhasil menambahkan anggota ke dalam tim!',
-        okText: 'OK',
-        cancelText: 'Tutup',
-        onOk() {
-          console.log('OK clicked');
-        },
-        onCancel() {
-          console.log('Cancel clicked');
-        },
+        title: 'Job Ditambahkan',
+        content: 'Berhasil menambahkan Job baru!',
       });
     } catch (error) {
-      console.error('Gagal menambahkan anggota:', error);
+      console.error('Gagal menambahkan Job:', error);
     }
   };
 
-  if (updateValidating) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-
-  if (updateError) {
-    return <Alert message="Error fetching data" type="error" />;
-  }
-  const editJobs = async () => {
-    if (!newJob) {
-      alert('Pilih Karyawan Terlebih Dahulu');
-      return;
-    }
+  const handleEditJobs = async () => {
+    console.log("handleEditJobs called", { selectedJobId, editsJob });
+    // if (!selectedJobId || !editsJob.nama_job || !editsJob.deskripsi_job) {
+    //   alert('Pilih Job dan lengkapi data edit');
+    //   return;
+    // }
     try {
-      //await jobsRepository.api.editJobById({ newJob });
+      await jobsRepository.api.editJobById(selectedJobId || '', {editsJob});
       Modal.success({
-        title: 'Anggota Ditambahkan',
-        content: 'Berhasil menambahkan anggota ke dalam tim!',
-        okText: 'OK',
-        cancelText: 'Tutup',
-        onOk() {
-          console.log('OK clicked');
-        },
-        onCancel() {
-          console.log('Cancel clicked');
-        },
+        title: 'Job Diedit',
+        content: 'Berhasil mengedit Job!',
       });
     } catch (error) {
-      console.error('Gagal menambahkan anggota:', error);
+      console.error('Gagal mengedit Job:', error);
     }
   };
 
@@ -187,7 +163,6 @@ const Page: React.FC = () => {
   if (updateError) {
     return <Alert message="Error fetching data" type="error" />;
   }
-  
 
   return (
     <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#fff', borderRadius: 15 }}>
@@ -196,11 +171,10 @@ const Page: React.FC = () => {
           Daftar Job
         </h1>
         
-        {/* Button "Tambah Job" */}
         <ModalComponent
           title={'Tambah Job Baru'}
           content={<ModalTambahJobs createjob={setNewJob} />}
-          footer={(handleCancel, editJobs) => (
+          footer={(handleCancel) => (
             <div>
               <Button onClick={handleCancel}>Cancel</Button>
               <Button type="primary" onClick={tambahJob}>Tambah</Button>
@@ -213,7 +187,6 @@ const Page: React.FC = () => {
         </ModalComponent>
       </Space>
 
-      {/* Tabel data */}
       {apiResponse?.data?.length > 0 ? (
         <Table
           columns={columnJobs}

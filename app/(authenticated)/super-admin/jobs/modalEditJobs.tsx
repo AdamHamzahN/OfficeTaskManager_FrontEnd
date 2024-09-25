@@ -5,13 +5,13 @@ interface ModalEditJobsProps {
   editjob: (jobData: { nama_job: string; deskripsi_job: string }) => void;
 }
 
-const ModalTambahJobs: React.FC<ModalEditJobsProps> = ({ editjob }) => {
+const ModalEditJobs: React.FC<ModalEditJobsProps> = ({ editjob }) => {
   const [nama_job, setJobName] = useState<string>(""); // State untuk nama job
   const [deskripsi_job, setJobDescription] = useState<string>(""); // State untuk deskripsi job
-
   // Fungsi untuk mengirim data job ke parent component saat ada perubahan
   const handleJobDataChange = () => {
     editjob({ nama_job, deskripsi_job });
+    console.log(editjob)
   };
 
   return (
@@ -45,4 +45,4 @@ const ModalTambahJobs: React.FC<ModalEditJobsProps> = ({ editjob }) => {
   );
 };
 
-export default ModalTambahJobs;
+export default ModalEditJobs;

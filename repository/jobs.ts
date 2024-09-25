@@ -47,9 +47,9 @@ const api = {
 		}
 	},
     async editJobById(id_job:string ,body:any) {
-        const bodyValue = (body.newJob)
+        const bodyValue = (body.editsJob)
 		try {
-			const teamResponse = await http.post(url.editJobById(id_job), bodyValue);
+			const teamResponse = await http.put(url.editJobById(id_job), bodyValue);
 			console.log('Response from createAnggotaTeam:', teamResponse.body);
 			return {
 				teamResponse: teamResponse.body,
