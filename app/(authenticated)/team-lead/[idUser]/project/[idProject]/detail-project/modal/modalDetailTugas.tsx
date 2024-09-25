@@ -32,7 +32,7 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
     }
     const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
 
-    const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti.replace(/\\/g, '/')}`;
+    const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti?.replace(/\\/g, '/')}`;
     return (
         <div style={{ borderTop: '2px ' }}>
             <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>

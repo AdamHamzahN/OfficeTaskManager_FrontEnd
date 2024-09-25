@@ -4,7 +4,7 @@ import { UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
-const MyComponent: React.FC<{
+const ModalUbahStatusProject: React.FC<{
     idProject: string,
     status_project: string,
     nama_project: string,
@@ -83,4 +83,4 @@ const MyComponent: React.FC<{
     );
 };
 
-export default MyComponent;
+export default ModalUbahStatusProject;

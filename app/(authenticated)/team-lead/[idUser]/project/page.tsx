@@ -9,13 +9,18 @@ const { useProjectTeamLeadByStatus } = projectRepository.hooks;
 
 const ProjectListComponent: React.FC<{ idUser: string, status: string }> = ({ idUser, status }) => {
     const { data, error, isValidating } = useProjectTeamLeadByStatus(idUser, status);
-
-    if (isValidating) return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
+    if (isValidating) return (
+        <Col span={24}>
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+                <Spin size="large" style={{ padding: '20px' }} />
+            </div>
+        </Col>
+    );
     if (error) return <Alert message="Error fetching data" type="error" />;
     if (!data || data.length === 0) return (
         <Col span={24}>
             <div style={{ textAlign: 'center', padding: '20px' }}>
-                <p style={{ margin: 0 }}>Tidak Ada Project Yang Sedang Dikerjakan</p>
+                <p style={{ margin: 0 }}>Tidak Ada Data</p>
             </div>
         </Col>
     );
