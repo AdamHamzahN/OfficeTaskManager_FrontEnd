@@ -43,7 +43,7 @@ const api = {
 				teamResponse: teamResponse.body,
 			};
 		} catch (error) {
-			throw new Error('Gagal mengubah nama jobs');
+			throw new Error('Gagal mengubah nama jobss');
 		}
 	},
     async editJobById(id_job:string ,body:any) {
