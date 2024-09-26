@@ -143,9 +143,9 @@ if (errorNamaTeamLead) {
 // };
 
 return (
-    <div>
+    <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15 }}>
       <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>Daftar Team Lead
-          <Button type="primary" style={{ marginLeft: 720}} onClick={showAddModal}>
+          <Button type="primary" style={{ marginLeft: 723}} onClick={showAddModal}>
           {/* <Button type="primary" onClick={tambahTeamLead}>Ok</Button> */}
           <PlusOutlined />Tambah
           </Button>
