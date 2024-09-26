@@ -9,14 +9,14 @@ const CardProjectDashboard: React.FC<{
     startDate: string,
     endDate: string
 }> = ({ link, title, teamLead, startDate, endDate }) => (
-    <Card style={{ width: '100%' }}>
+    <Card style={{ width: '100%',boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
         <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             fontWeight: 'bold',
             fontSize: '20px',
-            fontFamily: 'Plus Jakarta Sans, sans-serif'
+            fontFamily: 'Plus Jakarta Sans, sans-serif', 
         }}>
             <div style={{
                 overflow: 'hidden',

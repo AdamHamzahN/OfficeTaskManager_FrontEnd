@@ -110,7 +110,6 @@ const Page: React.FC = () => {
     const loading = updateValidating || progressValidating || tugasValidating;
 
     return (
-
         <div
             style={{
                 padding: 24,
@@ -137,7 +136,8 @@ const Page: React.FC = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             position: 'relative',
-                            overflow: 'hidden'
+                            overflow: 'hidden',
+                            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
                         }}
                     >
                         <div style={{ paddingBottom: '75%', position: 'relative' }}>
@@ -170,7 +170,8 @@ const Page: React.FC = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             position: 'relative',
-                            overflow: 'hidden'
+                            overflow: 'hidden',
+                            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
                         }}
                     >
                         <div style={{ paddingBottom: '75%', position: 'relative' }}>
