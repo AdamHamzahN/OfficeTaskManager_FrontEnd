@@ -16,7 +16,7 @@ const ModalEditJobs: React.FC<ModalEditJobsProps> = ({ editjob }) => {
 
   return (
     <div>
-      {/* Input untuk nama job */}
+      {/* Input untuk nama jobs */}
       <label htmlFor="jobName">Masukkan Nama Jobs Baru</label>
       <Input
         id="jobName"
