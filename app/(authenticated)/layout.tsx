@@ -49,27 +49,27 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
   const superAdminItems: MenuProps['items'] = [
     {
-      key: '/super-admin/dashboard',
+      key: `/super-admin/${idUser}/dashboard`,
       icon: <DashboardOutlined style={{ fontSize: 23 }} />,
       label: 'Dashboard',
     },
     {
-      key: '/super-admin/team-lead',
+      key: `/super-admin/${idUser}/team-lead`,
       icon: <UserOutlined style={{ fontSize: 23 }} />,
       label: 'Team Lead',
     },
     {
-      key: '/super-admin/karyawan',
+      key: `/super-admin/${idUser}/karyawan`,
       icon: <TeamOutlined style={{ fontSize: 23 }} />,
       label: 'Karyawan',
     },
     {
-      key: '/super-admin/jobs',
+      key: `/super-admin/${idUser}/jobs`,
       icon: <IdcardOutlined style={{ fontSize: 23 }} />,
       label: 'Jobs',
     },
     {
-      key: '/super-admin/project',
+      key: `/super-admin/${idUser}project`,
       icon: <ProjectOutlined style={{ fontSize: 25 }} />,
       label: 'Project',
     }
@@ -117,7 +117,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   ];
 
   let items: MenuProps['items'] = [];
-  if (pathname.includes(`/super-admin`)) {
+  if (pathname.includes(`/super-admin/${idUser}`)) {
     items = superAdminItems;
   } else if (pathname.includes(`/team-lead/${idUser}`)) {
     items = teamLeadItems;
@@ -244,8 +244,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             </ProfileComponent>
           </div>
         </Header>
-
-        <Content style={{ margin: '24px 16px 0', marginLeft: 220, marginTop: 20, fontFamily: 'Roboto' }}>
+                                                                        {/* , fontFamily: 'Roboto, sans-serif' */}
+        <Content style={{ margin: '24px 16px 0', marginLeft: 220, marginTop: 20 }}>
           {children}
         </Content>
         <Footer style={{ textAlign: 'center' }}>
