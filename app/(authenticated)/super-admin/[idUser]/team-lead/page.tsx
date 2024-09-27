@@ -15,7 +15,13 @@ const Page: React.FC = () => {
     username: '',
     email: '',
   });
+
+  const [newPassword, setNewPassword] = useState<{ password: string }>({
+    password: ''
+  });
   
+  const [selectedPassword, setSelectedPassword] = useState<string | null>(null);
+
   // state modal edit password
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,7 +35,7 @@ const Page: React.FC = () => {
   const showAddModal = () => {
     setIsAddModalOpen (true);
   }
-
+  // modal edit pw
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -42,7 +48,6 @@ const Page: React.FC = () => {
   const handleAddCancel = () => {
     setIsAddModalOpen(false);
   };
-  
   
      // Handle adding a new Team Lead
     const tambahTeamLead = async () => {
@@ -70,13 +75,32 @@ const Page: React.FC = () => {
           console.error('Gagal menambahkan Team Lead:', error);
         }
       };
+
+      // handle eddit password
+      const editPassword = async () => {
+        if (!newPassword.password) {
+          setShowAlert(true);
+          return;
+        }
+        // const password = newPassword.password
+        try {
+          await teamleadRepository.api.editPassword(selectedPassword || '', {newPassword});
+          Modal.success({
+            title: 'Password berhasil diubah',
+            content: 'Password team lead berhasil diubah...',
+            okText: 'OK',
+          });
+        } catch (error) {
+          console.error('Gagal edit password:', error);
+        }
+      };
       
-  const handleSuccess = () => {
-    setIsModalOpen(false);
-    Modal.success({
-      content: 'Password team lead berhasil diubah...',
-    });
-  };
+  // const handleSuccess = () => {
+  //   setIsModalOpen(false);
+  //   Modal.success({
+  //     content: 'Password team lead berhasil diubah...',
+  //   });
+  // };
 
   // const handleAddSuccess = () => {
   //   setIsAddModalOpen(false);
@@ -107,14 +131,17 @@ const columns = [
   },
   {
     title: 'Aksi',
-    dataIndex: 'address',
+    // dataIndex: 'address',
     key: 'aksi',
-    render: () => (
+    render: (record: any) => (
       <Tag
         bordered={false}
         color="orange"
         style={{ cursor: 'pointer' }}  
-        onClick={showModal}
+        onClick={() => {
+          setSelectedPassword(record.password)
+          showModal();
+        }}
         // onClick={() => setIsModalOpen(true)} // sama aja 
       >
         <EditOutlined /> Edit Password
@@ -197,13 +224,17 @@ return (
             pagination={{ position: ['bottomCenter'] }}
         />
 
-        <Modal title="Ubah Password" open={isModalOpen} onOk={handleSuccess} onCancel={handleCancel}>
+        <Modal title="Ubah Password" open={isModalOpen} onOk={editPassword} onCancel={handleCancel}>
           <p>Masukkan Password Baru</p>
-          <Input.Password placeholder="Masukkan Password" />
+          <Input.Password 
+            placeholder="Masukkan Password" 
+            value={newPassword.password}
+            onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
+          />
         </Modal>
 
         <Modal title="Tambah Team Lead" open={isAddModalOpen} onOk={tambahTeamLead} onCancel={handleAddCancel}>
-          <p>Tambah Team Lead</p>
+          {/* <p>Tambah Team Lead</p> */}
             <Form>
                 <Form.Item
                   label="Nama"
