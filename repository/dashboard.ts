@@ -28,7 +28,15 @@ const url = {
     },
     getUpdateProjectTeamLeadProgress(id_user: string) {
         return `/project/team-lead/${id_user}/data-onprogress`;
-    }   
+    },
+
+    //Karyawan
+    getTugasKaryawanTerbaru(id_user:string){
+        return `/tugas/${id_user}/karyawan/tugas-terbaru`
+    },
+    getTugasKaryawanByProject(id_user:string) {
+        return `/tugas/${id_user}/karyawan/tugas-project`
+    }
 }
 
 const hooks = {
@@ -55,6 +63,14 @@ const hooks = {
     },
     useProjectTeamLeadProgress(id_user: string) {
         return useSWR(url.getUpdateProjectTeamLeadProgress(id_user), http.fetcher);
+    },
+
+    //Karyawan
+    useTugasKaryawanTerbaru(id_user: string) {
+        return useSWR(url.getTugasKaryawanTerbaru(id_user), http.fetcher);
+    },
+    useGetTugasKaryawanByProject(id_user: string) {
+        return useSWR(url.getTugasKaryawanByProject(id_user), http.fetcher);
     }
 }
 

@@ -20,53 +20,73 @@ const formatTimeStr = (dateStr: string) => {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
-const data = [
-  {
-    "updated_at": "2024-09-25T14:23:45Z",
-    "nama_project": "Pengembangan Sistem HR",
-    "status": "on-progress"
-  },
-  {
-    "updated_at": "2024-09-20T11:15:30Z",
-    "nama_project": "Migrasi Database Ke Cloud",
-    "status": "pending"
-  },
-  {
-    "updated_at": "2024-09-15T09:42:12Z",
-    "nama_project": "Pembuatan Aplikasi Mobile",
-    "status": "done"
-  }
-]
-
-const columnProjectTerbaru = [
+const columnTugasTerbaru = [
   {
     title: 'Waktu Update',
     dataIndex: 'updated_at',
     key: 'updated_at',
-    // render: (text: string) => formatTimeStr(text)
+    render: (text: string) => formatTimeStr(text)
   },
   {
-    title: 'Project',
-    dataIndex: 'nama_project',
-    key: 'nama_project',
+    title: 'Tugas',
+    dataIndex: 'nama_tugas',
+    key: 'nama_tugas',
   },
   {
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    // render: (status: string) => {
-    //     const getColor = () => {
-    //         switch (status) {
-    //             case 'pending': return '#FFC107';
-    //             case 'on-progress': return '#00BCD4';
-    //             case 'redo': return '#F44336';
-    //             case 'done': return '#2196F3';
-    //             default: return '#4CAF50';
-    //         }
-    //     };
+    render: (status: string) => {
+      const getColor = () => {
+        switch (status) {
+          case 'pending': return '#FFC107';
+          case 'on-progress': return '#00BCD4';
+          case 'redo': return '#F44336';
+          case 'done': return '#2196F3';
+          default: return '#4CAF50';
+        }
+      };
 
-    //     return <Tag color={getColor()}>{status}</Tag>;
-    // }
+      return <Tag color={getColor()}>{status}</Tag>;
+    }
+  },
+];
+
+const columnTugasProject = [
+  {
+    title: 'Tugas',
+    dataIndex: 'nama_tugas',
+    key: 'nama_tugas',
+  },
+  {
+    title: 'Deadline',
+    dataIndex: 'deadline',
+    key: 'deadline',
+    render: (text: string) => formatTimeStr(text)
+  },
+  {
+    title: 'Waktu Update',
+    dataIndex: 'updated_at',
+    key: 'updated_at',
+    render: (text: string) => formatTimeStr(text)
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+    render: (status: string) => {
+      const getColor = () => {
+        switch (status) {
+          case 'pending': return '#FFC107';
+          case 'on-progress': return '#00BCD4';
+          case 'redo': return '#F44336';
+          case 'done': return '#2196F3';
+          default: return '#4CAF50';
+        }
+      };
+
+      return <Tag color={getColor()}>{status}</Tag>;
+    }
   },
 ];
 
@@ -74,6 +94,16 @@ const columnProjectTerbaru = [
 const Page: React.FC = () => {
   const params = useParams();
   const idUser = params?.idUser as string | undefined;
+  // hook 3 update tugas karyawan terbaru
+  const { data: updateTugas, error: tugasError, isValidating: tugasValidating } = idUser
+    ? dashboardRepository.hooks.useTugasKaryawanTerbaru(idUser)
+    : { data: null, error: null, isValidating: false };
+
+    const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = idUser
+    ? dashboardRepository.hooks.useTugasKaryawanTerbaru(idUser)
+    : { data: null, error: null, isValidating: false };
+
+  const loading = tugasValidating || tugasProjectValidating;
 
   return (
     <div
@@ -106,23 +136,23 @@ const Page: React.FC = () => {
             }}
           >
             <div style={{ paddingBottom: '75%', position: 'relative' }}>
-              {/* {loading ? (
-                                <Spin style={{ textAlign: 'center', padding: '20px' }} />
-                            ) : updateError ? (
-                                <Alert message="Error fetching data" type="error" />
-                            ) : updateProjectTerbaru !== null ? ( */}
-              <Table
-                className="card-table"
-                dataSource={data}
-                columns={columnProjectTerbaru}
-                pagination={false}
-                style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-              />
-              {/* ) : (
-                                <div style={{ textAlign: 'center', padding: '20px' }}>
-                                    <p>No data available</p>
-                                </div>
-                            )} */}
+              {loading ? (
+                <Spin style={{ textAlign: 'center', padding: '20px' }} />
+              ) : tugasError ? (
+                <Alert message="Error fetching data" type="error" />
+              ) : updateTugas !== null ? (
+                <Table
+                  className="card-table"
+                  dataSource={updateTugas}
+                  columns={columnTugasTerbaru}
+                  pagination={false}
+                  style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                />
+              ) : (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                  <p>No data available</p>
+                </div>
+              )}
             </div>
           </CardDashboard>
         </Col>
@@ -182,12 +212,22 @@ const Page: React.FC = () => {
 
         {/* Project Yang Sedang dikerjakan */}
         <div style={{ display: 'block' }}>
-          <Table
-            dataSource={data}
-            columns={columnProjectTerbaru}
-            pagination={false}
-            style={{ display: 'block' }}
-          />
+        {loading ? (
+                <Spin style={{ textAlign: 'center', padding: '20px' }} />
+              ) : tugasProjectError ? (
+                <Alert message="Error fetching data" type="error" />
+              ) : tugasProject !== null ? (
+                <Table
+                  dataSource={updateTugas}
+                  columns={columnTugasProject}
+                  pagination={false}
+                  style={{ display:'block' }}
+                />
+              ) : (
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                  <p>No data available</p>
+                </div>
+              )}
         </div>
 
       </div>
