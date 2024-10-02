@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined, UserOutlined, HistoryOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, Spin, theme } from 'antd';
+import { Button, Layout, Menu, Spin, theme, Modal, Input, Alert } from 'antd';
 import { useRouter, useParams, usePathname } from 'next/navigation';
 import { userRepository } from '#/repository/user';
 import ProfileComponent from '#/component/ProfileComponent';
@@ -22,6 +22,41 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const [newPassword, setNewPassword] = useState<{ current_password: string; new_password: string; confirm_new_password: string }>({
+    current_password: '',
+    new_password: '',
+    confirm_new_password: ''
+  });
+
+  // const [selectedIdUser, setSelectedIdUser] = useState<string | null>(null);
+
+  // state modal edit password
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // state alert warning 1
+  const [showAlert, setShowAlert] = useState(false);
+
+   // state alert warning 2, konfirm password
+  const [showAlert2, setShowAlert2] = useState(false);
+
+  // state alert error password
+  const [showAlertError, setShowAlertError] = useState(false)
+
+  // modal edit pw
+  const showModal = () => {
+    // setSelectedIdUser(newPassword.current_password); // Simpan password saat ini ke state
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  // close modal
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const { data: userData, isLoading, error } = userRepository.hooks.useGetUser(idUser);
   console.log(userData);
   if (isLoading) {
@@ -35,6 +70,50 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       Mohon Tunggu ....
     </div>;
   }
+
+  // handle edit password
+  const editPassword = async () => {
+    if (!newPassword.current_password || !newPassword.new_password || !newPassword.confirm_new_password) {
+      // alert('Semua field harus diisi');
+      setShowAlert(true);
+      return;
+    }
+    // const password = newPassword.password
+
+     // Cek apakah current_password sesuai dengan password user saat ini
+    // if (newPassword.current_password !== userData?.data?.current_password) {
+    //   alert('Password saat ini salah');
+    //   return;
+    // }
+
+    // cek apakah konfirmasi password sesuai dg pass baru
+    if (newPassword.new_password !== newPassword.confirm_new_password) {
+      setShowAlert2(true);
+      // alert('Konfirmasi password tidak cocok')
+      return;
+    }
+
+    try {
+      console.log('tes', idUser);
+      await userRepository.api.editPassword(idUser || '', {newPassword});
+
+      // Kirimkan permintaan edit password ke server (gpt)
+      // await userRepository.api.editPassword(idUser || '', { current_password: newPassword.current_password, new_password: newPassword.new_password });
+
+      Modal.success({
+        title: 'Berhasil Diubah',
+        content: 'Password berhasil diubah...',
+        okText: 'OK',
+      });
+      setIsModalOpen(false); // Close the modal on success
+    } catch (error) {
+      console.error('Gagal edit password:', error);
+      setShowAlertError(true);
+      // alert('Gagal mengubah password, periksa password saat ini atau koneksi Anda.');
+    }
+  };
+
+
 
   if (error) {
     return <div>Error</div>;
@@ -138,15 +217,42 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           <p style={{ margin: 0 }}>email :</p>
           <p>{userData?.data?.email}</p>
 
-          <Button block type='primary'>
+          <Button block type='primary' onClick={showModal}>
             Ubah Password
           </Button>
+          
+          <Modal title="Ubah Password" open={isModalOpen} onOk={editPassword} onCancel={handleCancel}>
+            <p>Masukkan Password Saat Ini</p>
+            <Input.Password 
+              placeholder="Masukkan password" 
+              value={newPassword.current_password}
+              onChange={(e) => setNewPassword({ ...newPassword, current_password: e.target.value})}
+            />
+            
+            <p style={{ marginTop: 15 }}>Masukkan Password Baru</p>
+            <Input.Password
+              placeholder='Masukkan password baru'
+              value={newPassword.new_password}
+              onChange={(e) => setNewPassword({ ...newPassword, new_password: e.target.value})}
+            />
+
+            <p style={{ marginTop: 15 }}>Konfirmasi Password</p>
+            <Input.Password
+              placeholder='Konfirmasi password'
+              value={newPassword.confirm_new_password}
+              onChange={(e) => setNewPassword({ ...newPassword, confirm_new_password: e.target.value})}
+            />
+          </Modal>
+
         </>
       )
     } else {
       return (
         <>
           {/* belum selesai */}
+          <p style={{ margin: 0 }}>Nik :</p>
+          <p></p>
+
           <p style={{ margin: 0 }}>Nama :</p>
           <p>{userData?.data?.nama}</p>
 
@@ -221,6 +327,61 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         </div>
       </Sider>
 
+      {/* ALERT WARNING 1 */}
+      {showAlert && (
+          <>
+          {/* Full-screen overlay to block interaction */}
+            <div className='alert-overlay' />
+
+             {/* Alert container */}
+              <div className="alert-container">
+              <Alert
+                  message="Warning"
+                  description="Semua field harus diisi."
+                  type="warning"
+                  showIcon
+                  closable
+                  onClose={() => setShowAlert(false)}
+              />
+            </div>
+          </>
+        )}
+
+        {/* ALERT KONFIRMASI PASSWORD 2 */}
+        {showAlert2 &&(
+          <>
+            <div className='alert-overlay' />
+
+            <div className='alert-container'>
+              <Alert
+                  message='Warning'
+                  description="Konfirmasi password tidak cocok."
+                  type="warning"
+                  showIcon
+                  closable
+                  onClose={() => setShowAlert2(false)}
+              />
+            </div>
+          </>
+        )}
+
+        {/* ALERT ERROR PASSWORD */}
+        {showAlertError && (
+          <>
+            <div className='alert-overlay' />
+            <div className='alert-container'>
+              <Alert
+                message='Error'
+                description='Gagal mengubah password, periksa password saat ini atau koneksi Anda.'
+                type='error'
+                showIcon
+                closable
+                onClose={() => setShowAlertError(false)}
+              />
+            </div>
+          </>
+        )}
+
       <Layout>
         <Header
           style={{
@@ -245,7 +406,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           </div>
         </Header>
                                                                         {/* , fontFamily: 'Roboto, sans-serif' */}
-        <Content style={{ margin: '24px 16px 0', marginLeft: 220, marginTop: 20 }}>
+        <Content style={{ marginLeft: 220, marginTop: 20 }}>
           {children}
         </Content>
         <Footer style={{ textAlign: 'center' }}>

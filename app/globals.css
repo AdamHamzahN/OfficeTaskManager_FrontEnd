@@ -16,4 +16,24 @@
 .ant-upload{
     width: 100%;
 }
-  
+
+/* Full-screen overlay */
+.alert-overlay  {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);  /* Semi-transparent background */
+    z-index: 1999; /* Ensure it is below the alert but above the page content */
+}
+
+/* Alert container */
+.alert-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000; /* Higher than modal's z-index */
+    width: 400px;
+}

@@ -1,6 +1,4 @@
 "use client";
-
-// import React from 'react';
 import React, { useState } from 'react';
 import { Divider, Table, Button, Switch, Tag, Modal, Input, Form, Row, Col, Select, Spin, Alert  } from 'antd';
 import type { TableColumnsType } from 'antd';
@@ -20,8 +18,8 @@ const Page: React.FC = () => {
     password: ''
   });
   
-  const [selectedPassword, setSelectedPassword] = useState<string | null>(null);
-
+  const [selectedIdTeamLead, setSelectedIdTeamLead] = useState<string | null>(null);
+  
   // state modal edit password
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -76,7 +74,7 @@ const Page: React.FC = () => {
         }
       };
 
-      // handle eddit password
+      // handle edit password
       const editPassword = async () => {
         if (!newPassword.password) {
           setShowAlert(true);
@@ -84,12 +82,14 @@ const Page: React.FC = () => {
         }
         // const password = newPassword.password
         try {
-          await teamleadRepository.api.editPassword(selectedPassword || '', {newPassword});
+          console.log('tes', selectedIdTeamLead);
+          await teamleadRepository.api.editPassword(selectedIdTeamLead || '', {newPassword});
           Modal.success({
             title: 'Password berhasil diubah',
             content: 'Password team lead berhasil diubah...',
             okText: 'OK',
           });
+          setIsModalOpen(false); // Close the modal on success
         } catch (error) {
           console.error('Gagal edit password:', error);
         }
@@ -109,8 +109,6 @@ const Page: React.FC = () => {
   //   });
   // };
 
-  
-// keaktifanUser = 
 const columns = [
   {
     title: 'Nama Team Lead',
@@ -139,10 +137,11 @@ const columns = [
         color="orange"
         style={{ cursor: 'pointer' }}  
         onClick={() => {
-          setSelectedPassword(record.password)
+          setSelectedIdTeamLead(record.id)
+          console.log('p', record.id)
           showModal();
+          // onClick={() => setIsModalOpen(true)} // sama aja 
         }}
-        // onClick={() => setIsModalOpen(true)} // sama aja 
       >
         <EditOutlined /> Edit Password
       </Tag>
@@ -182,28 +181,10 @@ return (
         {showAlert && (
           <>
           {/* Full-screen overlay to block interaction */}
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-                zIndex: 1999, // Ensure it is below the alert but above the page content
-              }}
-            />
-          
-            <div
-              style={{
-                position: 'absolute',
-                top: '20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 2000, // Higher than modal's z-index (Lebih tinggi dari z-indeks modal)
-                width: '400px',
-              }}
-            >
+            <div className='alert-overlay' />
+
+             {/* Alert container */}
+              <div className="alert-container">
               <Alert
                   message="Warning"
                   description="Semua field harus diisi."
@@ -227,7 +208,7 @@ return (
         <Modal title="Ubah Password" open={isModalOpen} onOk={editPassword} onCancel={handleCancel}>
           <p>Masukkan Password Baru</p>
           <Input.Password 
-            placeholder="Masukkan Password" 
+            placeholder="Masukkan password" 
             value={newPassword.password}
             onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
           />
