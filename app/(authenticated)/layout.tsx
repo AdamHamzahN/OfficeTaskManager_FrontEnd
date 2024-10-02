@@ -405,7 +405,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             </ProfileComponent>
           </div>
         </Header>
-                                                                        {/* , fontFamily: 'Roboto, sans-serif' */}
+                                                   {/* , fontFamily: 'Roboto, sans-serif' */}
         <Content style={{ marginLeft: 220, marginTop: 20 }}>
           {children}
         </Content>
