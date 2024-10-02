@@ -29,13 +29,6 @@ interface JobData {
   job_deleted_at: string | null;
 }
 
-interface DataType {
-  key: string;
-  job_nama_job: string;
-  jumlah_karyawan: string;
-  job_created_at: string;
-  aksi: string[];
-}
 
 const Page: React.FC = () => {
   const [newJob, setNewJob] = useState<{ nama_job: string; deskripsi_job: string }>({
