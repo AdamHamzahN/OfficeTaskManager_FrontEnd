@@ -1,3 +1,4 @@
+import TugasDiselesaikan from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/pageComponent/tugasDiselesaikan";
 import { http } from "#/utils/http";
 import useSWR, { mutate } from "swr";
 
@@ -44,7 +45,13 @@ const url = {
 	},
 	uploadFileHasiProject(id_project: string){
 		return `/project/${id_project}/upload-file-hasil`
-	}
+	},
+	GetProjectDikerjakan(id_user: string){
+		return `/project/karyawan/${id_user}/project-dikerjakan`
+	},
+	GetProjectSelesai(id_user: string){
+        return `/project/karyawan/${id_user}/project-selesai`
+    }
 }
 
 const hooks = {
@@ -69,11 +76,16 @@ const hooks = {
 	useGetKaryawanAvailable() {
 		return useSWR(url.getKaryawanAvailable(), http.fetcher);
 	},
+	useGetProjectDikerjakanKaryawan(id_user: string) {
+		return useSWR(url.GetProjectDikerjakan(id_user), http.fetcher);
+	},
+	useGetProjectSelesaiKaryawan(id_project: string) {
+		return useSWR(url.GetProjectSelesai(id_project), http.fetcher);
+	}
 
 }
 
-const api = {
-	//perlu perbaikan
+const api = {  
 	async createAnggotaTeam(body: any) {
 		try {
 			console.log('Request body:', body);

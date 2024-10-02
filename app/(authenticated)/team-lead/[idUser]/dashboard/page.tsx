@@ -103,11 +103,13 @@ const Page: React.FC = () => {
         ? dashboardRepository.hooks.useProjectTeamLeadProgress(idUser)
         : { data: null, error: null, isValidating: false };
 
+    //Hook 3 update tugas terbaru
     const { data: updateTugasTerbaru, error: tugasError, isValidating: tugasValidating } = idUser
         ? dashboardRepository.hooks.useUpdateTugasTeamLeadTerbaru(idUser)
         : { data: null, error: null, isValidating: false };
 
     const loading = updateValidating || progressValidating || tugasValidating;
+    const error = updateError || progressError || tugasError;
 
     return (
         <div
@@ -143,7 +145,7 @@ const Page: React.FC = () => {
                         <div style={{ paddingBottom: '75%', position: 'relative' }}>
                             {loading ? (
                                 <Spin style={{ textAlign: 'center', padding: '20px' }} />
-                            ) : updateError ? (
+                            ) : error ? (
                                 <Alert message="Error fetching data" type="error" />
                             ) : updateProjectTerbaru !== null ? (
                                 <Table
@@ -177,7 +179,7 @@ const Page: React.FC = () => {
                         <div style={{ paddingBottom: '75%', position: 'relative' }}>
                             {loading ? (
                                 <Spin style={{ textAlign: 'center', padding: '20px' }} />
-                            ) : updateError ? (
+                            ) : error ? (
                                 <Alert message="Error fetching data" type="error" />
                             ) : updateTugasTerbaru !== null ? (
                                 <Table
@@ -207,7 +209,7 @@ const Page: React.FC = () => {
                 <Row gutter={[16, 16]} justify="center" align="middle" style={{ minHeight: '200px' }}>
                     {loading ? (
                         <Spin style={{ textAlign: 'center', padding: '20px' }} />
-                    ) : progressError ? (
+                    ) : error ? (
                         <Alert message="Error fetching data" type="error" />
                     ) : projectOnProgress && projectOnProgress.length > 0 ? (
                         projectOnProgress.map((project: any, index: number) => (

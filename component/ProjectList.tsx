@@ -9,7 +9,7 @@ const ProjectList: React.FC<{
     startDate: string,
     endDate: string
 }> = ({ title, link, teamLead, startDate, endDate }) => (
-    <div style={{ width: '100%', marginBottom: '30px', boxShadow: '2px 4px 8px rgba(0, 0, 0, 0.1)', padding: '10px',borderRadius:8 }}>
+    <div style={{ width: '100%', marginBottom: '30px', padding: '10px',borderRadius:8,boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}>
         <div style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -18,7 +18,8 @@ const ProjectList: React.FC<{
             marginBottom: 10,
             fontSize: '20px',
             padding:3,
-            fontFamily:'Plus Jakarta Sans'
+            fontFamily:'Plus Jakarta Sans',
+           
         }}>
             <div style={{
                 overflow: 'hidden',
