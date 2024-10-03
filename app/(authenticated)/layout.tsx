@@ -36,13 +36,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   // state alert warning 1
   const [showAlert, setShowAlert] = useState(false);
 
-<<<<<<< HEAD
    // state alert warning 2, konfirm password
   const [showAlertConfirm, setShowAlertConfirm] = useState(false);
-=======
-  // state alert warning 2, konfirm password
-  const [showAlert2, setShowAlert2] = useState(false);
->>>>>>> 9646abda02d2006ecfe0f012dfb51083662121c7
 
   // state alert error password
   const [showAlertError, setShowAlertError] = useState(false)
