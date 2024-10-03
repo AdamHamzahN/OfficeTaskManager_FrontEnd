@@ -1,8 +1,6 @@
 'use client'
 import React, { useState } from "react";
 import { Alert, Spin, Table, Tabs, TabsProps } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { projectRepository } from "#/repository/project";
 import Header from "./pageComponent/header";

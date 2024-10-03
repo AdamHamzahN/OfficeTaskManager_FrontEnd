@@ -37,10 +37,10 @@ const api = {
     async tambahJobs(body:any) {
         const bodyValue = (body.newJob)
 		try {
-			const teamResponse = await http.post(url.tambahJobs(), bodyValue);
-			console.log('Response from createAnggotaTeam:', teamResponse.body);
+			const jobsResponse = await http.post(url.tambahJobs(), bodyValue);
+			console.log('Response from createAnggotaTeam:', jobsResponse.body);
 			return {
-				teamResponse: teamResponse.body,
+				jobsResponse: jobsResponse.body,
 			};
 		} catch (error) {
 			throw new Error('Gagal mengubah nama jobss');
@@ -49,10 +49,10 @@ const api = {
     async editJobById(id_job:string ,body:any) {
         const bodyValue = (body.editsJob)
 		try {
-			const teamResponse = await http.put(url.editJobById(id_job), bodyValue);
-			console.log('Response from createAnggotaTeam:', teamResponse.body);
+			const jobsResponse = await http.put(url.editJobById(id_job), bodyValue);
+			console.log('Response from createAnggotaTeam:', jobsResponse.body);
 			return {
-				teamResponse: teamResponse.body,
+				jobsResponse: jobsResponse.body,
 			};
 		} catch (error) {
 			throw new Error('Gagal mengubah nama jobs');

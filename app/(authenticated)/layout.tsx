@@ -36,8 +36,13 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   // state alert warning 1
   const [showAlert, setShowAlert] = useState(false);
 
+<<<<<<< HEAD
    // state alert warning 2, konfirm password
   const [showAlertConfirm, setShowAlertConfirm] = useState(false);
+=======
+  // state alert warning 2, konfirm password
+  const [showAlert2, setShowAlert2] = useState(false);
+>>>>>>> 9646abda02d2006ecfe0f012dfb51083662121c7
 
   // state alert error password
   const [showAlertError, setShowAlertError] = useState(false)
@@ -74,9 +79,12 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       setShowAlert(true);
       return;
     }
+    if (error) {
+      return <div>Error</div>;
+    }
     // const password = newPassword.password
 
-     // Cek apakah current_password sesuai dengan password user saat ini
+    // Cek apakah current_password sesuai dengan password user saat ini
     // if (newPassword.current_password !== userData?.data?.current_password) {
     //   alert('Password saat ini salah');
     //   return;
@@ -91,7 +99,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
     try {
       console.log('tes', idUser);
-      await userRepository.api.editPassword(idUser || '', {newPassword});
+      await userRepository.api.editPassword(idUser || '', { newPassword });
 
       // Kirimkan permintaan edit password ke server (gpt)
       // await userRepository.api.editPassword(idUser || '', { current_password: newPassword.current_password, new_password: newPassword.new_password });
@@ -111,16 +119,28 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
 
 
-  if (error) {
-    return <div>Error</div>;
-  }
+
 
   console.log(userData);
   const pathname = usePathname() || '';
 
+  const isSuperAdmin = pathname.includes('/super-admin')
+  const isTeamLead = pathname.includes('/team-lead')
+  const isKaryawan = pathname.includes('/karyawan')
   const isProjectActive = pathname.includes('/project');
 
-  const selectedKey = isProjectActive ? `/team-lead/${idUser!}/project` : pathname;
+  const key = () => {
+    if (isProjectActive && isSuperAdmin) {
+      return `/super-admin/${idUser}/project`
+    }else if(isProjectActive && isTeamLead){
+      return `/team-lead/${idUser}/project`
+    }else if (isProjectActive && isKaryawan){
+      return `/karyawan/${idUser}/project`
+    }else{
+      return pathname;
+    }
+  }
+  const selectedKey = key();
 
   const superAdminItems: MenuProps['items'] = [
     {
@@ -216,27 +236,27 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           <Button block type='primary' onClick={showModal}>
             Ubah Password
           </Button>
-          
+
           <Modal title="Ubah Password" open={isModalOpen} onOk={editPassword} onCancel={handleCancel}>
             <p>Masukkan Password Saat Ini</p>
-            <Input.Password 
-              placeholder="Masukkan password" 
+            <Input.Password
+              placeholder="Masukkan password"
               value={newPassword.current_password}
-              onChange={(e) => setNewPassword({ ...newPassword, current_password: e.target.value})}
+              onChange={(e) => setNewPassword({ ...newPassword, current_password: e.target.value })}
             />
-            
+
             <p style={{ marginTop: 15 }}>Masukkan Password Baru</p>
             <Input.Password
               placeholder='Masukkan password baru'
               value={newPassword.new_password}
-              onChange={(e) => setNewPassword({ ...newPassword, new_password: e.target.value})}
+              onChange={(e) => setNewPassword({ ...newPassword, new_password: e.target.value })}
             />
 
             <p style={{ marginTop: 15 }}>Konfirmasi Password</p>
             <Input.Password
               placeholder='Konfirmasi password'
               value={newPassword.confirm_new_password}
-              onChange={(e) => setNewPassword({ ...newPassword, confirm_new_password: e.target.value})}
+              onChange={(e) => setNewPassword({ ...newPassword, confirm_new_password: e.target.value })}
             />
           </Modal>
 
@@ -326,9 +346,11 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       {/* ALERT WARNING & CONFIRM & ERROR */}
       {( showAlert || showAlertConfirm || showAlertError ) && (
           <>
+      {/* ALERT WARNING 1 */}
+      {showAlert && (
+        <>
           {/* Full-screen overlay to block interaction */}
-            <div className='alert-overlay' />
-
+          <div className='alert-overlay' />
              {/* Alert container */}
               <div className="alert-container">
               <Alert
@@ -351,6 +373,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             </div>
           </>
         )}
+
 
       <Layout>
         <Header
@@ -375,7 +398,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             </ProfileComponent>
           </div>
         </Header>
-                                                   {/* , fontFamily: 'Roboto, sans-serif' */}
+        {/* , fontFamily: 'Roboto, sans-serif' */}
         <Content style={{ marginLeft: 220, marginTop: 20 }}>
           {children}
         </Content>

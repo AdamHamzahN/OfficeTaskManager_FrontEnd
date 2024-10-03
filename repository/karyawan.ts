@@ -27,7 +27,18 @@ const hooks = {
 }
 
 const api = {
-
+    async tambahKaryawan(body:any) {
+        const bodyValue = (body.newJob)
+		try {
+			const karyawanResponse = await http.post(url.tambahKaryawan(), bodyValue);
+			console.log('Response from createAnggotaTeam:', karyawanResponse.body);
+			return {
+				karyawanResponse: karyawanResponse.body,
+			};
+		} catch (error) {
+			throw new Error('Gagal mengubah nama Karyawan');
+		}
+	}
 }
 
 export const karyawanRepository = {
