@@ -190,7 +190,7 @@ const Page: React.FC = () => {
         />
       ) : (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>No data available</p>
+          <p>No data availables</p>
         </div>
       )}
     </div>
