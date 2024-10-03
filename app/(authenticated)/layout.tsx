@@ -338,56 +338,29 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         </div>
       </Sider>
 
-      {/* ALERT WARNING 1 */}
-      {showAlert && (
+      {/* ALERT WARNING & CONFIRM & ERROR */}
+      {( showAlert || showAlertConfirm || showAlertError ) && (
           <>
           {/* Full-screen overlay to block interaction */}
-            <div className='alert-overlay' />
-
+          <div className='alert-overlay' />
              {/* Alert container */}
               <div className="alert-container">
               <Alert
-                  message="Warning"
-                  description="Semua field harus diisi."
-                  type="warning"
+                  message={showAlertError ? "Error" : "Warning"}
+                  description={
+                    showAlert ? 'Semua field harus diisi.' :
+                    showAlertConfirm ? 'Konfirmasi password tidak cocok.' : 
+                    'Gagal mengubah password, periksa password saat ini atau koneksi Anda.'
+                  }
+                  // type={showAlert || showAlertConfirm ? 'warning' : 'error'}
+                  type={showAlertError ? 'error' : 'warning'}
                   showIcon
                   closable
-                  onClose={() => setShowAlert(false)}
-              />
-            </div>
-          </>
-        )}
-
-        {/* ALERT KONFIRMASI PASSWORD 2 */}
-        {showAlertConfirm &&(
-          <>
-            <div className='alert-overlay' />
-
-            <div className='alert-container'>
-              <Alert
-                  message='Warning'
-                  description="Konfirmasi password tidak cocok."
-                  type="warning"
-                  showIcon
-                  closable
-                  onClose={() => setShowAlertConfirm(false)}
-              />
-            </div>
-          </>
-        )}
-
-        {/* ALERT ERROR PASSWORD */}
-        {showAlertError && (
-          <>
-            <div className='alert-overlay' />
-            <div className='alert-container'>
-              <Alert
-                message='Error'
-                description='Gagal mengubah password, periksa password saat ini atau koneksi Anda.'
-                type='error'
-                showIcon
-                closable
-                onClose={() => setShowAlertError(false)}
+                  onClose={() => {
+                    if (showAlert) setShowAlert(false);
+                    if (showAlertConfirm) setShowAlertConfirm(false);
+                    if (showAlertError) setShowAlertError(false);
+                  }}
               />
             </div>
           </>
