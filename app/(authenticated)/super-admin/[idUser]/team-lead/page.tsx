@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import React, { useState } from 'react';
 import { Divider, Table, Button, Switch, Tag, Modal, Input, Form, Row, Col, Select, Spin, Alert  } from 'antd';
 import type { TableColumnsType } from 'antd';

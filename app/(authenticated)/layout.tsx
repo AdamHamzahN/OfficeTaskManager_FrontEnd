@@ -37,7 +37,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const [showAlert, setShowAlert] = useState(false);
 
    // state alert warning 2, konfirm password
-  const [showAlert2, setShowAlert2] = useState(false);
+  const [showAlertConfirm, setShowAlertConfirm] = useState(false);
 
   // state alert error password
   const [showAlertError, setShowAlertError] = useState(false)
@@ -46,10 +46,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const showModal = () => {
     // setSelectedIdUser(newPassword.current_password); // Simpan password saat ini ke state
     setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
   };
 
   // close modal
@@ -88,7 +84,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
     // cek apakah konfirmasi password sesuai dg pass baru
     if (newPassword.new_password !== newPassword.confirm_new_password) {
-      setShowAlert2(true);
+      setShowAlertConfirm(true);
       // alert('Konfirmasi password tidak cocok')
       return;
     }
@@ -148,7 +144,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       label: 'Jobs',
     },
     {
-      key: `/super-admin/${idUser}project`,
+      key: `/super-admin/${idUser}/project`,
       icon: <ProjectOutlined style={{ fontSize: 25 }} />,
       label: 'Project',
     }
@@ -327,8 +323,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         </div>
       </Sider>
 
-      {/* ALERT WARNING 1 */}
-      {showAlert && (
+      {/* ALERT WARNING & CONFIRM & ERROR */}
+      {( showAlert || showAlertConfirm || showAlertError ) && (
           <>
           {/* Full-screen overlay to block interaction */}
             <div className='alert-overlay' />
@@ -336,47 +332,21 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
              {/* Alert container */}
               <div className="alert-container">
               <Alert
-                  message="Warning"
-                  description="Semua field harus diisi."
-                  type="warning"
+                  message={showAlertError ? "Error" : "Warning"}
+                  description={
+                    showAlert ? 'Semua field harus diisi.' :
+                    showAlertConfirm ? 'Konfirmasi password tidak cocok.' : 
+                    'Gagal mengubah password, periksa password saat ini atau koneksi Anda.'
+                  }
+                  // type={showAlert || showAlertConfirm ? 'warning' : 'error'}
+                  type={showAlertError ? 'error' : 'warning'}
                   showIcon
                   closable
-                  onClose={() => setShowAlert(false)}
-              />
-            </div>
-          </>
-        )}
-
-        {/* ALERT KONFIRMASI PASSWORD 2 */}
-        {showAlert2 &&(
-          <>
-            <div className='alert-overlay' />
-
-            <div className='alert-container'>
-              <Alert
-                  message='Warning'
-                  description="Konfirmasi password tidak cocok."
-                  type="warning"
-                  showIcon
-                  closable
-                  onClose={() => setShowAlert2(false)}
-              />
-            </div>
-          </>
-        )}
-
-        {/* ALERT ERROR PASSWORD */}
-        {showAlertError && (
-          <>
-            <div className='alert-overlay' />
-            <div className='alert-container'>
-              <Alert
-                message='Error'
-                description='Gagal mengubah password, periksa password saat ini atau koneksi Anda.'
-                type='error'
-                showIcon
-                closable
-                onClose={() => setShowAlertError(false)}
+                  onClose={() => {
+                    if (showAlert) setShowAlert(false);
+                    if (showAlertConfirm) setShowAlertConfirm(false);
+                    if (showAlertError) setShowAlertError(false);
+                  }}
               />
             </div>
           </>
