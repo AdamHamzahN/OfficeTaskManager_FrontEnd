@@ -3,7 +3,7 @@ import { Button, Row, Table, Tag } from "antd";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalDetailTugas from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/modal/modalDetailTugas";
 
-const TableTask: React.FC<{
+const TugasBelumDiselesaikan: React.FC<{
     data: any,
     formatTimeStr: (text: string) => string,
 }> = ({ data, formatTimeStr }) => {
@@ -80,10 +80,10 @@ const TableTask: React.FC<{
 
     return (
         <div>
-            <Row className="content-center w-full mb-4 justify-between ">
+            <Row className="content-center w-full mb-4 justify-between">
                 <div>
                     <h1 className="text-xl flex items-center">
-                        <span className="text-2xl">Task Project</span>
+                        <span className="text-2xl">Tugas Belum Diselesaikan</span>
                     </h1>
                 </div>
             </Row>
@@ -99,4 +99,4 @@ const TableTask: React.FC<{
     )
 }
 
-export default TableTask;
+export default TugasBelumDiselesaikan;

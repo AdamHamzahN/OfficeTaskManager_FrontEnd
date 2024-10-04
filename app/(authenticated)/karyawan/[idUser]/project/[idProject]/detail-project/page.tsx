@@ -6,7 +6,9 @@ import { projectRepository } from "#/repository/project";
 import Header from "./pageComponent/header";
 import TableTeam from "./pageComponent/tableTeam";
 import TableTask from "./pageComponent/tableTask";
-import TugasSaya from "./pageComponent/tugasSaya";
+import TugasBelumDiselesaikan from "./pageComponent/tugasBelumDiselesaikan";
+import DaftarTugasSaya from "./pageComponent/daftarTugasSaya";
+import { tugasRepository } from "#/repository/tugas";
 
 const DetailProject: React.FC<{
     nama_team: any,
@@ -20,6 +22,20 @@ const DetailProject: React.FC<{
         <div>
             <TableTeam idProject={idProject} nama_team={nama_team} data={teamData}/>
             <TableTask data={tugasData} formatTimeStr={formatTimeStr} />
+        </div>
+    );
+};
+
+const TugasSaya: React.FC<{
+    daftarTugas: any,
+    tugasBelumSelesai:any,
+    refreshTable: () => void,
+    formatTimeStr: (text: string) => string
+}> = ({daftarTugas,tugasBelumSelesai,refreshTable, formatTimeStr }) => {
+    return (
+        <div>
+            <TugasBelumDiselesaikan data={tugasBelumSelesai} formatTimeStr={formatTimeStr}/>
+            <DaftarTugasSaya data={daftarTugas} formatTimeStr={formatTimeStr} />
         </div>
     );
 };
@@ -45,16 +61,18 @@ const Page = () => {
 
     const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate: mutateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
 
-    const { data: tugasSelesai, error: errorTugasSelesai, isValidating: validateTugasSelesai, mutate: mutateTugasSelesai } = projectRepository.hooks.useTugasSelesai(idProject);
+    const { data: tugasBelumSelesai, error: errorTugasBelumSelesai, isValidating: validateTugasBelumSelesai, mutate: mutateTugasBelumSelesai } = tugasRepository.hooks.useGetTugasKaryawanBelumSelesai(idUser);
+    
+    const { data: daftarTugas, error: errorDaftarTugas, isValidating: validateDaftarTugas, mutate: mutateDaftarTugas } =tugasRepository.hooks.useGetTugasKaryawanByIdUser(idUser);
 
     const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
 
-    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = projectRepository.hooks.useGetTugasByProject(idProject);
+    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = tugasRepository.hooks.useGetTugasByProject(idProject);
 
-    const loading = validateDetailProject || validateTugasSelesai || validateTeam || validateTugas;
-    const error = errorDetailProject || errorTugasSelesai || errorTeam || errorTugas;
+    const loading = validateDetailProject || validateDaftarTugas || validateTeam || validateTugas || validateTugasBelumSelesai;
+    const error = errorDetailProject || errorDaftarTugas || errorTeam || errorTugas || errorTugasBelumSelesai;
 
-
+    console.log('p',daftarTugas,idUser)
     if (loading) {
         return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
     }
@@ -64,9 +82,10 @@ const Page = () => {
 
     const refreshTable = async () => {
         await mutateDetailProject();
-        await mutateTugasSelesai();
+        await mutateDaftarTugas();
         await mutateTeam();
         await mutateTugas();
+        await mutateTugasBelumSelesai();
     };
 
     const onChange: TabsProps['onChange'] = (key) => {
@@ -87,8 +106,10 @@ const Page = () => {
         },
         { key: 'TugasSaya', label: 'Tugas Saya',
             children:<TugasSaya
-            data={tugasProject} formatTimeStr={formatTimeStr} 
-            
+            daftarTugas={daftarTugas} 
+            tugasBelumSelesai={tugasBelumSelesai}
+            formatTimeStr={formatTimeStr} 
+            refreshTable={refreshTable}        
             />
          },
     ];

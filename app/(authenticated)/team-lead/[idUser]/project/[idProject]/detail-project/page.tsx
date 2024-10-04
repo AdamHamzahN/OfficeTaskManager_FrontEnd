@@ -7,6 +7,7 @@ import Header from "./pageComponent/header";
 import TableTeam from "./pageComponent/tableTeam";
 import TableTask from "./pageComponent/tableTask";
 import TugasDiselesaikan from "./pageComponent/tugasDiselesaikan";
+import { tugasRepository } from "#/repository/tugas";
 
 const DetailProject: React.FC<{
     nama_team: any,
@@ -45,11 +46,11 @@ const Page = () => {
 
     const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate: mutateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
 
-    const { data: tugasSelesai, error: errorTugasSelesai, isValidating: validateTugasSelesai, mutate: mutateTugasSelesai } = projectRepository.hooks.useTugasSelesai(idProject);
+    const { data: tugasSelesai, error: errorTugasSelesai, isValidating: validateTugasSelesai, mutate: mutateTugasSelesai } = tugasRepository.hooks.useTugasSelesai(idProject);
 
     const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
 
-    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = projectRepository.hooks.useGetTugasByProject(idProject);
+    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } =tugasRepository.hooks.useGetTugasByProject(idProject);
 
     const loading = validateDetailProject || validateTugasSelesai || validateTeam || validateTugas;
     const error = errorDetailProject || errorTugasSelesai || errorTeam || errorTugas;

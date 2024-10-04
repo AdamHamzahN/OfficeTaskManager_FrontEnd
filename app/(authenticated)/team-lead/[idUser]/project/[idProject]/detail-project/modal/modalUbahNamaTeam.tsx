@@ -6,7 +6,7 @@ const ModalUbahNamaTeam:React.FC<{nama_team:string,onNamaTeamChange:any}> = ({ n
             <Input
                 defaultValue={nama_team}
                 onChange={(e) => onNamaTeamChange(e.target.value)}
-                placeholder="Masukkan nama team baru"
+                placeholder="Masukkan nama team"
             />
         </div>
     );

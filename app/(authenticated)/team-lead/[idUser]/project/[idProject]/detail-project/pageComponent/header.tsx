@@ -2,11 +2,9 @@ import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
 import { Button, Input, Modal, Select } from "antd";
 import { useRef, useState } from "react";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined } from "@ant-design/icons";
 import ModalComponent from "#/component/ModalComponent";
-import ModalUbahStatusProject from "../modal/modalUbahStatusProject";
 import Link from "next/link";
-
 
 const Header: React.FC<{
     status: string,
@@ -35,16 +33,21 @@ const Header: React.FC<{
     };
 
     const filePdfUrl = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
-    const [formData, setFormData] = useState<{ status: string; file_bukti: File | null }>({
+    const [formData, setFormData] = useState<{ status: string; file_bukti: File | null, fileName: string }>({
         status: status,
         file_bukti: null,
+        fileName: '' // State untuk menyimpan nama file
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
-        setFormData(prevFormData => ({ ...prevFormData, file_bukti: file }));
+        setFormData(prevFormData => ({ 
+            ...prevFormData, 
+            file_bukti: file,
+            fileName: file ? file.name : '' // Menyimpan nama file yang dipilih
+        }));
     };
 
     const handleButtonClick = () => {
@@ -64,7 +67,7 @@ const Header: React.FC<{
         try {
             await projectRepository.api.updateStatusProject(idProject, {
                 status_project: status,
-                file_bukti: file_bukti
+                file_hasil_project: file_bukti
             });
 
             Modal.success({
@@ -143,6 +146,11 @@ const Header: React.FC<{
                                         <Button htmlType='button' block onClick={handleButtonClick} style={{ marginTop: '8px', width: '100%' }}>
                                             Pilih Hasil Project
                                         </Button>
+                                        {formData.fileName && ( // Menampilkan nama file jika ada
+                                            <p style={{ marginTop: '8px', fontStyle: 'italic', color: '#555' }}>
+                                                {formData.fileName}
+                                            </p>
+                                        )}
                                     </>
                                 )}
                             </>
@@ -171,4 +179,5 @@ const Header: React.FC<{
         </div>
     );
 };
+
 export default Header;

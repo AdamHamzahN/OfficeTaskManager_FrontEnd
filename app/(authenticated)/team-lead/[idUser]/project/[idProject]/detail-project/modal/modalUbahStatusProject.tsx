@@ -13,34 +13,45 @@ const ModalUbahStatusProject: React.FC<{
 }> = ({ idProject, status_project, nama_project, nama_team, update_status_project }) => {
     const [status, setStatus] = useState<string>(status_project);
     const [fileBukti, setFileBukti] = useState<File | null>(null);
+    const [fileName, setFileName] = useState<string | null>(null); // Tambahkan state untuk menyimpan nama file
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Fungsi untuk memicu file input ketika tombol diklik
     const handleButtonClick = (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
-        fileInputRef.current?.click(); 
+        if (fileInputRef.current) {
+            fileInputRef.current.click(); // Memicu input file
+        }
     };
-    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+
+    // Fungsi untuk menangani perubahan pada file input
+    const handleFileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] || null;
+        setFileBukti(file);
+        setFileName(file ? file.name : null); // Simpan nama file jika ada
+        console.log('Selected file:', file);  // Debugging: memeriksa apakah file dipilih
+        update_status_project(status, file);
     };
-    
+
+    // Fungsi untuk menangani perubahan status di select
     const handleSelectChange = (value: string) => {
         setStatus(value);
         update_status_project(value, fileBukti);
     };
-    const handleFileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    // Fungsi untuk menangani submit form
+    const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const file = event.target.files?.[0] || null;
-        setFileBukti(file);
-        update_status_project(status, file);
+        console.log('Submitting fileBukti:', fileBukti); // Debugging: memeriksa apakah file ter-set dengan benar
+        update_status_project(status, fileBukti); // Mengirim status dan file bukti
     };
-    
 
     return (
-        <form  onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit}>
             <label htmlFor="nama_project" style={{ marginBottom: '8px', display: 'block' }}>
                 Nama Project
             </label>
-            <Input value={nama_project} id='nama_project' readOnly style={{ marginBottom: '16px' }} required />
+            <Input  id='nama_project' readOnly style={{ marginBottom: '16px' }} required />
 
             <label htmlFor="nama_team" style={{ marginBottom: '8px', display: 'block' }}>
                 Nama Team
@@ -69,14 +80,20 @@ const ModalUbahStatusProject: React.FC<{
                     </label>
                     <input
                         type="file"
+                        key={fileName || ''} // Menambahkan key untuk mereset input ketika file dipilih
                         onChange={handleFileUploadChange}
                         accept="application/pdf"
-                        style={{ display:'none' }}
+                        style={{ display: 'none' }}
                         ref={fileInputRef}
                     />
-                    <Button htmlType='button' block onClick={handleButtonClick} style={{ marginTop: '8px',width:'100%' }}>
+
+                    <Button htmlType='button' block onClick={handleButtonClick} style={{ marginTop: '8px', width: '100%' }}>
                         <UploadOutlined /> Pilih Hasil Project
                     </Button>
+                    {/* Tampilkan nama file yang dipilih di bawah tombol */}
+                    {fileName && (
+                        <p style={{ marginTop: '8px' }}>File: {fileName}</p>
+                    )}
                 </>
             )}
         </form>

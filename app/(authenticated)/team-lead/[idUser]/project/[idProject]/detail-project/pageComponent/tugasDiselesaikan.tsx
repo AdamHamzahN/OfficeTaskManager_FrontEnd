@@ -5,6 +5,7 @@ import { useState } from "react";
 import ModalCekTugas from "../modal/modalCekTugas";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import { tugasRepository } from "#/repository/tugas";
 
 
 const TugasDiselesaikan: React.FC<{
@@ -18,7 +19,7 @@ const TugasDiselesaikan: React.FC<{
 
     const acceptTugas = async (id_tugas: string) => {
         try {
-            await projectRepository.api.updateStatusTugas(id_tugas, {
+            await tugasRepository.api.updateStatusTugas(id_tugas, {
                 status: 'approved'
             });
             await refreshTable();
@@ -40,7 +41,7 @@ const TugasDiselesaikan: React.FC<{
 
     const redoTugas = async (id_tugas: string, note: any) => {
         try {
-            await projectRepository.api.updateStatusTugas(id_tugas, {
+            await tugasRepository.api.updateStatusTugas(id_tugas, {
                 status: 'redo',
                 note: note
             });

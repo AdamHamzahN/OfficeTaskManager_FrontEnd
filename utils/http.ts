@@ -31,6 +31,7 @@ export const http = {
     post: (url: string, opts = {}) => {
         let req = superagent.post(config.baseUrl + url)
             .send(opts)
+            .set('Content-Type', 'application/json')
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
@@ -41,6 +42,21 @@ export const http = {
     },
 
     put: (url: string, opts = {}) => {
+        let req = superagent.put(config.baseUrl + url)
+            .send(opts)
+            .set('Content-Type', 'application/json')
+            // .set('Content-Type', 'multipart/form-data')
+            .use(AuthIntercept)
+            .use(attachSuperagentLogger);
+
+        if (TokenUtil.accessToken) {
+            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+        }
+
+        return req;
+    },
+
+    upload: (url: string, opts = {}) => {
         let req = superagent.put(config.baseUrl + url)
             .send(opts)
             .use(AuthIntercept)

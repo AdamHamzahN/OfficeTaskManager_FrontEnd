@@ -4,6 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import { SearchOutlined } from "@ant-design/icons";
 import { projectRepository } from "#/repository/project";
 import { config } from "#/config/app";
+import { tugasRepository } from "#/repository/tugas";
 
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -19,7 +20,7 @@ const formatTimeStr = (dateStr: string) => {
 
 const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
 
-    const { data: detailTugas, error, isValidating: loading } = projectRepository.hooks.useGetTugasById(idTugas);
+    const { data: detailTugas, error, isValidating: loading } = tugasRepository.hooks.useGetTugasById(idTugas);
 
     if (loading) {
         console.log('Loading data...');

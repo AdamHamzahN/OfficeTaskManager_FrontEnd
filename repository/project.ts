@@ -1,9 +1,10 @@
-import TugasDiselesaikan from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/pageComponent/tugasDiselesaikan";
 import { http } from "#/utils/http";
+import { Response } from "superagent";
 import useSWR, { mutate } from "swr";
 
 
 const url = {
+	//get
 	getProjectTeamLeadByStatus(id_user: string, status: string) {
 		return `/project/team-lead/${id_user}/projects?status=${status}`
 	},
@@ -13,29 +14,24 @@ const url = {
 	getTeamByProject(id_project: string) {
 		return `/team/${id_project}/team-project`
 	},
-	getTugasByProject(id_project: string) {
-		return `/tugas/${id_project}/tugas-project`
-	},
-	getTugasSelesai(id_project: string) {
-		return `/tugas/${id_project}/tugas-selesai`
-	},
-	getTugasById(id_tugas: string) {
-		return `/tugas/${id_tugas}/detail`
-	},
 	getKaryawanAvailable() {
 		return `/karyawan/status-available`
 	},
+	getProjectDikerjakan(id_user: string){
+		return `/project/karyawan/${id_user}/project-dikerjakan`
+	},
+	getProjectSelesai(id_user: string){
+        return `/project/karyawan/${id_user}/project-selesai`
+    },
+
+	//create
 	createAnggotaTeam() {
 		return `/team/tambah`
 	},
+	
+	//update
 	updateStatusProjectKaryawan(id_karyawan: string) {
 		return `/karyawan/${id_karyawan}/update-status-project`
-	},
-	updateStatusTugas(id_tugas: string) {
-		return `/tugas/${id_tugas}/update-status-tugas`
-	},
-	updateNoteTugas(id_tugas: string) {
-		return `/tugas/${id_tugas}/update-note`
 	},
 	updateNamaTeam(id_project: string){
 		return`/project/${id_project}/update-nama-team`
@@ -46,12 +42,7 @@ const url = {
 	uploadFileHasiProject(id_project: string){
 		return `/project/${id_project}/upload-file-hasil`
 	},
-	GetProjectDikerjakan(id_user: string){
-		return `/project/karyawan/${id_user}/project-dikerjakan`
-	},
-	GetProjectSelesai(id_user: string){
-        return `/project/karyawan/${id_user}/project-selesai`
-    }
+
 }
 
 const hooks = {
@@ -64,25 +55,15 @@ const hooks = {
 	useTeamByProject(id_project: string) {
 		return useSWR(url.getTeamByProject(id_project), http.fetcher);
 	},
-	useGetTugasByProject(id_project: string) {
-		return useSWR(url.getTugasByProject(id_project), http.fetcher);
-	},
-	useTugasSelesai(id_project: string) {
-		return useSWR(url.getTugasSelesai(id_project), http.fetcher);
-	},
-	useGetTugasById(id_project: string) {
-		return useSWR(url.getTugasById(id_project), http.fetcher);
-	},
 	useGetKaryawanAvailable() {
 		return useSWR(url.getKaryawanAvailable(), http.fetcher);
 	},
 	useGetProjectDikerjakanKaryawan(id_user: string) {
-		return useSWR(url.GetProjectDikerjakan(id_user), http.fetcher);
+		return useSWR(url.getProjectDikerjakan(id_user), http.fetcher);
 	},
 	useGetProjectSelesaiKaryawan(id_project: string) {
-		return useSWR(url.GetProjectSelesai(id_project), http.fetcher);
-	}
-
+		return useSWR(url.getProjectSelesai(id_project), http.fetcher);
+	},
 }
 
 const api = {  
@@ -112,27 +93,6 @@ const api = {
 		}
 	},
 
-	async updateStatusTugas(id_tugas: string, body: { status: string, note?: string }) {
-		const { status, note } = body;
-
-		try {
-			console.log('Request body:', body);
-			const updateTugasResponse = await http.put(url.updateStatusTugas(id_tugas), { status });
-
-			let updateNoteResponse;
-			if (note !== undefined && note !== null) {
-				updateNoteResponse = await http.put(url.updateNoteTugas(id_tugas), { note });
-			}
-			return {
-				updateTugasResponse: updateTugasResponse.body,
-				updateNoteResponse: updateNoteResponse ? updateNoteResponse.body : null,  // Handle optional note response
-			};
-		} catch (error) {
-			console.error('Error in updating tugas:', error);
-			throw new Error('Gagal mengupdate status tugas');
-		}
-	},
-
 	async updateNamaTeam(id_project: string, body:any) {
 		try {
 			const teamResponse = await http.put(url.updateNamaTeam(id_project), body);
@@ -145,22 +105,37 @@ const api = {
 		}
 	},
 
-	async updateStatusProject(id_project: string, body:{status_project:string,file_bukti?:any}) {
-		try{
-			const updateStatusResponse = await http.put(url.updateStatusProject(id_project),body);
+	async updateStatusProject(id_project: string, body: { status_project: string, file_hasil_project?: File | null }) {
+		// Memastikan file ada dan menampilkan namanya di console
+		if (body.file_hasil_project) {
+			console.log('file_hasil_project:', body.file_hasil_project.name);
+		}
+	
+		try {
+			// Meng-update status proyek
+			const updateStatusResponse: Response = await http.put(url.updateStatusProject(id_project), {
+				status_project: body.status_project, // Hanya mengirim status_project di sini
+			});
 			console.log('Response from updateStatusProject:', updateStatusResponse.body);
-			const uploadFileBuktiResponse = '';
-			if(body.file_bukti !== null && body.file_bukti !== undefined){
-				const uploadFileBuktiResponse = await http.put(url.uploadFileHasiProject(id_project),body.file_bukti);
+	
+			// Meng-upload file jika ada
+			if (body.file_hasil_project) {
+				const formData = new FormData();
+				formData.append('file_hasil_project', body.file_hasil_project); // Menambahkan file ke FormData
+	
+				const uploadFileBuktiResponse: Response = await http.upload(url.uploadFileHasiProject(id_project), formData);
+				console.log('Response from uploadFileBukti:', uploadFileBuktiResponse.body);
 			}
-			
-			return{
+	
+			return {
 				updateStatusResponse: updateStatusResponse.body,
-			}
-		}catch (error) {
+			};
+		} catch (error) {
+			console.error('Error:', error);
 			throw new Error('Gagal mengubah status project');
 		}
 	}
+	
 
 
 };
