@@ -94,7 +94,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
           setJob(e.target.value);
           handleKaryawanDataChange();
         }}
-        placeholder="Masukkan Job"
+        placeholder="Masukkan Jobs"
         style={{ marginBottom: 10 }}
       />
     </div>

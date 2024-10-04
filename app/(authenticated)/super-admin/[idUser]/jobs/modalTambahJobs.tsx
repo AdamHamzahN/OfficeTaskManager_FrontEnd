@@ -17,7 +17,7 @@ const ModalTambahJobs: React.FC<ModalTambahJobsProps> = ({ createjob }) => {
   return (
     <div>
       {/* Input untuk nama job */}
-      <label htmlFor="jobName">Masukkan Nama Jobs Baru</label>
+      <label htmlFor="jobName">Masukkan Nama Job Baru</label>
       <Input
         id="jobName"
         value={nama_job}
