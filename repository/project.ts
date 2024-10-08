@@ -106,23 +106,20 @@ const api = {
 	},
 
 	async updateStatusProject(id_project: string, body: { status_project: string, file_hasil_project?: File | null }) {
-		// Memastikan file ada dan menampilkan namanya di console
-		if (body.file_hasil_project) {
-			console.log('file_hasil_project:', body.file_hasil_project.name);
-		}
-	
 		try {
 			// Meng-update status proyek
 			const updateStatusResponse: Response = await http.put(url.updateStatusProject(id_project), {
 				status_project: body.status_project, // Hanya mengirim status_project di sini
 			});
 			console.log('Response from updateStatusProject:', updateStatusResponse.body);
+			
 	
 			// Meng-upload file jika ada
 			if (body.file_hasil_project) {
+				console.log('file hasil project',body.file_hasil_project);
 				const formData = new FormData();
 				formData.append('file_hasil_project', body.file_hasil_project); // Menambahkan file ke FormData
-	
+				console.log('formData :', formData)
 				const uploadFileBuktiResponse: Response = await http.upload(url.uploadFileHasiProject(id_project), formData);
 				console.log('Response from uploadFileBukti:', uploadFileBuktiResponse.body);
 			}

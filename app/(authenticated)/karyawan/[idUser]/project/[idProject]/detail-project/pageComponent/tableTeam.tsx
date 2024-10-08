@@ -1,8 +1,5 @@
-import ModalComponent from "#/component/ModalComponent";
-import { projectRepository } from "#/repository/project";
-import { Button, Modal, Row, Table } from "antd";
+import { Row, Table } from "antd";
 import { useEffect, useState } from "react";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 
 const TableTeam: React.FC<{
     data: any,

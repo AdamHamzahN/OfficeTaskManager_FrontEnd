@@ -1,22 +1,16 @@
 import { config } from "#/config/app";
-import { projectRepository } from "#/repository/project";
-import { Button, Input, Modal, Select } from "antd";
-import { useRef, useState } from "react";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Select } from "antd";
+import { ArrowLeftOutlined,SearchOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import ModalComponent from "#/component/ModalComponent";
+import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/modal/modalDetailProject";
 
 
 const Header: React.FC<{
-    status: string,
-    file_project: string,
-    idProject: string,
-    nama_team: string,
-    nama_project: string,
-    idUser: string,
-    refreshTable: () => void
-}> = ({ status, file_project, idProject, nama_team, nama_project, idUser, refreshTable }) => {
-    const { Option } = Select;
-
+    data:any
+    idUser : string
+}> = ({ data, idUser}) => {
+    const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user } = data;
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -31,52 +25,6 @@ const Header: React.FC<{
                 return { backgroundColor: 'rgba(76, 175, 80, 0.1)', borderColor: '#4CAF50', color: '#4CAF50' };
         }
     };
-
-    const filePdfUrl = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
-    const [formData, setFormData] = useState<{ status: string; file_bukti: File | null }>({
-        status: status,
-        file_bukti: null,
-    });
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const handleFileUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        setFormData(prevFormData => ({ ...prevFormData, file_bukti: file }));
-    };
-
-    const handleButtonClick = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
-    };
-
-    const updateStatus = async () => {
-        const { status, file_bukti } = formData;
-
-        if (!status) {
-            alert('Masukkan Status terlebih dahulu!');
-            return;
-        }
-
-        try {
-            await projectRepository.api.updateStatusProject(idProject, {
-                status_project: status,
-                file_bukti: file_bukti
-            });
-
-            Modal.success({
-                title: 'Berhasil',
-                content: 'Berhasil mengubah status project',
-                onOk() {
-                    refreshTable();
-                }
-            });
-        } catch (error) {
-            console.error('Gagal mengubah status project:', error);
-        }
-    };
-
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -90,11 +38,30 @@ const Header: React.FC<{
                 </h3>
             </div>
             <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
-                <a href={filePdfUrl} target='_blank' rel="noopener noreferrer">
-                    <button type="button" className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-3 px-6 border border-green-600 hover:border-transparent rounded text-justify">
-                        <FileExcelOutlined style={{ fontSize: 15 }} /> Export To Excel
+                <ModalComponent
+                    title={'Detail Tugas'}
+                    content={<ModalDetailProject
+                        nama_project={nama_project}
+                        team_lead={user.username }
+                        nama_team={nama_team }
+                        status={status}
+                        start_date={start_date}
+                        end_date={end_date}
+                        note={note}
+                        file_project={file_project}
+                    />}
+                    footer={(handleOk) => (
+                        <div>
+                            <Button type="primary" onClick={handleOk}>Ok</Button>
+                        </div>
+                    )}
+                    onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+                    onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+                >
+                    <button type="button" className="bg-transparent hover:bg-blue-600 text-blue-700 hover:text-white py-3 px-6 border border-blue-600 hover:border-transparent rounded text-justify">
+                        <SearchOutlined style={{ fontSize: 15 }} /> Detail Project
                     </button>
-                </a>
+                </ModalComponent>
                 <button
                     type="button"
                     className="border py-3 px-6 rounded"
