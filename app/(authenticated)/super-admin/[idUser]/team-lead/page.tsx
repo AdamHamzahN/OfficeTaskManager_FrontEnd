@@ -5,6 +5,7 @@ import { Divider, Table, Button, Switch, Tag, Modal, Input, Form, Row, Col, Sele
 import type { TableColumnsType } from 'antd';
 import { PlusOutlined, EditOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { teamleadRepository } from '#/repository/teamlead';
+import ModalComponent from '#/component/ModalComponent';
 
 
 const Page: React.FC = () => {
@@ -20,33 +21,9 @@ const Page: React.FC = () => {
   });
   
   const [selectedIdTeamLead, setSelectedIdTeamLead] = useState<string | null>(null);
-  
-  // state modal edit password
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // state modal tambah team lead
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // state alert warning
   const [showAlert, setShowAlert] = useState(false);
-
-   // Open modal for adding team lead, tambah team lead
-  const showAddModal = () => {
-    setIsAddModalOpen (true);
-  }
-  // modal edit pw
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // close modal
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  
-  const handleAddCancel = () => {
-    setIsAddModalOpen(false);
-  };
   
      // Handle adding a new Team Lead
     const tambahTeamLead = async () => {
@@ -69,7 +46,8 @@ const Page: React.FC = () => {
             console.log('Team Lead berhasil ditambahkan');
           },
         });
-        setIsAddModalOpen(false); // Close the modal on success
+        mutate()
+        // setIsAddModalOpen(false); // Close the modal on success
         } catch (error) {
           console.error('Gagal menambahkan Team Lead:', error);
         }
@@ -90,25 +68,12 @@ const Page: React.FC = () => {
             content: 'Password team lead berhasil diubah...',
             okText: 'OK',
           });
-          setIsModalOpen(false); // Close the modal on success
+          mutate()
+          // setIsModalOpen(false); // Close the modal on success
         } catch (error) {
           console.error('Gagal edit password:', error);
         }
       };
-      
-  // const handleSuccess = () => {
-  //   setIsModalOpen(false);
-  //   Modal.success({
-  //     content: 'Password team lead berhasil diubah...',
-  //   });
-  // };
-
-  // const handleAddSuccess = () => {
-  //   setIsAddModalOpen(false);
-  //   Modal.success({
-  //     content: 'Team Lead baru berhasil ditambahkan...'
-  //   });
-  // };
 
 const columns = [
   {
@@ -133,24 +98,45 @@ const columns = [
     // dataIndex: 'address',
     key: 'aksi',
     render: (record: any) => (
-      <Tag
-        bordered={false}
-        color="orange"
-        style={{ cursor: 'pointer' }}  
-        onClick={() => {
-          setSelectedIdTeamLead(record.id)
-          console.log('p', record.id)
-          showModal();
-          // onClick={() => setIsModalOpen(true)} // sama aja 
-        }}
-      >
-        <EditOutlined /> Edit Password
-      </Tag>
+      <ModalComponent
+          title="Ubah Password"
+          footer={(handleCancel) => (
+            <div>
+              <Button onClick={handleCancel}>Cancel</Button>
+              <Button type='primary' onClick={editPassword}>OK</Button>
+            </div>
+          )}
+            content={(
+              <>
+                <p>Masukkan Password Baru</p>
+                  <Input.Password 
+                    placeholder="Masukkan password" 
+                    value={newPassword.password}
+                    onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
+                  />
+              </>
+            )}
+        >
+          <Tag
+            bordered={false}
+            color="orange"
+            style={{ cursor: 'pointer' }}  
+            onClick={() => {
+              setSelectedIdTeamLead(record.id)
+              console.log('p', record.id)
+              // showModal();
+              // onClick={() => setIsModalOpen(true)} // sama aja 
+            }}
+          >
+            <EditOutlined /> Edit Password
+          </Tag>
+        </ModalComponent>
+      
     )
   },
 ];  
 
-const { data: namaTeamLead, error: errorNamaTeamLead, isValidating: validateNamaTeamLead } = 
+const { data: namaTeamLead, error: errorNamaTeamLead, isValidating: validateNamaTeamLead, mutate } = 
   teamleadRepository.hooks.useNamaTeamLead();
 console.log(namaTeamLead)
 
@@ -164,20 +150,70 @@ if (errorNamaTeamLead) {
   return <Alert message="Error fetching data" type="error" />;
 }
 
-// const handleEditPasswordClick = () => {
-//   console.log('Edit Password clicked');
-//   // Tambahkan logika lain di sini, seperti navigasi atau membuka modal
-// };
-
 return (
     <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15 }}>
-      <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>Daftar Team Lead
-          <Button type="primary" style={{ marginLeft: 723}} onClick={showAddModal}>
-          {/* <Button type="primary" onClick={tambahTeamLead}>Ok</Button> */}
-          <PlusOutlined />Tambah
-          </Button>
-      </h1>
-          
+      <div  style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>
+          Daftar Team Lead
+        </h1>
+
+          <ModalComponent
+            title="Tambah Team Lead"
+            footer={(handleCancel) => (
+              <>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type='primary' onClick={tambahTeamLead}>OK</Button>
+              </>
+            )}
+            content={(
+              <>
+                {/* <p>Tambah Team Lead</p> */}
+                {/* <Form> */}
+                    <Form.Item
+                      label="Nama"
+                      // name="name"
+                    >
+                      <Input 
+                        placeholder='Masukkan nama'  
+                        value={newTeamLead.nama} 
+                        onChange={(e) => setNewTeamLead({ ...newTeamLead, nama: e.target.value})}
+                        style={{ marginLeft: 25, width: 357 }}
+                      />
+                    </Form.Item>
+                  
+                    <Form.Item
+                      label="Username"
+                      // name="username"
+                    >
+                      <Input 
+                        placeholder='Masukkan username' 
+                        value={newTeamLead.username}
+                        onChange={(e) => setNewTeamLead({...newTeamLead, username: e.target.value})}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Email"
+                      // name="email"
+                    >
+                      <Input 
+                        placeholder='Masukkan email' 
+                        value={newTeamLead.email}
+                        onChange={(e) => setNewTeamLead({...newTeamLead, email: e.target.value})}
+                        style={{ marginLeft: 28, width: 357 }}
+                      />
+                    </Form.Item>
+                {/* </Form> */}
+              </>
+            )}
+            >
+              <Button type="primary" >
+                <PlusOutlined />Tambah
+              </Button>
+          </ModalComponent>
+        
+      </div>
+
       {/* ALERT WARNING */}
         {showAlert && (
           <>
@@ -205,53 +241,29 @@ return (
             size="middle"
             pagination={{ position: ['bottomCenter'] }}
         />
-
-        <Modal title="Ubah Password" open={isModalOpen} onOk={editPassword} onCancel={handleCancel}>
-          <p>Masukkan Password Baru</p>
-          <Input.Password 
-            placeholder="Masukkan password" 
-            value={newPassword.password}
-            onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
-          />
-        </Modal>
-
-        <Modal title="Tambah Team Lead" open={isAddModalOpen} onOk={tambahTeamLead} onCancel={handleAddCancel}>
-          {/* <p>Tambah Team Lead</p> */}
-            <Form>
-                <Form.Item
-                  label="Nama"
-                  style={{ width: '100%' }}
-                >
-                  <Input 
-                    placeholder='Masukkan nama'  
-                    value={newTeamLead.nama} 
-                    onChange={(e) => setNewTeamLead({ ...newTeamLead, nama: e.target.value})}
-                    style={{ marginLeft: 25, width: 397 }}
-                  />
-                </Form.Item>
-              
-                <Form.Item
-                  label="Username"
-                >
-                  <Input 
-                    placeholder='Masukkan username' 
-                    value={newTeamLead.username}
-                    onChange={(e) => setNewTeamLead({...newTeamLead, username: e.target.value})}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label="Email"
-                >
-                  <Input 
-                    placeholder='Masukkan email' 
-                    value={newTeamLead.email}
-                    onChange={(e) => setNewTeamLead({...newTeamLead, email: e.target.value})}
-                    style={{ marginLeft: 29, width: 398 }}
-                  />
-                </Form.Item>
-            </Form>
-        </Modal>
+        {/* <ModalComponent
+         title="Ubah Password"
+         footer={(handleCancel) => (
+          <div>
+            <Button onClick={editPassword}>Ok</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
+          </div>
+         )}
+          content={(
+            <>
+              <p>Masukkan Password Baru</p>
+                <Input.Password 
+                  placeholder="Masukkan password" 
+                  value={newPassword.password}
+                  onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
+                />
+            </>
+          
+          )}
+        >
+        </ModalComponent> */}
+        
+        
     </div>
   );
 };

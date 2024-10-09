@@ -1,4 +1,5 @@
 import { http } from "#/utils/http";
+import { create } from "domain";
 import { Response } from "superagent";
 import useSWR, { mutate } from "swr";
 
@@ -27,6 +28,10 @@ const url = {
 	//create
 	createAnggotaTeam() {
 		return `/team/tambah`
+	},
+	//tambah project (super admin)
+	tambahProject() {
+		return `/project/tambah`
 	},
 	
 	//update
@@ -90,6 +95,20 @@ const api = {
 		} catch (error) {
 			console.error('Error in createAnggotaTeam:', error);
 			throw new Error('Gagal menambahkan anggota tim atau memperbarui status.');
+		}
+	},
+
+		//tambah project (super admin)
+	async tambahProject(body: any){
+		try {
+			const tambahProjectResponse = await http.post(url.tambahProject(), body);
+			
+			return {
+				tambahProjectResponse: tambahProjectResponse.body
+			};
+		} catch (error) {
+			console.error('Error tambah project:', error);
+			throw new Error('Gagal tambah project');
 		}
 	},
 

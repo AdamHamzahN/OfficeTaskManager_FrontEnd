@@ -49,7 +49,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 // visible={visible !== undefined ? visible : isModalVisible}
                 destroyOnClose={true}
             >
-                <div style={{borderTop:'1px solid gray',padding:'20px',borderBottom:'1px solid gray'}}>
+                <div style={{borderTop:'1px solid lightgray', padding:'20px', borderBottom:'1px solid lightgray'}}>
                     {content}
                 </div>
             </Modal>

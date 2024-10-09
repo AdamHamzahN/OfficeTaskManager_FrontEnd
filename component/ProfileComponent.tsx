@@ -19,7 +19,7 @@ const ProfileComponent: React.FC<{
     <Popover
       content={content}
       title={
-        <div style={{ borderBottom: '1px solid black' }}>
+        <div style={{ borderBottom: '1px solid lightgray' }}>
             Profile
         </div>
       }
