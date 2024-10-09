@@ -20,7 +20,7 @@ const DetailProject: React.FC<{
     return (
         <div>
             <TableTeam idProject={idProject} nama_team={nama_team} data={teamData} refreshTable={refreshTable} />
-            <TableTask data={tugasData} refreshTable={refreshTable} formatTimeStr={formatTimeStr} />
+            <TableTask data={tugasData} dataTeam={teamData} idProject={idProject} refreshTable={refreshTable} formatTimeStr={formatTimeStr} />
         </div>
     );
 };
@@ -91,12 +91,8 @@ const Page = () => {
     return (
         <div>
             <Header
+                data={detailProject.data}
                 idUser={idUser}
-                status={detailProject?.data.status}
-                file_project={detailProject?.data.file_project}
-                idProject={detailProject?.data.id}
-                nama_project={detailProject?.data.nama_project}
-                nama_team={detailProject?.data.nama_team}
                 refreshTable={refreshTable}
             />
             <div

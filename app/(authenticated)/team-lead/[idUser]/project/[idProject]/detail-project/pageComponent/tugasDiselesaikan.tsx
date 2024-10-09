@@ -159,7 +159,7 @@ const TugasDiselesaikan: React.FC<{
                 pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />
             <ModalComponent
-                title={'Catatan Redo Tugas'}
+                title={'Catatan'}
                 content={
                     <div>
                         <p>Masukkan Note :</p>
@@ -168,6 +168,7 @@ const TugasDiselesaikan: React.FC<{
                             placeholder="Masukkan catatan..."
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
+                            required
                         />
                     </div>
                 }

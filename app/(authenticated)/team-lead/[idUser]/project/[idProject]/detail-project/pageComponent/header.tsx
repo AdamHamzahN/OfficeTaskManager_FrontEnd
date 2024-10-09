@@ -2,21 +2,18 @@ import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
 import { Button, Input, Modal, Select } from "antd";
 import { useRef, useState } from "react";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalComponent from "#/component/ModalComponent";
 import Link from "next/link";
+import ModalDetailProject from "../modal/modalDetailProject";
+const { Option } = Select;
 
 const Header: React.FC<{
-    status: string,
-    file_project: string,
-    idProject: string,
-    nama_team: string,
-    nama_project: string,
-    idUser: string,
+    data:any
+    idUser : string
     refreshTable: () => void
-}> = ({ status, file_project, idProject, nama_team, nama_project, idUser, refreshTable }) => {
-    const { Option } = Select;
-
+}> = ({ data,idUser, refreshTable }) => {
+    const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user } = data;
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -31,8 +28,6 @@ const Header: React.FC<{
                 return { backgroundColor: 'rgba(76, 175, 80, 0.1)', borderColor: '#4CAF50', color: '#4CAF50' };
         }
     };
-
-    const filePdfUrl = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
     const [formData, setFormData] = useState<{ status: string; file_bukti: File | null, fileName: string }>({
         status: status,
         file_bukti: null,
@@ -43,8 +38,8 @@ const Header: React.FC<{
 
     const handleFileUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
-        setFormData(prevFormData => ({ 
-            ...prevFormData, 
+        setFormData(prevFormData => ({
+            ...prevFormData,
             file_bukti: file,
             fileName: file ? file.name : '' // Menyimpan nama file yang dipilih
         }));
@@ -59,13 +54,13 @@ const Header: React.FC<{
     const updateStatus = async () => {
         const { status, file_bukti } = formData;
 
-        if (!status) {
-            alert('Masukkan Status terlebih dahulu!');
+        if (status === 'done' && file_bukti === null || file_bukti === undefined) {
+            alert('Masukkan file terlebih dahulu!');
             return;
         }
 
         try {
-            await projectRepository.api.updateStatusProject(idProject, {
+            await projectRepository.api.updateStatusProject(id, {
                 status_project: status,
                 file_hasil_project: file_bukti
             });
@@ -95,12 +90,28 @@ const Header: React.FC<{
                 </h3>
             </div>
             <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
-                <a href={filePdfUrl} target='_blank' rel="noopener noreferrer">
-                    <button type="button" className="bg-transparent hover:bg-green-600 text-green-700 hover:text-white py-3 px-6 border border-green-600 hover:border-transparent rounded text-justify">
-                        <FileExcelOutlined style={{ fontSize: 15 }} /> Export To Excel
+                <ModalComponent
+                    title={'Detail Tugas'}
+                    content={<ModalDetailProject
+                        nama_project={nama_project}
+                        team_lead={user.username }
+                        nama_team={nama_team }
+                        status={status}
+                        start_date={start_date}
+                        end_date={end_date}
+                        note={note}
+                        file_project={file_project}
+                    />}
+                    footer={(handleOk) => (
+                        <div>
+                            <Button type="primary" onClick={handleOk}>Ok</Button>
+                        </div>
+                    )}
+                >
+                    <button type="button" className="bg-transparent hover:bg-blue-600 text-blue-700 hover:text-white py-3 px-6 border border-blue-600 hover:border-transparent rounded text-justify">
+                        <SearchOutlined style={{ fontSize: 15 }} /> Detail Project
                     </button>
-                </a>
-
+                </ModalComponent>
                 {status !== 'approved' && (
                     <ModalComponent
                         title={'Ubah Status Project'}
@@ -125,6 +136,7 @@ const Header: React.FC<{
                                     style={{ width: '100%', marginBottom: '16px' }}
                                     value={formData.status}
                                     onChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+
                                 >
                                     <Option value="pending">Pending</Option>
                                     <Option value="on-progress">On Progress</Option>
@@ -142,6 +154,7 @@ const Header: React.FC<{
                                             accept="application/pdf"
                                             style={{ display: 'none' }}
                                             ref={fileInputRef}
+                                            required
                                         />
                                         <Button htmlType='button' block onClick={handleButtonClick} style={{ marginTop: '8px', width: '100%' }}>
                                             Pilih Hasil Project
@@ -176,7 +189,7 @@ const Header: React.FC<{
                     {status}
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 

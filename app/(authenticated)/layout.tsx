@@ -390,7 +390,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           </div>
         </Header>
         {/* , fontFamily: 'Roboto, sans-serif' */}
-        <Content style={{ marginLeft: 220, marginTop: 20 }}>
+        <Content style={{ marginLeft: 220, marginTop: 20,padding:10}}>
           {children}
         </Content>
         <Footer style={{ textAlign: 'center' }}>

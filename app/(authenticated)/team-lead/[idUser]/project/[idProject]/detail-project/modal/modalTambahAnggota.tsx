@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import { projectRepository } from '#/repository/project';
-
-interface Karyawan {
-    id: string;
-    user: { nama: string };
-    job: { nama_job: string };
-}
     
 interface ModalTambahAnggotaProps {
     onSelectKaryawan: (id: string) => void;

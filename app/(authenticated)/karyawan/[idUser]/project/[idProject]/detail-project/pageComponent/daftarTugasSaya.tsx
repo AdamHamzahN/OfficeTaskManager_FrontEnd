@@ -1,7 +1,8 @@
 import ModalComponent from "#/component/ModalComponent";
 import { Button, Row, Table, Tag } from "antd";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
-import ModalDetailTugas from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/modal/modalDetailTugas";
+import ModalDetailTugas from "../modal/modalDetailTugas";
+
 
 const DaftarTugasSaya : React.FC<{
     data: any,
@@ -21,7 +22,7 @@ const DaftarTugasSaya : React.FC<{
                 const getColor = () => {
                     switch (status) {
                         case 'pending': return '#FFC107';
-                        case 'on-progress': return '#00BCD4';
+                        case 'on progress': return '#00BCD4';
                         case 'redo': return '#F44336';
                         case 'done': return '#2196F3';
                         default: return '#4CAF50';
@@ -58,8 +59,6 @@ const DaftarTugasSaya : React.FC<{
                                     <Button type="primary" onClick={handleOk}>Ok</Button>
                                 </div>
                             )}
-                            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
-                            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
                         >
                             <Button
                                 style={{

@@ -1,14 +1,81 @@
 import ModalComponent from "#/component/ModalComponent";
-import { Button, Row, Table, Tag } from "antd";
+import { Button, Modal, Row, Table, Tag } from "antd";
 import ModalDetailTugas from "../modal/modalDetailTugas";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalTambahTugas from "../modal/modalTambahTugas";
+import { useState } from "react";
+import { tugasRepository } from "#/repository/tugas";
 
 const TableTask: React.FC<{
     data: any,
+    dataTeam: any,
+    idProject: string
     refreshTable: () => void,
     formatTimeStr: (text: string) => string,
-}> = ({ data, refreshTable, formatTimeStr }) => {
+}> = ({ data, dataTeam, idProject, refreshTable, formatTimeStr }) => {
+    const [formData, setFormData] = useState<{
+        nama_tugas: string;
+        deskripsi_tugas: string;
+        deadline: string;
+        id_project: string;
+        id_karyawan: string;
+        file_tugas: File | null;
+    }>({
+        nama_tugas: '',
+        deskripsi_tugas: '',
+        deadline: '',
+        id_project: idProject,
+        id_karyawan: '',
+        file_tugas: null,
+    });
+
+    const handleCreateTugas = (tugasData: {
+        nama_tugas: string;
+        deskripsi_tugas: string;
+        deadline: string;
+        id_project: string;
+        id_karyawan: string;
+        file_tugas: File | null;
+    }) => {
+        setFormData(tugasData);
+    }
+
+    const createTask = async () => {
+        console.log('data input:', formData, 'file :', formData.file_tugas);
+        const { nama_tugas, deskripsi_tugas, deadline, id_project, id_karyawan, file_tugas } = formData;
+
+        if (!nama_tugas || !deskripsi_tugas || !deadline || !id_project || !id_karyawan || !file_tugas) {
+            alert('Data yang diisi belum lengkap!');
+            return;
+        }
+
+        try {
+            await tugasRepository.api.createTugas({
+                nama_tugas: nama_tugas,
+                deskripsi_tugas: deskripsi_tugas,
+                deadline: deadline,
+                id_project: id_project,
+                id_karyawan: id_karyawan,
+                file_tugas: file_tugas,
+            })
+            refreshTable()
+            Modal.success({
+                title: 'Berhasil',
+                content: 'Berhasil menambah Tugas',
+                onOk() {
+                    console.log('OK clicked');
+                },
+                onCancel() {
+                    console.log('Cancel clicked');
+                }
+            });
+        } catch (error) {
+            console.error('Gagal menambah Tugas', error);
+        }
+    }
+
+
+
     const columns = [
         {
             title: 'Tugas',
@@ -90,18 +157,26 @@ const TableTask: React.FC<{
                 </div>
                 <div>
                     <ModalComponent
-                        title={'Tambah Anggota Team'}
-                        content={<ModalTambahTugas  />}
+                        title={'Tambah Tugas Baru'}
+                        content={<ModalTambahTugas create_tugas={handleCreateTugas} karyawan={dataTeam} idProject={idProject} />}
                         footer={(handleCancel) => (
                             <div>
                                 <Button onClick={handleCancel}>Cancel</Button>
-                                <Button type="primary" >Tambah</Button>
+                                <Button type="primary" onClick={createTask} >Tambah</Button>
                             </div>
                         )}
-                        // onOk={tambahKaryawan}
-                        // onCancel={() => setSelectedKaryawan(undefined)}
                     >
-                        <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded">
+                        <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded"
+                            onClick={() => {
+                                setFormData({
+                                    nama_tugas: '',
+                                    deskripsi_tugas: '',
+                                    deadline: '',
+                                    id_project: idProject,
+                                    id_karyawan: '',
+                                    file_tugas: null
+                                });
+                            }}>
                             + Tambah Tugas
                         </button>
                     </ModalComponent>
