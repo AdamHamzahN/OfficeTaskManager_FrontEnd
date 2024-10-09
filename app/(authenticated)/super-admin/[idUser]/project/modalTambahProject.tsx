@@ -11,7 +11,7 @@ interface ModalTambahProject {
                                 nama_team: string, 
                                 start_date: string, 
                                 end_date: string, 
-                                file_project: string
+                                file_project: File | null
                                 }) => void;
 }
 
@@ -21,18 +21,18 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
     const [nama_team, setNamaTeam] = useState<string>('');
     const [start_date, setStartDate] = useState<string>('');
     const [end_date, setEndDate] = useState<string>('');
-    const [file_project, setFileProject] = useState<string>('');
+    const [file_project, setFileProject] = useState<File | null>(null);
 
     const  handleProject = () => {
         createproject({nama_project, id_team_lead, nama_team, start_date, end_date,file_project});
     };
-    // TANGGAL
+    
+    // handle TANGGAL 
     const {RangePicker} = DatePicker;
-
     const handleDataChange = (dates: any, dateStrings: [string, string]) => {
         setStartDate(dateStrings[0]);
         setEndDate(dateStrings[1]);
-        handleProject();
+        // handleProject();
     }
 
     // buttom uploud file
@@ -41,6 +41,12 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
         event.preventDefault();
         if (fileInputRef.current) {
             fileInputRef.current.click();
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+          setFileProject(e.target.files[0]); // Save the file, not its string path
         }
     };
 
@@ -53,6 +59,7 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
                     onChange={(e) => {
                         setNamaProject(e.target.value);
                         handleProject();
+                        // onBlur={handleProject}
                     }}
                 />
             </Form.Item>
@@ -96,19 +103,22 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
                     style={{ display: 'none' }}
                     ref={fileInputRef}
                     placeholder="Upload file"
-                    value={nama_team}
-                    onChange={(e) => {
-                        setFileProject(e.target.value);
-                        handleProject();
-                    }}
+                    // value={file_project}
+                    // onChange={(e) => {
+                    //     setFileProject(e.target.value);
+                    //     handleProject();
+                    // }}
+                    onChange={handleFileChange}
                 />
 
                 <Button 
                     htmlType="button" 
                     block 
                     onClick={handleButtonClick} 
-                    style={{ marginLeft: 14, width: 334 }}>  
-                    <UploadOutlined/>Upload file</Button>
+                    style={{ marginLeft: 14, width: 334 }}
+                >  
+                    <UploadOutlined/>Upload file project
+                </Button>
             </Form.Item>
             
         </>
