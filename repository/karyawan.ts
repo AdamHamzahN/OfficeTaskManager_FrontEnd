@@ -11,6 +11,9 @@ const url = {
     },
     getKaryawanById(id_karyawan: string) {
         return `/karyawan/${id_karyawan}/detail`
+    },
+    editKaryawanById(idUser:string){
+        return `/users/${idUser}/super-admin-update-password`
     }
 }
 
@@ -28,7 +31,7 @@ const hooks = {
 
 const api = {
     async tambahKaryawan(body:any) {
-        const bodyValue = (body.newJob)
+        const bodyValue = (body.newKaryawan)
 		try {
 			const karyawanResponse = await http.post(url.tambahKaryawan(), bodyValue);
 			console.log('Response from createAnggotaTeam:', karyawanResponse.body);
@@ -38,7 +41,20 @@ const api = {
 		} catch (error) {
 			throw new Error('Gagal mengubah nama Karyawan');
 		}
-	}
+	},
+    async editPassword(id_user: string, body: any) {
+        const bodyValue = (body.newPassword)
+        try {
+            const userResponse = await http.put(url.editKaryawanById(id_user), bodyValue);
+            return {
+                userResponse: userResponse.body,
+                // status: response.status, // status dari HTTP response
+                // data: response.data, // data dari body respons
+            };
+        } catch (error) {
+            throw new Error('Gagal mengubah password');
+        }
+    }
 }
 
 export const karyawanRepository = {

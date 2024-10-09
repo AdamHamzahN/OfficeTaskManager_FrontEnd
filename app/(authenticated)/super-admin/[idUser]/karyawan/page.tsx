@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Space, Table, Alert, Spin, Button, Switch, Modal } from 'antd';
+import { Space, Table, Alert, Spin, Button, Switch, Modal, Tag, Input } from 'antd';
 import { karyawanRepository } from '#/repository/karyawan'; // Ganti dengan jalur yang sesuai jika berbeda
-import { EyeOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailKaryawan from './modalDetailKaryawan';
@@ -11,21 +11,52 @@ import { render } from 'react-dom';
 
 interface KaryawanData {
   id: string;
-  user: { nama: string };
+  user: { nama: string,id:string };
   nik: string;
   job: { nama_job: string };
   status_project: string;
 }
 
 const Page: React.FC = () => {
-  const [newKaryawan, setNewKaryawan] = useState<{ nik: string, user: string, gender: string, email: string, username: string, job: string }>({
+  const [newKaryawan, setNewKaryawan] = useState<{ nik: string, nama: string, gender: string, email: string, username: string, job: string }>({
     nik: '',
-    user: '',
+    nama: '',
     gender: '',
     email: '',
     username: '',
     job: '',
   });
+
+  const [newPassword, setNewPassword] = useState<{ password: string }>({
+    password: ''
+  });
+  
+  const [selectedIdKaryawan, setSelectedIdKaryawan] = useState<string | null>(null);
+
+  // state alert warning
+  const [showAlert, setShowAlert] = useState(false);
+
+  // handle edit password
+  const editPassword = async () => {
+    if (!newPassword.password) {
+      setShowAlert(true);
+      return;
+    }
+    // const password = newPassword.password
+    try {
+      console.log('tes', selectedIdKaryawan);
+      await karyawanRepository.api.editPassword(selectedIdKaryawan || '', {newPassword});
+      Modal.success({
+        title: 'Password berhasil diubah',
+        content: 'Password karyawan berhasil diubah...',
+        okText: 'OK',
+      });
+      mutate()
+      // setIsModalOpen(false); // Close the modal on success
+    } catch (error) {
+      console.error('Gagal edit password:', error);
+    }
+  };  
 
 const columnKaryawan = [
   {
@@ -64,39 +95,77 @@ const columnKaryawan = [
     render: (record: KaryawanData) => {
       const idKaryawan = record.id;
       return (
+        <>
         <ModalComponent
           title={'Detail Tugas'}
           content={<ModalDetailKaryawan idKaryawan={idKaryawan} />}
           footer={(handleCancel, handleOk) => (
             <div>
               <Button onClick={handleCancel}>Cancel</Button>
-              <Button type="primary" onClick={handleOk}>Ok</Button>
+              <Button type="primary" onClick={handleOk}>OK</Button>
             </div>
           )}
         >
           <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
-            <EyeOutlined /> detail
+            <EyeOutlined /> Detail
           </Button>
         </ModalComponent>
+
+         <ModalComponent
+         title="Ubah Password"
+         footer={(handleCancel) => (
+           <div>
+             <Button onClick={handleCancel}>Cancel</Button>
+             <Button type='primary' onClick={editPassword}>OK</Button>
+           </div>
+         )}
+         content={(
+           <>
+             <p>Masukkan Password Baru</p>
+             <Input.Password
+               placeholder="Masukkan password"
+               value={newPassword.password}
+               onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
+             />
+           </>
+         )}
+       >
+       <Tag
+         bordered={false}
+         color="orange"
+         style={{ cursor: 'pointer' }}  
+         onClick={() => {
+           setSelectedIdKaryawan(record.user.id)
+           console.log('tes', record.id)
+           // showModal();
+           // onClick={() => setIsModalOpen(true)} // sama aja 
+         }}
+       >
+         <EditOutlined /> Edit Password
+       </Tag>
+     </ModalComponent>
+     </>
       );
     },
-  },
+  }
 ];
 
-  const { data: apiResponse, error: updateError, isValidating: updateValidating } = karyawanRepository.hooks.useAllKaryawan();
+  const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = karyawanRepository.hooks.useAllKaryawan();
+
   const tambahKaryawan = async () => {
-    if (!newKaryawan.nik || !newKaryawan.user || !newKaryawan.gender) {
-      alert('Lengkapi data Job Terlebih Dahulu');
-      return;
-    }
+    console.log('p',newKaryawan)
+    // if (!newKaryawan.nik || !newKaryawan.nama || !newKaryawan.gender || !newKaryawan.email || !newKaryawan.username || !newKaryawan.job) {
+    //   alert('Lengkapi data Karyawan Terlebih Dahulu');
+    //   return;
+    // }
     try {
       await karyawanRepository.api.tambahKaryawan({ newKaryawan });
       Modal.success({
-        title: 'Job Ditambahkan',
-        content: 'Berhasil menambahkan Job baru!',
+        title: 'Karyawan Ditambahkan',
+        content: 'Berhasil menambahkan Karyawan baru!',
       });
     } catch (error) {
-      console.error('Gagal menambahkan Job:', error);
+      console.error('Gagal menambahkan Karyawan:', error);
     }
   };
 
@@ -122,12 +191,32 @@ const columnKaryawan = [
         borderRadius: 15,
       }}
     >
+      {/* ALERT WARNING */}
+      {showAlert && (
+          <>
+          {/* Full-screen overlay to block interaction */}
+            <div className='alert-overlay' />
+
+             {/* Alert container */}
+              <div className="alert-container">
+              <Alert
+                  message="Warning"
+                  description="Semua field harus diisi."
+                  type="warning"
+                  showIcon
+                  closable
+                  onClose={() => setShowAlert(false)}
+              />
+            </div>
+          </>
+        )}
+
       <Space style={{ marginLeft: '20px', marginBottom: '10px' }}>
         <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0', marginTop: '30px' }}>
           Daftar Karyawan
         </h1>
         <ModalComponent
-          title={'Tambah Job Baru'}
+          title={'Tambah Karyawan Baru'}
           content={<ModalTambahKaryawan createkaryawan={setNewKaryawan} />}
           footer={(handleCancel) => (
             <div>
@@ -137,7 +226,7 @@ const columnKaryawan = [
           )}
         >
           <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right' }}>
-            Tambah Job
+            Tambah Karyawan
           </Button>
         </ModalComponent>
       </Space>
