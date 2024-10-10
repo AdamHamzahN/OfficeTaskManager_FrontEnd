@@ -76,7 +76,6 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
                 </>
             )}
 
-
             {detailTugas.data.status === 'approved' && (
                 <>
                     <label htmlFor="waktu_selesai_approved" style={{ marginBottom: '8px', display: 'block' }}>Waktu Selesai</label>

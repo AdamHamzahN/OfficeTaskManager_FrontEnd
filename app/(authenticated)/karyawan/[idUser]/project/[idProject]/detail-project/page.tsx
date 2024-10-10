@@ -45,13 +45,6 @@ const Page = () => {
     }
     if (error) {
         return <Alert message="Error fetching data" type="error" />;
-    }
-
-    const refreshTable = async () => {
-        await mutateDetailProject();
-        await mutateDaftarTugas();
-        await mutateTeam();
-        await mutateTugasBelumSelesai();
     };
 
     const refreshTableTugas = async () => {
@@ -75,16 +68,18 @@ const Page = () => {
             >
                 <TableTeam idProject={idProject} nama_team={detailProject?.data.nama_team} data={teamProject} />
             </div>
-            <div
-                style={{
-                    padding: 24,
-                    backgroundColor: '#fff',
-                    borderRadius: 15,
-                    marginTop: 10,
-                }}
-            >
-                <TugasBelumDiselesaikan data={tugasBelumSelesai} formatTimeStr={formatTimeStr} refreshTable={refreshTableTugas} />
-            </div>
+            {detailProject.data.status !== 'approved' && (
+                <div
+                    style={{
+                        padding: 24,
+                        backgroundColor: '#fff',
+                        borderRadius: 15,
+                        marginTop: 10,
+                    }}
+                >
+                    <TugasBelumDiselesaikan data={tugasBelumSelesai} formatTimeStr={formatTimeStr} refreshTable={refreshTableTugas} />
+                </div>
+            )}
             <div
                 style={{
                     padding: 24,

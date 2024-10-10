@@ -10,7 +10,7 @@ const Header: React.FC<{
     data:any
     idUser : string
 }> = ({ data, idUser}) => {
-    const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user } = data;
+    const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user ,file_hasil_project} = data;
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -29,7 +29,7 @@ const Header: React.FC<{
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-1 px-2 rounded-full w-8 h-8 border-0 flex justify-center items-center ml-2">
-                    <Link href={`/team-lead/${idUser}/project`} className="no-underline text-black">
+                    <Link href={`/karyawan/${idUser}/project`} className="no-underline text-black">
                         <ArrowLeftOutlined />
                     </Link>
                 </button>
@@ -39,7 +39,7 @@ const Header: React.FC<{
             </div>
             <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
                 <ModalComponent
-                    title={'Detail Tugas'}
+                    title={'Detail Project'}
                     content={<ModalDetailProject
                         nama_project={nama_project}
                         team_lead={user.username }
@@ -49,6 +49,7 @@ const Header: React.FC<{
                         end_date={end_date}
                         note={note}
                         file_project={file_project}
+                        file_hasil_project={file_hasil_project}
                     />}
                     footer={(handleOk) => (
                         <div>
