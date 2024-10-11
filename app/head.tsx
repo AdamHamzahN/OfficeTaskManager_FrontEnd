@@ -8,10 +8,12 @@ export default function Head() {
 
   return (
     <>
-      <title>Nextjs 13 Boilerplate</title>
+      <title>Office Task Manager</title>
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <meta name="description" content="Boilerplate" />
-      <link rel="icon" href="/favicon.ico" />
+      {/* Favicon (buat atur icon) */}
+      <link rel="icon" type="image/x-icon" href="/icon.svg" /> 
+
     </>
   )
 }

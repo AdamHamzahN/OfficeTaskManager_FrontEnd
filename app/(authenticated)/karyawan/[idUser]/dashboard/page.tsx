@@ -1,13 +1,10 @@
 "use client";
 import React from "react";
-import { Table, Tag, Row, Col, Spin, Alert, Card } from 'antd';
-import type { TableProps } from 'antd';
-import { format } from "path";
-import { title } from "process";
+import { Table, Tag, Row, Col, Spin, Alert } from 'antd';
 import CardDashboard from "#/component/CardDashboard";
-import CardProjectDashboard from "#/component/CardProjectDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { useParams } from "next/navigation";
+import { InboxOutlined } from '@ant-design/icons';
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -62,7 +59,6 @@ const columnTugasProject = [
     title: 'Deadline',
     dataIndex: 'deadline',
     key: 'deadline',
-    render: (text: string) => formatTimeStr(text)
   },
   {
     title: 'Waktu Update',
@@ -94,16 +90,17 @@ const columnTugasProject = [
 const Page: React.FC = () => {
   const params = useParams();
   const idUser = params?.idUser as string | undefined;
-  // hook 3 update tugas karyawan terbaru
-  const { data: updateTugas, error: tugasError, isValidating: tugasValidating } = idUser
-    ? dashboardRepository.hooks.useTugasKaryawanTerbaru(idUser)
-    : { data: null, error: null, isValidating: false };
+
+  // const { data: updateTugas, error: tugasError, isValidating: tugasValidating } = idUser
+  //   ? dashboardRepository.hooks.useTugasKaryawanTerbaru(idUser)
+  //   : { data: null, error: null, isValidating: false };
 
   const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = idUser
     ? dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
     : { data: null, error: null, isValidating: false };
-
-  const loading = tugasValidating || tugasProjectValidating;
+  // const { tugas } = tugasProject;
+  const tugas: any = []
+  const loading = tugasProjectValidating;
 
   return (
     <div
@@ -138,12 +135,12 @@ const Page: React.FC = () => {
             <div style={{ paddingBottom: '75%', position: 'relative' }}>
               {loading ? (
                 <Spin style={{ textAlign: 'center', padding: '20px' }} />
-              ) : tugasError ? (
+              ) : tugasProjectError ? (
                 <Alert message="Error fetching data" type="error" />
-              ) : updateTugas !== null ? (
+              ) : loading !== null ? (
                 <Table
                   className="card-table"
-                  dataSource={updateTugas}
+                  dataSource={tugasProject?.tugas}
                   columns={columnTugasTerbaru}
                   pagination={false}
                   style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
@@ -170,31 +167,48 @@ const Page: React.FC = () => {
               boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 30, marginBottom: 40 }}>
-
-              <div style={{ textAlign: 'center', flex: 1 }}>  {/* Tambahkan flex: 1 untuk lebar yang sama */}
-                <h2 style={{ fontSize: 30 }}>{tugasProject?.jumlahBelumSelesai} Tugas</h2>
-                <Tag bordered={false} color="red" style={{ fontSize: 17, lineHeight: '30px', borderRadius: 5 }}>
-                  Belum Diselesaikan
-                </Tag>
+            {tugasProject?.nama_project == null ? (
+              <div
+                style={{
+                  display: 'flex',             
+                  flexDirection: 'column',
+                  alignItems: 'center',        
+                  justifyContent: 'center',    
+                  height: '100%',
+                  marginTop: 100, 
+                  marginBottom: 100       
+                }}
+              >
+                <InboxOutlined style={{ fontSize: '48px', color: '#ccc' }} />
+                <h1>Belum Ada Project</h1>
               </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 30, marginBottom: 40 }}>
 
-              <div className="vertical-line" style={{
-                width: 2,
-                height: 150,
-                backgroundColor: 'black',
-                margin: 20,
-                borderRadius: 10
-              }}></div>
+                <div style={{ textAlign: 'center', flex: 1 }}>  {/* Tambahkan flex: 1 untuk lebar yang sama */}
+                  <h2 style={{ fontSize: 30 }}>{tugasProject?.jumlahBelumSelesai} Tugas</h2>
+                  <Tag bordered={false} color="red" style={{ fontSize: 17, lineHeight: '30px', borderRadius: 5 }}>
+                    Belum Diselesaikan
+                  </Tag>
+                </div>
 
-              <div style={{ textAlign: 'center', flex: 1 }}> 
-                <h2 style={{ fontSize: 30 }}>{tugasProject?.jumlahSelesai} Tugas</h2>
-                <Tag bordered={false} color="success" style={{ fontSize: 17, lineHeight: '30px', borderRadius: 5 }}>
-                  Selesai
-                </Tag>
+                <div className="vertical-line" style={{
+                  width: 2,
+                  height: 150,
+                  backgroundColor: 'black',
+                  margin: 20,
+                  borderRadius: 10
+                }}></div>
+
+                <div style={{ textAlign: 'center', flex: 1 }}>
+                  <h2 style={{ fontSize: 30 }}>{tugasProject?.jumlahSelesai} Tugas</h2>
+                  <Tag bordered={false} color="success" style={{ fontSize: 17, lineHeight: '30px', borderRadius: 5 }}>
+                    Selesai
+                  </Tag>
+                </div>
+
               </div>
-
-            </div>
+            )}
 
           </CardDashboard>
         </Col>
@@ -203,9 +217,6 @@ const Page: React.FC = () => {
       <hr style={{ height: '2px', backgroundColor: 'black', border: 'none', borderRadius: 10, margin: 40 }} />
 
       <div className="project-sedang-dalam-pengerjaan" style={{ marginTop: 20 }}>
-        <div className="title" style={{ fontFamily: "Roboto, sans-serif", textAlign: "center", fontSize: 40 }}>
-          <h3>List Tugas Saat Ini</h3>
-        </div>
         {/*Tugas Project Yang Sedang dikerjakan */}
         <div style={{ display: 'block' }}>
           {loading ? (

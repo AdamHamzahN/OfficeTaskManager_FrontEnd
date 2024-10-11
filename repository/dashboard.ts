@@ -31,9 +31,6 @@ const url = {
     },
 
     //Karyawan
-    getTugasKaryawanTerbaru(id_user:string){
-        return `/tugas/${id_user}/karyawan/tugas-terbaru`
-    },
     getTugasKaryawanByProject(id_user:string) {
         return `/tugas/${id_user}/karyawan/tugas-project`
     }
@@ -66,9 +63,6 @@ const hooks = {
     },
 
     //Karyawan
-    useTugasKaryawanTerbaru(id_user: string) {
-        return useSWR(url.getTugasKaryawanTerbaru(id_user), http.fetcher);
-    },
     useGetTugasKaryawanByProject(id_user: string) {
         return useSWR(url.getTugasKaryawanByProject(id_user), http.fetcher);
     }
