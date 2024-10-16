@@ -134,14 +134,10 @@ const TableTask: React.FC<{
                         <ModalComponent
                             title={'Detail Tugas'}
                             content={<ModalDetailTugas idTugas={idTugas} />}
-                            footer={(handleOk) => (
+                            footer={(handleCancel, handleOk) => (
                                 <div>
-<<<<<<< HEAD
                                     <Button onClick={handleCancel}>Cancel</Button>
                                     <Button type="primary" onClick={handleOk}>OK</Button>
-=======
-                                    <Button type="primary" onClick={handleOk}>Ok</Button>
->>>>>>> 4721d24253632b52cac564f8e8eb624790f786c6
                                 </div>
                             )}
                         >
