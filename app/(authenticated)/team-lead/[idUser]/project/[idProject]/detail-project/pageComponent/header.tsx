@@ -13,7 +13,7 @@ const Header: React.FC<{
     idUser : string
     refreshTable: () => void
 }> = ({ data,idUser, refreshTable }) => {
-    const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user } = data;
+    const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user,file_hasil_project } = data;
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -91,16 +91,17 @@ const Header: React.FC<{
             </div>
             <div style={{ display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5 }}>
                 <ModalComponent
-                    title={'Detail Tugas'}
+                    title={'Detail Project'}
                     content={<ModalDetailProject
                         nama_project={nama_project}
-                        team_lead={user.username }
+                        team_lead={user.nama }
                         nama_team={nama_team }
                         status={status}
                         start_date={start_date}
                         end_date={end_date}
                         note={note}
                         file_project={file_project}
+                        file_hasil_project={file_hasil_project}
                     />}
                     footer={(handleOk) => (
                         <div>

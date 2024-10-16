@@ -1,17 +1,17 @@
 "use client";
 import { useState } from "react";
 import { projectRepository } from "#/repository/project";
-import { Alert, Col, Row, Spin, Tabs, TabsProps } from "antd";
+import { Alert, Col, Pagination, Row, Spin, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
 import ProjectList from "#/component/ProjectList";
 
-const ProjectListComponent: React.FC<{ idUser: string, status: string }> = ({ idUser, status }) => {
-    // Hooks untuk mendapatkan data proyek
-    const { data: projectDikerjakan, error: errorDikerjakan, isValidating: projectDikerjakanValidating } = projectRepository.hooks.useGetProjectDikerjakanKaryawan(idUser);
-    const { data: projectSelesai, error: errorSelesai, isValidating: projectSelesaiValidating } = projectRepository.hooks.useGetProjectSelesaiKaryawan(idUser);
-
-    const error = errorDikerjakan || errorSelesai;
-    const loading = projectDikerjakanValidating || projectSelesaiValidating;
+const ProjectListComponent: React.FC<{
+    idUser: string,
+    status: string,
+    data: any
+    loading: any,
+    error: any
+}> = ({ idUser, status, data, loading, error }) => {
 
     // Loading state
     if (loading) {
@@ -23,21 +23,11 @@ const ProjectListComponent: React.FC<{ idUser: string, status: string }> = ({ id
             </Col>
         );
     }
-
-    // Error state
     if (error) {
         return <Alert message="Error fetching data" type="error" />;
     }
 
-    // Menentukan proyek berdasarkan status yang dipilih
-    let projects;
-    if (status === "projectDikerjakan") {
-        projects = projectDikerjakan;
-    } else if (status === "projectSelesai") {
-        projects = projectSelesai;
-    }
-
-    if (!projects || projects.length === 0) {
+    if (!data || data.length === 0) {
         let message = "Tidak Ada Data";
         if (status === "projectDikerjakan") {
             message = "Tidak Ada Project Yang Sedang Dikerjakan";
@@ -56,7 +46,7 @@ const ProjectListComponent: React.FC<{ idUser: string, status: string }> = ({ id
     // Menampilkan data project
     return (
         <>
-            {projects.map((project: any, index: number) => (
+            {data.map((project: any, index: number) => (
                 <ProjectList
                     key={index}
                     title={project.nama_project}
@@ -74,7 +64,25 @@ const Page: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string>('projectDikerjakan');
     const params = useParams();
     const idUser = params?.idUser as string | undefined;
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const handlePageChange = (newPage: number, newPageSize: number) => {
+        setPage(newPage);
+        setPageSize(newPageSize);
+    };
+    const { data: projectDikerjakan, error: errorDikerjakan, isValidating: projectDikerjakanValidating } = projectRepository.hooks.useGetProjectDikerjakanKaryawan(idUser!);
+    const { data: projectSelesai, error: errorSelesai, isValidating: projectSelesaiValidating } = projectRepository.hooks.useGetProjectSelesaiKaryawan(idUser!,page,pageSize);
 
+    const error = errorDikerjakan || errorSelesai;
+    const loading = projectDikerjakanValidating || projectSelesaiValidating;
+    let projects;
+    if (activeKey === "projectDikerjakan") {
+        projects = projectDikerjakan;
+    } else if (activeKey === "projectSelesai") {
+        projects = projectSelesai;
+    }
+
+    const { data , count } = projects;
     const onChange: TabsProps['onChange'] = (key) => {
         setActiveKey(key);
     };
@@ -95,14 +103,36 @@ const Page: React.FC = () => {
                     minHeight: '100vh',
                     backgroundColor: '#fff',
                     borderRadius: 15,
+                    position: 'relative',
                 }}
             >
                 <div>
                     <Tabs defaultActiveKey="projectDikerjakan" items={items} onChange={onChange} />
                 </div>
                 <Row className="listProject" style={{ marginTop: '20px' }}>
-                    <ProjectListComponent idUser={idUser || ''} status={activeKey} />
+                    <ProjectListComponent
+                        idUser={idUser || ''}
+                        status={activeKey}
+                        data={projects}
+                        loading={loading}
+                        error={error} />
                 </Row>
+                <div style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                }}>
+                    {activeKey === "projectSelesai" && pageSize > 0 && (
+                        <Pagination
+                            current={1}
+                            pageSize={10}
+                            total={count}
+                            onChange={handlePageChange}
+                            pageSizeOptions={[1, 2, 5, 10]}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     );

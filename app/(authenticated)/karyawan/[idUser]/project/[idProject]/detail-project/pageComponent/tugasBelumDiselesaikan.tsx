@@ -15,8 +15,7 @@ const TugasBelumDiselesaikan: React.FC<{
     const [idTugas,setIdTugas] = useState<string | null>(null)
     const [formData, setFormData] = useState<{ status: string; file_bukti?: File | null }>({
         status: data.status,
-        file_bukti: null,
-        // fileName: '' 
+        file_bukti: null, 
     });
 
     const handleUpdateTugas = (tugasData: { status: string; file_bukti: File | null }) => {
@@ -25,6 +24,7 @@ const TugasBelumDiselesaikan: React.FC<{
     
     const updateStatus = async () => {
         const { status, file_bukti } = formData;
+        console.log(status,file_bukti);
         console.log(idTugas)
         if (status === 'done' && file_bukti === null || file_bukti === undefined) {
             alert('Masukkan file terlebih dahulu!');

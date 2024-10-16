@@ -13,14 +13,18 @@ const DetailProject: React.FC<{
     nama_team: any,
     idProject: any,
     teamData: any,
-    tugasData: any,
+    mutateTeam: any,
     refreshTable: () => void,
     formatTimeStr: (text: string) => string
-}> = ({ nama_team, idProject, teamData, tugasData, refreshTable, formatTimeStr }) => {
+}> = ({ nama_team, idProject, teamData,mutateTeam,refreshTable, formatTimeStr }) => {
     return (
         <div>
-            <TableTeam idProject={idProject} nama_team={nama_team} data={teamData} refreshTable={refreshTable} />
-            <TableTask data={tugasData} dataTeam={teamData} idProject={idProject} refreshTable={refreshTable} formatTimeStr={formatTimeStr} />
+            <TableTeam idProject={idProject} nama_team={nama_team} data={teamData} mutate={mutateTeam} refreshTable={refreshTable} />
+            <TableTask
+                dataTeam={teamData}
+                idProject={idProject}
+                refreshTable={refreshTable} 
+                formatTimeStr={formatTimeStr} />
         </div>
     );
 };
@@ -50,10 +54,8 @@ const Page = () => {
 
     const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
 
-    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } =tugasRepository.hooks.useGetTugasByProject(idProject);
-
-    const loading = validateDetailProject || validateTugasSelesai || validateTeam || validateTugas;
-    const error = errorDetailProject || errorTugasSelesai || errorTeam || errorTugas;
+    const loading = validateDetailProject || validateTugasSelesai || validateTeam;
+    const error = errorDetailProject || errorTugasSelesai || errorTeam;
 
 
     if (loading) {
@@ -66,8 +68,6 @@ const Page = () => {
     const refreshTable = async () => {
         await mutateDetailProject();
         await mutateTugasSelesai();
-        await mutateTeam();
-        await mutateTugas();
     };
 
     const onChange: TabsProps['onChange'] = (key) => {
@@ -80,8 +80,8 @@ const Page = () => {
                 nama_team={detailProject?.data.nama_team}
                 idProject={idProject}
                 teamData={teamProject}
-                tugasData={tugasProject}
                 refreshTable={refreshTable}
+                mutateTeam={mutateTeam}
                 formatTimeStr={formatTimeStr}
             />
         },

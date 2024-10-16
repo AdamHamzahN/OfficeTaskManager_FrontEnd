@@ -51,7 +51,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
             [key]: value,
         };
         setFormData(updatedFormData);
-        create_tugas({ ...updatedFormData, id_project: idProject }); // Ensure id_project is included
+        create_tugas({ ...updatedFormData, id_project: idProject }); 
     };
 
     const handleSelectChange = (value: string) => {
@@ -71,16 +71,17 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 value={formData.nama_tugas}
                 onChange={(e) => handleChange('nama_tugas', e.target.value)}
                 placeholder="Masukkan nama tugas"
+                style={{marginBottom: '8px'}}
             />
 
             <label htmlFor="karyawan" style={{ marginBottom: '8px', display: 'block' }}>Karyawan</label>
             <Select
                 id="karyawan"
                 placeholder="Pilih Karyawan"
-                style={{ width: '100%' }}
                 onChange={handleSelectChange}
                 options={options}
                 value={formData.id_karyawan || undefined}
+                style={{marginBottom: '8px',width: '100%' }}
             />
 
             <label htmlFor="deskripsi" style={{ marginBottom: '8px', display: 'block' }}>Deskripsi Tugas</label>
@@ -89,7 +90,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 style={{
                     height: 120,
                     resize: 'none',
-                    marginBottom: '16px',
+                    marginBottom: '8px',
                     minWidth: 'auto'
                 }}
                 value={formData.deskripsi_tugas}
@@ -99,7 +100,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
 
             <label htmlFor="deadline" style={{ marginBottom: '8px', display: 'block' }}>Deadline</label>
             <DatePicker
-                style={{ width: '100%' }}
+                style={{ width: '100%',marginBottom: '8px' }}
                 onChange={(date, dateString) => handleChange('deadline', dateString)}
                 value={formData.deadline ? dayjs(formData.deadline) : null}
                 format="YYYY-MM-DD"

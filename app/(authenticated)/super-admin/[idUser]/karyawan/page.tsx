@@ -121,7 +121,7 @@ const columnKaryawan = [
          )}
          content={(
            <>
-             <p>Masukkan Password Baru</p>
+             <p>Masukkan Password Barus</p>
              <Input.Password
                placeholder="Masukkan password"
                value={newPassword.password}

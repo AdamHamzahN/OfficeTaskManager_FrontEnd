@@ -93,7 +93,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     }
 
     try {
-      console.log('tes', idUser);
       await userRepository.api.editPassword(idUser || '', { newPassword });
 
       // Kirimkan permintaan edit password ke server (gpt)

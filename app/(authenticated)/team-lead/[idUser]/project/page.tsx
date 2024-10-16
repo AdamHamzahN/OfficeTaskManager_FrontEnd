@@ -1,15 +1,13 @@
 "use client";
 import { useState } from "react";
 import { projectRepository } from "#/repository/project";
-import { Alert, Col, Row, Spin, Tabs, TabsProps } from "antd";
+import { Alert, Col, Pagination, Row, Spin, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
 import ProjectList from "#/component/ProjectList";
 
-const { useProjectTeamLeadByStatus } = projectRepository.hooks;
 
-const ProjectListComponent: React.FC<{ idUser: string, status: string }> = ({ idUser, status }) => {
-    const { data, error, isValidating } = useProjectTeamLeadByStatus(idUser, status);
-    if (isValidating) return (
+const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, error: any }> = ({ idUser, data, loading, error }) => {
+    if (loading) return (
         <Col span={24}>
             <div style={{ textAlign: 'center', padding: '20px' }}>
                 <Spin size="large" style={{ padding: '20px' }} />
@@ -45,6 +43,15 @@ const Page: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string>('pending');
     const params = useParams();
     const idUser = params?.idUser as string | undefined;
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const handlePageChange = (newPage: number, newPageSize: number) => {
+        setPage(newPage);
+        setPageSize(newPageSize);
+    };
+
+    const { data: projectData, error, isValidating } = projectRepository.hooks.useProjectTeamLeadByStatus(idUser, activeKey, page, pageSize);
+    const { data, count } = projectData || { data: [], count: 0 };
 
     const onChange: TabsProps['onChange'] = (key) => {
         setActiveKey(key);
@@ -61,7 +68,7 @@ const Page: React.FC = () => {
     if (!idUser) return <div>Invalid user</div>;
 
     return (
-        <div>
+        <div style={{ position: 'relative' }}>
             <div
                 style={{
                     paddingRight: 24,
@@ -70,14 +77,31 @@ const Page: React.FC = () => {
                     minHeight: '100vh',
                     backgroundColor: '#fff',
                     borderRadius: 15,
+                    position: 'relative',
                 }}
             >
                 <div>
                     <Tabs defaultActiveKey="pending" items={items} onChange={onChange} />
                 </div>
                 <Row className='listProject' style={{ marginTop: '20px' }}>
-                    <ProjectListComponent idUser={idUser} status={activeKey} />
+                    <ProjectListComponent idUser={idUser} data={data} loading={isValidating} error={error} />
                 </Row>
+                <div style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                }}>
+                    {pageSize > 0 && (
+                        <Pagination
+                            current={page}
+                            pageSize={pageSize}
+                            total={count}
+                            onChange={handlePageChange} 
+                            pageSizeOptions={[1, 2, 5, 10]}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -10,8 +10,8 @@ const url = {
 	getTugasKaryawanBelumSelesai(id_user: string) {
 		return `/tugas/${id_user}/karyawan/tugas-karyawan-belum-selesai`
 	},
-	getTugasByProject(id_project: string) {
-		return `/tugas/${id_project}/tugas-project`
+	getTugasByProject(id_project: string,page: number,page_size: number) {
+		return `/tugas/${id_project}/tugas-project?page=${page}&page_size=${page_size}`
 	},
 	getTugasSelesai(id_project: string) {
 		return `/tugas/${id_project}/tugas-selesai`
@@ -52,8 +52,8 @@ const hooks = {
 	useGetTugasKaryawanByIdUser(id_user: string) {
 		return useSWR(url.getTugasKaryawanByIdUser(id_user), http.fetcher);
 	},
-	useGetTugasByProject(id_project: string) {
-		return useSWR(url.getTugasByProject(id_project), http.fetcher);
+	useGetTugasByProject(id_project: string , page: number , page_size: number) {
+		return useSWR(url.getTugasByProject(id_project,page,page_size), http.fetcher);
 	},
 	useTugasSelesai(id_project: string) {
 		return useSWR(url.getTugasSelesai(id_project), http.fetcher);
@@ -82,14 +82,13 @@ const api = {
 			const idTugas = parsedResponse.data.id;
 			
 			console.log('idTugas:', idTugas);
+			console.log(`file :`,file_tugas)
 
 			let updateFileTugasResponse;
 			if (file_tugas) {
 				const formData = new FormData();
 				formData.append('file_tugas', file_tugas);
 				updateFileTugasResponse = await http.upload(url.uploadFileTugas(idTugas), formData);
-			} else {
-				return 'gagal yahahahahahahahahah';
 			}
 
 			return {
@@ -97,7 +96,7 @@ const api = {
 				createTugasResponse: createTugasResponse
 			};
 		} catch (e) {
-			console.error('Error occurred during createTugas:', e); // Log error
+			console.error('Error occurred during createTugas:', e);
 			return e;
 		}
 	},
@@ -117,8 +116,7 @@ const api = {
 			if (file_bukti !== undefined && file_bukti !== null) {
 				const formData = new FormData();
 				formData.append('file_bukti', file_bukti);
-				console.log('formData :', formData)
-				updateFileBuktiResponse = await http.upload(url.uploadFileTugas(id_tugas), formData);
+				updateFileBuktiResponse = await http.upload(url.uploadFileBukti(id_tugas), formData);
 			}
 			return {
 				updateTugasResponse: updateTugasResponse.body,

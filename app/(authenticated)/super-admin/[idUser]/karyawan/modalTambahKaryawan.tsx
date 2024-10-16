@@ -96,7 +96,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <br />
 
       {/* Input untuk Username */}
-      <label htmlFor="username">Username :</label>
+      <label htmlFor="username">Usernames :</label>
       <Input
         id="username"
         value={username}
@@ -112,7 +112,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <br />
 
       {/* Input untuk Job */}
-      <label htmlFor="job">Job :</label>
+      <label htmlFor="job">Jobs :</label>
 
       {/* Jika loading tampilkan spinner */}
       {loading && <p>Loading jobs...</p>}

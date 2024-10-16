@@ -204,7 +204,6 @@ const Page: React.FC = () => {
                     <h1>Sedang Dikerjakan</h1>
                 </div>
 
-
                 {/* Project Yang Sedang dikerjakan */}
                 <Row gutter={[16, 16]} justify="center" align="middle" style={{ minHeight: '200px' }}>
                     {loading ? (

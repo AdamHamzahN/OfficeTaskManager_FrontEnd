@@ -2,6 +2,7 @@ import './globals.css';
 import 'antd/dist/reset.css';
 import {Provider} from "./provider";
 import Script from 'next/script';
+import Head from './head';
 
 export default function RootLayout({
   children,
@@ -15,7 +16,8 @@ export default function RootLayout({
         <head /> will contain the components returned by the nearest parent
         head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
-      <head />
+      {/* <head /> */}
+      <Head/>
 
       <body>
         <Script src="/api/env" strategy={"beforeInteractive"}></Script>

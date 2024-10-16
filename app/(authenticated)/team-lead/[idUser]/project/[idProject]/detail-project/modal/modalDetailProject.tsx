@@ -15,9 +15,12 @@ const ModalDetailProject: React.FC<{
     end_date: string,
     note: string,
     file_project: string,
-}> = ({ nama_project, nama_team, file_project, start_date, end_date, note, status, team_lead }) => {
+    file_hasil_project: string,
+}> = ({ nama_project, nama_team, file_project, start_date, end_date, note, status, team_lead, file_hasil_project }) => {
 
     const fileDetailProject = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
+    const fileHasilProject = `${config.baseUrl}/${file_hasil_project?.replace(/\\/g, '/')}`;
+
     return (
         <div style={{ borderTop: '2px ' }}>
             <style>
@@ -73,12 +76,23 @@ const ModalDetailProject: React.FC<{
             )}
 
 
-            <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Detail Tugas</label>
+            <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Detail Project</label>
             <a href={fileDetailProject} target="_blank" rel="noopener noreferrer">
                 <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
                     <SearchOutlined /> Lihat File Detail
                 </Button>
             </a>
+            {status === 'approved' && (
+                <>
+
+                    <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Hasil Project</label>
+                    <a href={fileHasilProject} target="_blank" rel="noopener noreferrer">
+                        <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
+                            <SearchOutlined /> Lihat Hasil Project
+                        </Button>
+                    </a>
+                </>
+            )}
         </div>
     );
 };
