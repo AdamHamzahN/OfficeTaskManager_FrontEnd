@@ -16,9 +16,9 @@ const ProjectList: React.FC<{
             alignItems: 'center',
             fontWeight: 'bold',
             marginBottom: 10,
-            fontSize: '20px',
+            fontSize: '24px',
             padding:3,
-            fontFamily:'Plus Jakarta Sans',
+            fontFamily:'Plus Jakarta Sans, sans-serif',
            
         }}>
             <div style={{
@@ -46,14 +46,14 @@ const ProjectList: React.FC<{
                     <span>|</span>
                 </div>
                 <div style={{ marginRight:100 }}>
-                    <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined />Start Date</h4>
+                    <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined /> Start Date</h4>
                     <span style={{fontWeight:'bold'}}>{startDate}</span>
                 </div>
                 <div style={{ height: '100%', alignItems: 'center', margin:10, fontSize: 20, color: 'rgba(109, 117, 128, 0.15)' }}>
                     <span>|</span>
                 </div>
                 <div>
-                    <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined />End Date</h4>
+                    <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined /> End Date</h4>
                     <span style={{fontWeight:'bold'}}>{endDate}</span>
                 </div>
             </div>

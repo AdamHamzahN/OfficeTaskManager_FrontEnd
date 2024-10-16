@@ -25,6 +25,9 @@ const url = {
 	getProjectSelesai(id_user: string){
         return `/project/karyawan/${id_user}/project-selesai`
     },
+	getProjectByStatus(status: string){
+		return `/project?status=${status}`
+	},
 
 	//create
 	createAnggotaTeam() {
@@ -75,6 +78,9 @@ const hooks = {
 	useGetProjectSelesaiKaryawan(id_project: string) {
 		return useSWR(url.getProjectSelesai(id_project), http.fetcher);
 	},
+	useGetProjectByStatus(status: string) {
+		return useSWR(url.getProjectByStatus(status), http.fetcher);
+	}
 }
 
 const api = {  
@@ -105,45 +111,6 @@ const api = {
 	},
 
 		//tambah project (super admin)
-	// async tambahProject(body: {
-	// 	nama_project: string,
-	// 	id_team_lead: string,
-	// 	nama_team: string,
-	// 	start_date: string,
-	// 	end_date: string,
-	// 	file_project: File | null
-	// }) {
-	// 	const { file_project, ...restBody } = body;
-	// 	console.log('file projeect', file_project);
-
-	// 	try {
-	// 		const tambahProjectResponse = await http.post(url.tambahProject(), restBody);
-	// 		console.log('Respon project:', tambahProjectResponse); // log response
-	// 		const parsedResponse = JSON.parse(tambahProjectResponse.text);
-	// 		const idProject = parsedResponse.data.id;
-
-	// 		console.log('id project', idProject);
-
-	// 		let updateFileProjectResponse;
-	// 		if (file_project) {
-	// 			const formData = new FormData();
-	// 			formData.append('file_project', file_project);
-	// 			updateFileProjectResponse = await http.upload(url.uploadFileProject(idProject), formData);
-	// 		} else { 
-	// 			return 'gagal cuy...';
-	// 		}
-			
-	// 		return {
-	// 			updateFileProjectResponse: updateFileProjectResponse ? updateFileProjectResponse : null,
-	// 			tambahProjectResponse: tambahProjectResponse
-	// 		};
-	// 	} catch (error) {
-	// 		console.error('Error tambah project:', error); //loog error
-	// 		return error;
-	// 		// throw new Error('Gagal tambah project');
-	// 	}
-	// },
-
 	async tambahProject(body: {
 		nama_project: string,
 		id_team_lead: string,
@@ -153,45 +120,36 @@ const api = {
 		file_project: File | null
 	}) {
 		const { file_project, ...restBody } = body;
-		console.log('File project:', file_project);
-	
+		console.log('file projeect', file_project);
+
 		try {
-			// Kirim data project tanpa file_project terlebih dahulu
 			const tambahProjectResponse = await http.post(url.tambahProject(), restBody);
-			console.log('Respon project:', tambahProjectResponse);
-	
+			console.log('Respon project:', tambahProjectResponse); // log response
 			const parsedResponse = JSON.parse(tambahProjectResponse.text);
-			const idProject = parsedResponse.data.id;
-	
-			console.log('ID project:', idProject);
-	
-			let updateFileProjectResponse = null;
-	
-			// Jika file_project ada, lakukan pengunggahan file
+			const idProject = parsedResponse.id;
+
+			console.log('id project', idProject, file_project);
+			
+
+			let updateFileProjectResponse;
 			if (file_project) {
 				const formData = new FormData();
 				formData.append('file_project', file_project);
-	
-				// Unggah file menggunakan FormData
 				updateFileProjectResponse = await http.upload(url.uploadFileProject(idProject), formData);
-				console.log('Respon unggah file:', updateFileProjectResponse);
-			} else {
-				console.warn('File project tidak ditemukan, skipping file upload.');
+			} else { 
+				return 'gagal cuy...';
 			}
-	
+			
 			return {
-				updateFileProjectResponse: updateFileProjectResponse,
+				updateFileProjectResponse: updateFileProjectResponse ? updateFileProjectResponse : null,
 				tambahProjectResponse: tambahProjectResponse
 			};
 		} catch (error) {
-			console.error('Error tambah project:', error);
-			return {
-				success: false,
-				message: 'Gagal tambah project',
-				error: error
-			};
+			console.error('Error tambah project:', error); //loog error
+			return error;
+			// throw new Error('Gagal tambah project');
 		}
-	},	
+	},
 
 	async updateNamaTeam(id_project: string, body:any) {
 		try {

@@ -124,7 +124,7 @@ const TableTask: React.FC<{
                             footer={(handleCancel, handleOk) => (
                                 <div>
                                     <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={handleOk}>Ok</Button>
+                                    <Button type="primary" onClick={handleOk}>OK</Button>
                                 </div>
                             )}
                             onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk

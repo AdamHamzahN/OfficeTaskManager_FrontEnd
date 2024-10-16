@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 const url = {
 	getNamaTeamLead() {
-		return `/users/team-lead `;
+		return `/users/team-lead`;
 	},
 	getStatusKeaktifan(id_user: string) {
 		return `/users/${id_user}/update-status-keaktifan`;

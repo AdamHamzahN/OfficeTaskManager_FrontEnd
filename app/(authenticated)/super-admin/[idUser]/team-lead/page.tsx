@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Divider, Table, Button, Switch, Tag, Modal, Input, Form, Row, Col, Select, Spin, Alert  } from 'antd';
+import { Divider, Table, Button, Switch, Tag, Modal, Input, Form, Row, Col, Select, Spin, Alert, message  } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { PlusOutlined, EditOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { teamleadRepository } from '#/repository/teamlead';
@@ -21,15 +21,12 @@ const Page: React.FC = () => {
   });
   
   const [selectedIdTeamLead, setSelectedIdTeamLead] = useState<string | null>(null);
-
-  // state alert warning
-  const [showAlert, setShowAlert] = useState(false);
   
      // Handle adding a new Team Lead
     const tambahTeamLead = async () => {
       if (!newTeamLead.nama || !newTeamLead.username || !newTeamLead.email) {
         // alert('Semua field harus diisi');
-        setShowAlert(true);
+        message.warning("Harap isi semua field yang diperlukan.");
         return;
       }
       const nama = newTeamLead.nama;
@@ -56,7 +53,7 @@ const Page: React.FC = () => {
       // handle edit password
       const editPassword = async () => {
         if (!newPassword.password) {
-          setShowAlert(true);
+          message.warning("Harap isi semua field yang diperlukan.");
           return;
         }
         // const password = newPassword.password
@@ -213,26 +210,6 @@ return (
           </ModalComponent>
         
       </div>
-
-      {/* ALERT WARNING */}
-        {showAlert && (
-          <>
-          {/* Full-screen overlay to block interaction */}
-            <div className='alert-overlay' />
-
-             {/* Alert container */}
-              <div className="alert-container">
-              <Alert
-                  message="Warning"
-                  description="Semua field harus diisi."
-                  type="warning"
-                  showIcon
-                  closable
-                  onClose={() => setShowAlert(false)}
-              />
-            </div>
-          </>
-        )}
         
         <Table 
             columns={columns} 
