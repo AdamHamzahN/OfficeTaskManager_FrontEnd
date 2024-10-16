@@ -36,10 +36,8 @@ const ModalEditTugas: React.FC<{
 
     return (
         <div>
-            <div style={{ borderTop: '2px solid', paddingTop: '16px' }}>
-                <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>
-                <Input value={nama_tugas} readOnly style={{ marginBottom: '16px' }} />
-            </div>
+            <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>
+            <Input value={nama_tugas} readOnly style={{ marginBottom: '16px' }} />
 
             <label htmlFor="status" style={{ marginBottom: '8px', display: 'block' }}>Status Tugas</label>
             <Select

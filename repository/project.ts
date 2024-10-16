@@ -7,8 +7,8 @@ import useSWR, { mutate } from "swr";
 
 const url = {
 	//get
-	getProjectTeamLeadByStatus(id_user: string, status: string) {
-		return `/project/team-lead/${id_user}/projects?status=${status}`
+	getProjectTeamLeadByStatus(id_user: string, status: string,page:number,page_size:number) {
+		return `/project/team-lead/${id_user}/projects?status=${status}&page=${page}&page_size=${page_size}`
 	},
 	getDetailProject(id_project: string) {
 		return `/project/${id_project}/detail-project`
@@ -22,8 +22,8 @@ const url = {
 	getProjectDikerjakan(id_user: string){
 		return `/project/karyawan/${id_user}/project-dikerjakan`
 	},
-	getProjectSelesai(id_user: string){
-        return `/project/karyawan/${id_user}/project-selesai`
+	getProjectSelesai(id_user: string,page:number,page_size:number){
+        return `/project/karyawan/${id_user}/project-selesai&page=${page}&page_size=${page_size}`
     },
 
 	//create
@@ -57,8 +57,8 @@ const url = {
 }
 
 const hooks = {
-	useProjectTeamLeadByStatus(id_user: any, status: string) {
-		return useSWR(url.getProjectTeamLeadByStatus(id_user, status), http.fetcher);
+	useProjectTeamLeadByStatus(id_user: any, status: string,page:number,page_size:number) {
+		return useSWR(url.getProjectTeamLeadByStatus(id_user, status,page,page_size), http.fetcher);
 	},
 	useDetailProject(id_project: string) {
 		return useSWR(url.getDetailProject(id_project), http.fetcher);
@@ -72,8 +72,8 @@ const hooks = {
 	useGetProjectDikerjakanKaryawan(id_user: string) {
 		return useSWR(url.getProjectDikerjakan(id_user), http.fetcher);
 	},
-	useGetProjectSelesaiKaryawan(id_project: string) {
-		return useSWR(url.getProjectSelesai(id_project), http.fetcher);
+	useGetProjectSelesaiKaryawan(id_project: string,page:number,page_size:number) {
+		return useSWR(url.getProjectSelesai(id_project,page,page_size), http.fetcher);
 	},
 }
 

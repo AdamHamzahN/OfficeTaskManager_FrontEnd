@@ -10,8 +10,9 @@ const TableTeam: React.FC<{
     data: any,
     nama_team: string,
     idProject: string,
+    mutate:any
     refreshTable: () => void
-}> = ({ data, nama_team, idProject, refreshTable }) => {
+}> = ({ data, nama_team, idProject, mutate,refreshTable }) => {
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
@@ -62,7 +63,7 @@ const TableTeam: React.FC<{
             });
             setSelectedKaryawan(undefined);
 
-            refreshTable()
+            mutate();
             Modal.success({
                 title: 'Anggota Ditambahkan',
                 content: 'Berhasil menambahkan anggota ke dalam tim!',
@@ -71,9 +72,6 @@ const TableTeam: React.FC<{
                 onOk() {
                     console.log('OK clicked');
                 },
-                onCancel() {
-                    console.log('Cancel clicked');
-                }
             });
         } catch (error) {
             console.error('Gagal menambahkan anggota:', error);

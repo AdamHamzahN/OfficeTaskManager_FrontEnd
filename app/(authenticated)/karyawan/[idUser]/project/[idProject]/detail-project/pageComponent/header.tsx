@@ -42,7 +42,7 @@ const Header: React.FC<{
                     title={'Detail Project'}
                     content={<ModalDetailProject
                         nama_project={nama_project}
-                        team_lead={user.username }
+                        team_lead={user.nama }
                         nama_team={nama_team }
                         status={status}
                         start_date={start_date}

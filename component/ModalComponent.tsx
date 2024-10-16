@@ -25,13 +25,13 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     const handleCancel = () => {
         setIsModalVisible(false);
         if (onCancel) {
-            onCancel();  // Panggil onCancel jika ada
+            onCancel();
         }
     };
 
     const handleOk = () => {
         if (onOk) {
-            onOk();  // Panggil onOk jika ada
+            onOk();
         }
         setIsModalVisible(false);
     };

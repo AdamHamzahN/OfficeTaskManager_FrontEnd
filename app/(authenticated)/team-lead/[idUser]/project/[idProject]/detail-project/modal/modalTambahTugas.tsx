@@ -51,7 +51,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
             [key]: value,
         };
         setFormData(updatedFormData);
-        create_tugas({ ...updatedFormData, id_project: idProject }); // Ensure id_project is included
+        create_tugas({ ...updatedFormData, id_project: idProject }); 
     };
 
     const handleSelectChange = (value: string) => {
