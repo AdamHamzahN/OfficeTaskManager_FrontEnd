@@ -105,7 +105,7 @@ const Header: React.FC<{
                     />}
                     footer={(handleOk) => (
                         <div>
-                            <Button type="primary" onClick={handleOk}>Ok</Button>
+                            <Button type="primary" onClick={handleOk}>OK</Button>
                         </div>
                     )}
                 >
@@ -172,7 +172,7 @@ const Header: React.FC<{
                         footer={(handleCancel) => (
                             <div>
                                 <Button htmlType="button" onClick={handleCancel}>Cancel</Button>
-                                <Button type="primary" onClick={updateStatus}>Ok</Button>
+                                <Button type="primary" onClick={updateStatus}>OK</Button>
                             </div>
                         )}
                     >
