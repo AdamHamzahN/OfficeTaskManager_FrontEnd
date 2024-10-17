@@ -51,9 +51,9 @@ const ProjectListComponent: React.FC<{
                     key={index}
                     title={project.nama_project}
                     link={`/karyawan/${idUser}/project/${project.id}/detail-project`}
-                    teamLead={project.user.username}
-                    startDate={project.start_date}
-                    endDate={project.end_date}
+                    teamLead={project.user?.nama}
+                    startDate={project?.start_date}
+                    endDate={project?.end_date}
                 />
             ))}
         </>
@@ -69,12 +69,11 @@ const Page: React.FC = () => {
     const handlePageChange = (newPage: number, newPageSize: number) => {
         setPage(newPage);
         setPageSize(newPageSize);
-    };
+    }
+    
     const { data: projectDikerjakan, error: errorDikerjakan, isValidating: projectDikerjakanValidating } = projectRepository.hooks.useGetProjectDikerjakanKaryawan(idUser!);
     const { data: projectSelesai, error: errorSelesai, isValidating: projectSelesaiValidating } = projectRepository.hooks.useGetProjectSelesaiKaryawan(idUser!,page,pageSize);
 
-    const error = errorDikerjakan || errorSelesai;
-    const loading = projectDikerjakanValidating || projectSelesaiValidating;
     let projects;
     if (activeKey === "projectDikerjakan") {
         projects = projectDikerjakan;
@@ -82,7 +81,12 @@ const Page: React.FC = () => {
         projects = projectSelesai;
     }
 
-    const { data , count } = projects;
+    const error = errorDikerjakan || errorSelesai;
+    const loading = projectDikerjakanValidating || projectSelesaiValidating;
+    
+
+    console.log('projects  :',projects)
+    const { data, count } = projects || {data: [], count:0};
     const onChange: TabsProps['onChange'] = (key) => {
         setActiveKey(key);
     };
@@ -113,7 +117,7 @@ const Page: React.FC = () => {
                     <ProjectListComponent
                         idUser={idUser || ''}
                         status={activeKey}
-                        data={projects}
+                        data={data}
                         loading={loading}
                         error={error} />
                 </Row>

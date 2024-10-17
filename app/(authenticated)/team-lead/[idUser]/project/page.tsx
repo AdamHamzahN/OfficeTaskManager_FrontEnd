@@ -30,14 +30,14 @@ const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, 
                     key={index}
                     title={project.nama_project}
                     link={`/team-lead/${idUser}/project/${project.id}/detail-project`}
-                    teamLead={project.user.username}
+                    teamLead={project.user.nama}
                     startDate={project.start_date}
                     endDate={project.end_date}
                 />
             ))}
         </>
     );
-};
+};  
 
 const Page: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string>('pending');

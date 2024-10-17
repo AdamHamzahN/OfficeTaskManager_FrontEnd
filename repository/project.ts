@@ -23,7 +23,7 @@ const url = {
 		return `/project/karyawan/${id_user}/project-dikerjakan`
 	},
 	getProjectSelesai(id_user: string,page:number,page_size:number){
-        return `/project/karyawan/${id_user}/project-selesai&page=${page}&page_size=${page_size}`
+        return `/project/karyawan/${id_user}/project-selesai?page=${page}&page_size=${page_size}`
     },
 
 	//create
