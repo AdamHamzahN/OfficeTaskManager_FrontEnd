@@ -14,19 +14,29 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
   const [username, setUsername] = useState<string>(""); // State untuk Username
   const [job, setJob] = useState<string>(""); // State untuk Job
 
+  // Handler untuk perubahan input pekerjaan (job)
   const handleSelectChange = (value: string) => {
+    if (!value) {
+      console.error("Job is required");
+      return;
+    }
     setJob(value);
-    handleKaryawanDataChange();
-};
+    handleKaryawanDataChange(); // Kirim data ke parent saat ada perubahan job
+  };
+
+  // Handler untuk perubahan input gender
+  const handleSelectGender = (value: string) => {
+    setGender(value);
+    handleKaryawanDataChange(); // Kirim data ke parent saat ada perubahan gender
+  };
 
   // Mengambil data dari API melalui hooks
   const { data: detailJob, error, isValidating: loading } = jobsRepository.hooks.useAllJobs();
- 
 
   // Fungsi untuk mengirim data karyawan ke parent component saat ada perubahan
   const handleKaryawanDataChange = () => {
+    console.log({ nik, nama, gender, email, username, job }); // Log semua state untuk memastikan nilainya benar
     createkaryawan({ nik, nama, gender, email, username, job });
-    console.log(createkaryawan)
   };
 
   return (
@@ -63,18 +73,18 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <br />
       <br />
 
-      {/* Input untuk Gender */}
+      {/* Dropdown untuk Gender */}
       <label htmlFor="gender">Gender :</label>
-      <Input
-        id="gender"
-        value={gender}
-        onChange={(e) => {
-          setGender(e.target.value);
-          handleKaryawanDataChange();
+      <Select
+        placeholder="Pilih Gender"
+        style={{ width: 337, marginLeft: 42 }}
+        onChange={(value) => {
+          handleSelectGender(value);
         }}
-        placeholder="Masukkan Gender"
-        style={{ marginLeft: 42, width: 337 }}
-      />
+      >
+        <Select.Option value="laki-laki">Laki-Laki</Select.Option>
+        <Select.Option value="perempuan">Perempuan</Select.Option>
+      </Select>
 
       <br />
       <br />
@@ -96,7 +106,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <br />
 
       {/* Input untuk Username */}
-      <label htmlFor="username">Usernames :</label>
+      <label htmlFor="username">Username :</label>
       <Input
         id="username"
         value={username}
@@ -105,13 +115,13 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
           handleKaryawanDataChange();
         }}
         placeholder="Masukkan Username"
-        style={{ marginLeft: 20, width: 340 }}
+        style={{ marginLeft: 22, width: 335 }}
       />
 
       <br />
       <br />
 
-      {/* Input untuk Job */}
+      {/* Dropdown untuk Job */}
       <label htmlFor="job">Jobs :</label>
 
       {/* Jika loading tampilkan spinner */}
@@ -124,10 +134,8 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       {!loading && !error && (
         <Select
           placeholder="Pilih Pekerjaan"
-          style={{ width: 340, marginBottom: '16px', marginLeft: 60 }}
-          onChange={
-            handleSelectChange
-          }
+          style={{ width: 330, marginBottom: '16px', marginLeft: 63 }}
+          onChange={handleSelectChange}
         >
           {detailJob?.data.map((jobItem: any) => (
             <Select.Option key={jobItem.job_id} value={jobItem.job_id}>
