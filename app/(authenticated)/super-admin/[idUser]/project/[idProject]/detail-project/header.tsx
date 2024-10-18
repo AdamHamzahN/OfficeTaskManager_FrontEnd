@@ -1,15 +1,16 @@
 import { Button } from "antd";
 import ModalComponent from "#/component/ModalComponent";
-import {ArrowLeftOutlined} from "@ant-design/icons";
+import {ArrowLeftOutlined, SearchOutlined} from "@ant-design/icons";
+import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/modal/modalDetailProject";
 import Link from "next/link";
 
 const Header: React.FC <{
     data: any
     idUser: string
-    refreshTable: () => void 
-}> = ({data, idUser, refreshTable}) => {
+    // refreshTable: () => void 
+}> = ({data, idUser}) => {
 
-    const {id, nama_project, file_project, start_date, end_date, status, note} = data;
+    const {nama_project, user, nama_team, status, start_date, end_date, file_project, file_hasil_projec, note} = data;
     const buttonStatusStyle = (status: string) => {
         switch (status) {
             case 'pending':
@@ -36,8 +37,31 @@ const Header: React.FC <{
                 </h1>
             </div>
             <div style={{display: 'flex', gap: 20, fontFamily: 'Arial', marginTop: 5, marginBottom: 5}}>
+                <ModalComponent
+                    title="Detail Project"
+                    content={<ModalDetailProject
+                        nama_project={nama_project}
+                        team_lead={user.nama}
+                        nama_team={nama_team}
+                        status={status}
+                        start_date={start_date}
+                        end_date={end_date}
+                        note={note}
+                        file_project={file_project}
+                        file_hasil_project={file_hasil_projec}
+                    />}
+                    footer={(handleOk) => (
+                        <>
+                            <Button type="primary" onClick={handleOk}>OK</Button>
+                        </>
+                    )}
+                >
+                    <button type="button" className="bg-transparent hover:bg-blue-600 text-blue-700 hover:text-white py-3 px-6 border border-blue-600 hover:border-transparent rounded text-justify">
+                        <SearchOutlined style={{ fontSize: 15 }} /> Detail Project
+                    </button>
+                </ModalComponent>
 
-                <button
+                <button 
                     type="button"
                     className="border py-3 px-6 rounded"
                     style={buttonStatusStyle(status)}

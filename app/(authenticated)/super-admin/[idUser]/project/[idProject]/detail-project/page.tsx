@@ -10,13 +10,14 @@ const Page = () => {
     const idUser = params?.idUser as string;
     const idProject = params?.idProject as string
 
-    const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate: mutateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
+    const {data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate: mutateDetailProject}
+        = projectRepository.hooks.useDetailProject(idProject);
 
     const loading = validateDetailProject
     const error = errorDetailProject
 
     if (loading) {
-        return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
+        return <Spin style={{textAlign: 'center', padding: 20}} />
     }
     if (error) {
         return <Alert message="Error fetching data" type="error" />;

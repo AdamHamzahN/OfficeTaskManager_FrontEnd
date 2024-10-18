@@ -1,5 +1,5 @@
 import ModalComponent from "#/component/ModalComponent";
-import { Button, Modal, Row, Table, Tag } from "antd";
+import { Button, Modal, Row, Table, Tag, message } from "antd";
 import ModalDetailTugas from "../modal/modalDetailTugas";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalTambahTugas from "../modal/modalTambahTugas";
@@ -52,7 +52,8 @@ const TableTask: React.FC<{
         const { nama_tugas, deskripsi_tugas, deadline, id_project, id_karyawan, file_tugas } = formData;
 
         if (!nama_tugas || !deskripsi_tugas || !deadline || !id_project || !id_karyawan || !file_tugas) {
-            alert('Data yang diisi belum lengkap!');
+            // alert('Data yang diisi belum lengkap!');
+            message.warning("Harap isi semua field yang diperlukan.");
             return;
         }
 
@@ -136,7 +137,7 @@ const TableTask: React.FC<{
                             content={<ModalDetailTugas idTugas={idTugas} />}
                             footer={(handleCancel, handleOk) => (
                                 <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button onClick={handleCancel}>Cancel</Button>  
                                     <Button type="primary" onClick={handleOk}>OK</Button>
                                 </div>
                             )}
