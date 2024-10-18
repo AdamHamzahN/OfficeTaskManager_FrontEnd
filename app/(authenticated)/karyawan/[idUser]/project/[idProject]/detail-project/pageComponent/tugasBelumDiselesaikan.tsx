@@ -8,23 +8,35 @@ import { tugasRepository } from "#/repository/tugas";
 
 
 const TugasBelumDiselesaikan: React.FC<{
-    data: any,
+    dataTugas: any,
+    page: any,
+    pageSize: any,
+    handlePageChangeTugas: any,
     formatTimeStr: (text: string) => string,
     refreshTable: () => void,
-}> = ({ data, formatTimeStr,refreshTable }) => {
-    const [idTugas,setIdTugas] = useState<string | null>(null)
+}> = ({ dataTugas, formatTimeStr, refreshTable }) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [idTugas, setIdTugas] = useState<string | null>(null)
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
+        setPage(newPage);
+        setPageSize(newPageSize);
+    };
+    const { data: tugasBelumSelesai, error: errorTugasBelumSelesai, isValidating: validateTugasBelumSelesai, mutate: mutateTugasBelumSelesai } = dataTugas
+
+    const { data, count } = tugasBelumSelesai || { data: [], count: 0 };
     const [formData, setFormData] = useState<{ status: string; file_bukti?: File | null }>({
         status: data.status,
-        file_bukti: null, 
+        file_bukti: null,
     });
-
     const handleUpdateTugas = (tugasData: { status: string; file_bukti: File | null }) => {
         setFormData(tugasData);
     };
-    
+
     const updateStatus = async () => {
         const { status, file_bukti } = formData;
-        console.log(status,file_bukti);
+        console.log(status, file_bukti);
         console.log(idTugas)
         if (status === 'done' && file_bukti === null || file_bukti === undefined) {
             alert('Masukkan file terlebih dahulu!');
@@ -36,12 +48,12 @@ const TugasBelumDiselesaikan: React.FC<{
                 status: status,
                 file_bukti: file_bukti
             });
-
+            refreshTable()
             Modal.success({
                 title: 'Berhasil',
                 content: 'Berhasil mengubah status tugas',
-                onOk() {
-                    refreshTable();
+                onOk:() => {
+                    setIsModalVisible(false);
                 }
             });
         } catch (error) {
@@ -94,6 +106,7 @@ const TugasBelumDiselesaikan: React.FC<{
                 const status_tugas = record.status;
                 return (
                     <div style={{ display: 'flex', gap: '10px' }}>
+                        {/* Modal Detail Tugas */}
                         <ModalComponent
                             title={'Detail Tugas'}
                             content={<ModalDetailTugas idTugas={idTugas} />}
@@ -110,24 +123,30 @@ const TugasBelumDiselesaikan: React.FC<{
                                     color: '#1890FF',
                                     border: 'none',
                                 }}
-                                onClick={() => setIdTugas(idTugas)}
+                                onClick={() => {
+                                    setIdTugas(idTugas)
+                                }}
                             >
                                 <EyeOutlined /> Detail
                             </Button>
                         </ModalComponent>
+                        {/* Modal Update Status */}
                         <ModalComponent
                             title={'Edit Status'}
-                            content={<ModalEditTugas 
-                                idTugas={idTugas} 
-                                nama_tugas={nama_tugas} 
-                                status_tugas={status_tugas} 
+                            content={<ModalEditTugas
+                                idTugas={idTugas}
+                                nama_tugas={nama_tugas}
+                                status_tugas={status_tugas}
                                 update_tugas={handleUpdateTugas} />}
-                            footer={(handleCancel, handleOk) => (
+                            footer={(handleCancel) => (
                                 <div>
                                     <Button onClick={handleCancel}>Cancel</Button>
                                     <Button type="primary" onClick={updateStatus}>Ubah</Button>
                                 </div>
                             )}
+                            visible={isModalVisible}
+                            onCancel={() => setIsModalVisible(false)}
+                            maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
                         >
                             <Button
                                 style={{
@@ -137,7 +156,8 @@ const TugasBelumDiselesaikan: React.FC<{
                                 }}
                                 onClick={() => {
                                     setIdTugas(idTugas)
-                                    setFormData({status:status_tugas,file_bukti:null})
+                                    setIsModalVisible(true)
+                                    setFormData({ status: status_tugas, file_bukti: null })  
                                 }}
                             >
                                 <EditOutlined /> Edit
@@ -163,7 +183,16 @@ const TugasBelumDiselesaikan: React.FC<{
                     dataSource={data}
                     columns={columns}
                     className="w-full custom-table"
-                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                    loading={validateTugasBelumSelesai}
+                    pagination={{
+                        current: page,
+                        pageSize: pageSize,
+                        total: count,
+                        position: ['bottomCenter'],
+                        onChange: (pageTugas, pageSizeTugas) => {
+                            handlePageChangeTugas(pageTugas, pageSizeTugas)
+                        },
+                    }}
                 />
             </Row>
         </div>

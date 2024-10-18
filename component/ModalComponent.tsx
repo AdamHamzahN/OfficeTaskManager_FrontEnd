@@ -9,6 +9,7 @@ interface ModalComponentProps {
     onOk?: () => void;
     onCancel?: () => void;
     visible?: boolean;
+    maskStyle?:any
 }
 
 const ModalComponent: React.FC<ModalComponentProps> = ({
@@ -18,7 +19,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     footer,
     onOk,
     onCancel,
-    visible
+    visible,
+    maskStyle
 }) => {
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -46,6 +48,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                 open={visible !== undefined ? visible : isModalVisible}
                 onCancel={handleCancel}
                 footer={footer ? footer(handleCancel, handleOk) : null}
+                maskStyle={maskStyle}
                 // visible={visible !== undefined ? visible : isModalVisible}
                 destroyOnClose={true}
             >

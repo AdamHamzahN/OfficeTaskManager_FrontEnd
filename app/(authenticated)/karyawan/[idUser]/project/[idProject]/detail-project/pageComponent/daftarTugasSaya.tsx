@@ -2,12 +2,21 @@ import ModalComponent from "#/component/ModalComponent";
 import { Button, Row, Table, Tag } from "antd";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalDetailTugas from "../modal/modalDetailTugas";
+import { tugasRepository } from "#/repository/tugas";
+import { useState } from "react";
 
 
-const DaftarTugasSaya : React.FC<{
-    data: any,
+const DaftarTugasSaya: React.FC<{
+    dataDaftarTugas:any,
+    page:any,
+    pageSize: any,
+    handlePageChangeTugas: any,
     formatTimeStr: (text: string) => string,
-}> = ({ data, formatTimeStr }) => {
+    refreshTable: () => void,
+}> = ({ dataDaftarTugas,page,pageSize,handlePageChangeTugas, formatTimeStr,refreshTable }) => {
+
+    const { data: daftarTugas, error: errorDaftarTugas, isValidating: validateDaftarTugas } = dataDaftarTugas
+    const { data, count } = daftarTugas || {data:[] , count:0};
     const columns = [
         {
             title: 'Tugas',
@@ -90,7 +99,16 @@ const DaftarTugasSaya : React.FC<{
                     dataSource={data}
                     columns={columns}
                     className="w-full custom-table"
-                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                    loading={validateDaftarTugas}
+                    pagination={{
+                        current: page,
+                        pageSize: pageSize,
+                        total: count,
+                        position: ['bottomCenter'],
+                        onChange: (pageTugas, pageSizeTugas) => {
+                            handlePageChangeTugas(pageTugas, pageSizeTugas)
+                        },
+                    }}
                 />
             </Row>
         </div>
