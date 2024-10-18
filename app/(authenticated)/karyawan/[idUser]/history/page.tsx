@@ -11,23 +11,20 @@ const dataSource = [
   {
     key: '1',
     title: 'UI / UX Perpustakaan',
-    author: 'John Doe',
-    genre: 'Pemrograman',
-    available: 'Ya',
+    status: 'Done',
+    update: '04-03-2024 13.00.00',
   },
   {
     key: '2',
     title: 'Front End developer',
-    author: 'Jane Smith',
-    genre: 'Pemrograman',
-    available: 'Tidak',
+    status: 'Redo',
+    update: '04-03-2024 15.00.00',
   },
   {
     key: '3',
-    title: 'Pengantar Machine Learning',
-    author: 'Sam Wilson',
-    genre: 'Teknologi',
-    available: 'Ya',
+    title: 'Back End Developer',
+    status: 'Redo',
+    update: '04-03-2024 15.30.00',
   },
 ];
 
@@ -38,20 +35,15 @@ const columns = [
     key: 'title',
   },
   {
-    title: 'Penulis',
-    dataIndex: 'author',
-    key: 'author',
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
   },
   {
-    title: 'Genre',
-    dataIndex: 'genre',
-    key: 'genre',
-  },
-  {
-    title: 'Tersedia',
-    dataIndex: 'available',
-    key: 'available',
-  },
+    title: 'Update at',
+    dataIndex: 'update',
+    key: 'update',
+  }
 ];
 
 const App: React.FC = () => (
