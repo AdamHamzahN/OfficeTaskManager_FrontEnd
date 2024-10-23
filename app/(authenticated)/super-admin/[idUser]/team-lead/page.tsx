@@ -7,7 +7,6 @@ import { PlusOutlined, EditOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@a
 import { teamleadRepository } from '#/repository/teamlead';
 import ModalComponent from '#/component/ModalComponent';
 
-
 const Page: React.FC = () => {
 
   const [newTeamLead, setNewTeamLead] = useState<{ nama: string; username: string; email: string }>({
@@ -98,10 +97,10 @@ const columns = [
       <ModalComponent
           title="Ubah Password"
           footer={(handleCancel) => (
-            <div>
+            <>
               <Button onClick={handleCancel}>Cancel</Button>
               <Button type='primary' onClick={editPassword}>OK</Button>
-            </div>
+            </>
           )}
             content={(
               <>
@@ -203,7 +202,7 @@ return (
                 {/* </Form> */}
               </>
             )}
-            >
+          >
               <Button type="primary" >
                 <PlusOutlined />Tambah
               </Button>

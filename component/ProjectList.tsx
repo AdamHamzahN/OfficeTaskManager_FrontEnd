@@ -19,7 +19,7 @@ const ProjectList: React.FC<{
             fontSize: '24px',
             padding:3,
             fontFamily:'Plus Jakarta Sans, sans-serif',
-           
+        
         }}>
             <div style={{
                 overflow: 'hidden',

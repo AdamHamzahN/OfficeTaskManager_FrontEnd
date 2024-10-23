@@ -3,10 +3,11 @@
 import React, { useState } from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined, UserOutlined, HistoryOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, Spin, theme, Modal, Input, Alert } from 'antd';
+import { Button, Layout, Menu, Spin, theme, Modal, Input, Alert, message } from 'antd';
 import { useRouter, useParams, usePathname } from 'next/navigation';
 import { userRepository } from '#/repository/user';
 import ProfileComponent from '#/component/ProfileComponent';
+import ModalComponent from '#/component/ModalComponent';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -28,32 +29,12 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     confirm_new_password: ''
   });
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   // const [selectedIdUser, setSelectedIdUser] = useState<string | null>(null);
 
-  // state modal edit password
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // state alert warning 1
-  const [showAlert, setShowAlert] = useState(false);
-
-   // state alert warning 2, konfirm password
-  const [showAlertConfirm, setShowAlertConfirm] = useState(false);
-
-  // state alert error password
-  const [showAlertError, setShowAlertError] = useState(false)
-
-  // modal edit pw
-  const showModal = () => {
-    // setSelectedIdUser(newPassword.current_password); // Simpan password saat ini ke state
-    setIsModalOpen(true);
-  };
-
-  // close modal
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const { data: userData, isLoading, error } = userRepository.hooks.useGetUser(idUser);
+  const { data: userData, isLoading, error, mutate } = userRepository.hooks.useGetUser(idUser);
   console.log(userData);
   if (isLoading) {
     return <div style={{
@@ -70,8 +51,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   // handle edit password
   const editPassword = async () => {
     if (!newPassword.current_password || !newPassword.new_password || !newPassword.confirm_new_password) {
-      // alert('Semua field harus diisi');
-      setShowAlert(true);
+      message.warning("Harap isi semua field yang diperlukan.");
       return;
     }
     if (error) {
@@ -87,8 +67,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
     // cek apakah konfirmasi password sesuai dg pass baru
     if (newPassword.new_password !== newPassword.confirm_new_password) {
-      setShowAlertConfirm(true);
-      // alert('Konfirmasi password tidak cocok')
+      message.warning('Konfirmasi password tidak cocok.');
       return;
     }
 
@@ -102,17 +81,18 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         title: 'Berhasil Diubah',
         content: 'Password berhasil diubah...',
         okText: 'OK',
+        onOk: () => {
+          setIsModalVisible(false); // Close the modal on success
+        }
       });
-      setIsModalOpen(false); // Close the modal on success
+      mutate();
     } catch (error) {
-      console.error('Gagal edit password:', error);
-      setShowAlertError(true);
       // alert('Gagal mengubah password, periksa password saat ini atau koneksi Anda.');
+      message.error('Gagal mengubah password, periksa password saat ini.')
+      console.error('Gagal edit password:', error);
+      
     }
   };
-
-
-
 
 
   console.log(userData);
@@ -227,32 +207,45 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           <p style={{ margin: 0 }}>email :</p>
           <p>{userData?.data?.email}</p>
 
-          <Button block type='primary' onClick={showModal}>
-            Ubah Password
-          </Button>
+          <ModalComponent
+            title="Ubah Password"
+            visible={isModalVisible}
+            onCancel={() => setIsModalVisible(false)}
+            footer={(handleCancel) => (
+              <>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type='primary' onClick={editPassword}>OK</Button>
+              </>
+            )}
+            content={(
+              <>
+                <p>Masukkan Password Saat Ini</p>
+                  <Input.Password
+                    placeholder="Masukkan password"
+                    value={newPassword.current_password}
+                    onChange={(e) => setNewPassword({ ...newPassword, current_password: e.target.value })}
+                  />
 
-          <Modal title="Ubah Password" open={isModalOpen} onOk={editPassword} onCancel={handleCancel}>
-            <p>Masukkan Password Saat Ini</p>
-            <Input.Password
-              placeholder="Masukkan password"
-              value={newPassword.current_password}
-              onChange={(e) => setNewPassword({ ...newPassword, current_password: e.target.value })}
-            />
+                <p style={{ marginTop: 15 }}>Masukkan Password Baru</p>
+                  <Input.Password
+                    placeholder='Masukkan password baru'
+                    value={newPassword.new_password}
+                    onChange={(e) => setNewPassword({ ...newPassword, new_password: e.target.value })}
+                  />
 
-            <p style={{ marginTop: 15 }}>Masukkan Password Baru</p>
-            <Input.Password
-              placeholder='Masukkan password baru'
-              value={newPassword.new_password}
-              onChange={(e) => setNewPassword({ ...newPassword, new_password: e.target.value })}
-            />
-
-            <p style={{ marginTop: 15 }}>Konfirmasi Password</p>
-            <Input.Password
-              placeholder='Konfirmasi password'
-              value={newPassword.confirm_new_password}
-              onChange={(e) => setNewPassword({ ...newPassword, confirm_new_password: e.target.value })}
-            />
-          </Modal>
+                <p style={{ marginTop: 15 }}>Konfirmasi Password</p>
+                  <Input.Password
+                    placeholder='Konfirmasi password'
+                    value={newPassword.confirm_new_password}
+                    onChange={(e) => setNewPassword({ ...newPassword, confirm_new_password: e.target.value })}
+                  />
+              </>
+            )}
+          >
+            <Button block type='primary' onClick={() => setIsModalVisible(true)}>
+              Ubah Password
+            </Button>
+          </ModalComponent>
 
         </>
       )
@@ -272,9 +265,45 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           <p style={{ margin: 0 }}>email :</p>
           <p>{userData?.data?.email}</p>
 
-          <Button block type='primary'>
-            Ubah Password
-          </Button>
+          <ModalComponent
+            title="Ubah Password"
+            visible={isModalVisible}
+            onCancel={() => setIsModalVisible(false)}
+            footer={(handleCancel) => (
+              <>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type='primary' onClick={editPassword}>OK</Button>
+              </>
+            )}
+            content={(
+              <>
+                <p>Masukkan Password Saat Ini</p>
+                  <Input.Password
+                    placeholder="Masukkan password"
+                    value={newPassword.current_password}
+                    onChange={(e) => setNewPassword({ ...newPassword, current_password: e.target.value })}
+                  />
+
+                <p style={{ marginTop: 15 }}>Masukkan Password Baru</p>
+                  <Input.Password
+                    placeholder='Masukkan password baru'
+                    value={newPassword.new_password}
+                    onChange={(e) => setNewPassword({ ...newPassword, new_password: e.target.value })}
+                  />
+
+                <p style={{ marginTop: 15 }}>Konfirmasi Password</p>
+                  <Input.Password
+                    placeholder='Konfirmasi password'
+                    value={newPassword.confirm_new_password}
+                    onChange={(e) => setNewPassword({ ...newPassword, confirm_new_password: e.target.value })}
+                  />
+              </>
+            )}
+          >
+            <Button block type='primary' onClick={() => setIsModalVisible(true)}>
+              Ubah Password
+            </Button>
+          </ModalComponent>
         </>
       )
     }
@@ -331,39 +360,11 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         >
           <a style={{ textDecoration: 'none' }} className=' text-gray-400'>
             <h1 className="text-lg m-0">
-              <LogoutOutlined /> logout
+              <LogoutOutlined /> Logout
             </h1>
           </a>
         </div>
       </Sider>
-
-      {/* ALERT WARNING & CONFIRM & ERROR */}
-      {( showAlert || showAlertConfirm || showAlertError ) && (
-          <>
-          {/* Full-screen overlay to block interaction */}
-          <div className='alert-overlay' />
-             {/* Alert container */}
-              <div className="alert-container">
-              <Alert
-                  message={showAlertError ? "Error" : "Warning"}
-                  description={
-                    showAlert ? 'Semua field harus diisi.' :
-                    showAlertConfirm ? 'Konfirmasi password tidak cocok.' : 
-                    'Gagal mengubah password, periksa password saat ini atau koneksi Anda.'
-                  }
-                  // type={showAlert || showAlertConfirm ? 'warning' : 'error'}
-                  type={showAlertError ? 'error' : 'warning'}
-                  showIcon
-                  closable
-                  onClose={() => {
-                    if (showAlert) setShowAlert(false);
-                    if (showAlertConfirm) setShowAlertConfirm(false);
-                    if (showAlertError) setShowAlertError(false);
-                  }}
-              />
-            </div>
-          </>
-        )}
 
       <Layout>
         <Header

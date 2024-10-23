@@ -170,7 +170,7 @@ const Page: React.FC = () => {
           </div>
 
 
-              {/* Project Yang Sedang dikerjakan */}
+              {/* Project Yang Sedang dalam pengerjaan */}
               <Row gutter={[16, 16]} justify="center" align="middle" style={{ minHeight: '200px' }}>
                   {loading ? (
                       <Spin style={{ textAlign: 'center', padding: '20px' }} />
@@ -181,8 +181,8 @@ const Page: React.FC = () => {
                           <Col xs={24} sm={12} md={8} lg={8} key={project.id || index}>
                               <CardProjectDashboard
                                   title={<div>{project.nama_project}</div>}
-                                  link={`/super-admin/${idUser}/project/detail-project`}
-                                  teamLead={<div>{project.user.nama}</div>}
+                                  link={`/super-admin/${idUser}/project/${project.id}/detail-project`}
+                                  teamLead={<>{project.user.nama}</>}
                                   startDate={project.start_date}
                                   endDate={project.end_date}
                                   />

@@ -119,15 +119,20 @@ const TugasDiselesaikan: React.FC<{
                             content={<ModalCekTugas idTugas={idTugas} />}
                             footer={() => (
                                 <div>
-                                    <Button type="primary" danger onClick={() => openNote(idTugas)}>
+                                    <Button 
+                                        type="primary" 
+                                        style={{ backgroundColor: '#F44336', borderColor: '#F44336' }} 
+                                        onClick={() => openNote(idTugas)}
+                                    >
                                         Redo
                                     </Button>
+                                    
                                     <Button
                                         type="primary"
-                                        style={{ backgroundColor: 'green', borderColor: 'green' }}
+                                        style={{ backgroundColor: '#4CAF50', borderColor: '#4CAF50' }}
                                         onClick={() => acceptTugas(idTugas)}
                                     >
-                                        Approved
+                                        Approve
                                     </Button>
                                 </div>
                             )}
@@ -159,13 +164,13 @@ const TugasDiselesaikan: React.FC<{
                 pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />
             <ModalComponent
-                title={'Catatan'}
+                title={'Note'}
                 content={
                     <div>
                         <p>Masukkan Note :</p>
                         <TextArea
                             rows={4}
-                            placeholder="Masukkan catatan..."
+                            placeholder="Masukkan note..."
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
                             required
