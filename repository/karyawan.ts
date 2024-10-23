@@ -3,8 +3,8 @@ import useSWR from "swr";
 
 
 const url = {
-	getAllKaryawan() {
-        return '/karyawan'
+	getAllKaryawan(page:number,page_size:number) {
+        return `/karyawan?page=${page}&page_size=${page_size}`
     },
     tambahKaryawan() {
         return '/karyawan/tambah'
@@ -18,8 +18,8 @@ const url = {
 }
 
 const hooks = {
-	useAllKaryawan() {
-        return useSWR(url.getAllKaryawan(), http.fetcher);
+	useAllKaryawan(page:number,page_size:number) {
+        return useSWR(url.getAllKaryawan(page,page_size), http.fetcher);
     },
     useTambahKaryawan() {
         return useSWR(url.tambahKaryawan(), http.fetcher);

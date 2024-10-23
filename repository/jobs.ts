@@ -3,8 +3,8 @@ import useSWR from "swr";
 
 
 const url = {
-	getAllJobs() {
-        return '/job'
+	getAllJobs(page:number,page_size:number) {
+        return `/job?page=${page}&page_size=${page_size}`
     },
     tambahJobs() {
         return '/job/tambah'
@@ -18,8 +18,8 @@ const url = {
 }
 
 const hooks = {
-	useAllJobs() {
-        return useSWR(url.getAllJobs(), http.fetcher);
+	useAllJobs(page:number,page_size:number) {
+        return useSWR(url.getAllJobs(page,page_size), http.fetcher);
     },
     useTambahJobs() {
         return useSWR(url.tambahJobs(), http.fetcher);
@@ -55,7 +55,7 @@ const api = {
 				jobsResponse: jobsResponse.body,
 			};
 		} catch (error) {
-			throw new Error('Gagal mengubah nama jobs');
+			throw new Error,('Gagal mengubah nama jobs');
 		}
 	}
 }    
