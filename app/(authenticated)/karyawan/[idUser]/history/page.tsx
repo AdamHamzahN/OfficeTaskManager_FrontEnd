@@ -5,27 +5,35 @@ import { historyRepository } from '#/repository/history'; // Import historyRepos
 
 const { Panel } = Collapse;
 
+interface HistoryData {
+  nama_tugas: string;
+  status: string;
+  updated_at: string;
+}
+
+const columns = [
+  {
+    title: 'Nama Tugas',
+    dataIndex: 'nama_tugas',
+    key: 'nama_tugas',
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+  },
+  {
+    title: 'Update at',
+    dataIndex: 'updated_at',
+    key: 'updated_at',
+  }
+];
+
 const Page: React.FC = () => {
   const [dataSource, setDataSource] = useState<any[]>([]); // State untuk menyimpan data yang di-fetch
   const [loading, setLoading] = useState(true); // State untuk mengelola status loading
 
-  const columns = [
-    {
-      title: 'Nama Tugas',
-      dataIndex: 'nama_tugas',
-      key: 'nama_tugas',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-    },
-    {
-      title: 'Update at',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
-    }
-  ];
+  
 
   useEffect(() => {
     const getHistoryData = async () => {
