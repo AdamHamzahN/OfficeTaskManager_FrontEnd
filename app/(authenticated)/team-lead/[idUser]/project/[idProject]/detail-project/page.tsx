@@ -103,7 +103,7 @@ const Page = () => {
                     minHeight: '100vh',
                     backgroundColor: '#fff',
                     borderRadius: 15,
-                    marginTop: 30,
+                    marginTop: 10,
                 }}
             >
                 <Tabs activeKey={activeKey} items={items} onChange={onChange} />
