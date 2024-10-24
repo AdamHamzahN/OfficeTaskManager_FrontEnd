@@ -27,12 +27,6 @@ const TugasDiselesaikan: React.FC<{
                 title: 'Tugas Diterima',
                 content: 'Tugas Telah Diterima',
                 cancelText: 'Tutup',
-                onOk() {
-                    console.log('OK clicked');
-                },
-                onCancel() {
-                    console.log('Cancel clicked');
-                }
             });
         } catch (error) {
             console.error('Gagal mengupdate Tugas', error);
@@ -46,16 +40,10 @@ const TugasDiselesaikan: React.FC<{
                 note: note
             });
             await refreshTable();
-            Modal.error({
+            Modal.success({
                 title: 'Tugas Dikembalikan',
                 content: 'Tugas telah dikembalikan ke karyawan',
-                cancelText: 'Tutup',
-                onOk() {
-                    console.log('OK clicked');
-                },
-                onCancel() {
-                    console.log('Cancel clicked');
-                }
+                okText: 'Tutup',
             });
         } catch (error) {
             console.error('Gagal mengupdate Tugas', error);
@@ -178,7 +166,7 @@ const TugasDiselesaikan: React.FC<{
                             Batal
                         </Button>
                         <Button type="primary" onClick={handleNoteSubmit}>
-                            Submit
+                            OK
                         </Button>
                     </div>
                 )}

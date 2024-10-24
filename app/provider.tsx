@@ -16,7 +16,7 @@ export const Provider = ({children}: any) => {
   return (
     <SWRConfig
       value={{
-        revalidateOnFocus: false, // Opsi tambahan untuk konfigurasi SWR
+        revalidateOnFocus: false,
         revalidateOnReconnect: false,
         shouldRetryOnError: false,
       }}
@@ -25,7 +25,6 @@ export const Provider = ({children}: any) => {
         theme={{
           token: {
             colorPrimary: '#1890FF',
-            // fontFamily: 'Roboto, sans-serif',
           },
         }}
       >

@@ -15,7 +15,7 @@ const TugasBelumDiselesaikan: React.FC<{
     formatTimeStr: (text: string) => string,
     refreshTable: () => void,
 }> = ({ dataTugas, formatTimeStr, refreshTable }) => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    // const [isModalVisible, setIsModalVisible] = useState(false);
     const [idTugas, setIdTugas] = useState<string | null>(null)
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
@@ -34,7 +34,7 @@ const TugasBelumDiselesaikan: React.FC<{
         setFormData(tugasData);
     };
 
-    const updateStatus = async () => {
+    const updateStatus = async (modalInstance: any) => {
         const { status, file_bukti } = formData;
         console.log(status, file_bukti);
         console.log(idTugas)
@@ -53,7 +53,9 @@ const TugasBelumDiselesaikan: React.FC<{
                 title: 'Berhasil',
                 content: 'Berhasil mengubah status tugas',
                 onOk:() => {
-                    setIsModalVisible(false);
+                    modalInstance.destroy();
+                    // setIsModalVisible(false);
+                    
                 }
             });
         } catch (error) {
@@ -141,12 +143,12 @@ const TugasBelumDiselesaikan: React.FC<{
                             footer={(handleCancel) => (
                                 <div>
                                     <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={updateStatus}>Ubah</Button>
+                                    <Button type="primary" onClick={() => updateStatus({ destroy: handleCancel })}>Ubah</Button>
                                 </div>
                             )}
-                            visible={isModalVisible}
-                            onCancel={() => setIsModalVisible(false)}
-                            maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
+                            // visible={isModalVisible}
+                            // onCancel={() => setIsModalVisible(false)}
+                            // maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
                         >
                             <Button
                                 style={{
@@ -156,7 +158,7 @@ const TugasBelumDiselesaikan: React.FC<{
                                 }}
                                 onClick={() => {
                                     setIdTugas(idTugas)
-                                    setIsModalVisible(true)
+                                    // setIsModalVisible(true)
                                     setFormData({ status: status_tugas, file_bukti: null })  
                                 }}
                             >

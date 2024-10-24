@@ -1,149 +1,143 @@
-"use client";
-
+'use client'
 import React, { useState } from "react";
-// import {observer} from 'mobx-react-lite';
-import { Button, Card, Col, Form, Input, Layout, Row, Typography } from 'antd';
+import { Button, Card, Col, Form, Input, Row, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-// import ParticlesLayout from "../components/Layout/ParticlesLayout";
-// import { useHistory } from 'react-router-dom';
-// import { useRouter } from 'next/router';
-// import { useRouter } from "next/router";
-
-
+import { authRepository } from "#/repository/auth";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
-    // const store = useStore();
+    const router = useRouter()
     const [loading, setLoading] = useState(false);
 
-    // let history = useHistory();
-
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-        enterLoading(values).then(res => {
-            console.log(res, "awasaa");
-        }).catch((error) => {
-            console.log({ error }, "awasaa error");
+    const loginHandle = async (values: any) => {
+        setLoading(true);
+        const response = await authRepository.api.login({
+            username: values.username,
+            password: values.password
         });
-    };
 
-    const enterLoading = async (props: any) => {
-        // store.setInitialToken("ayayay", "clap");
-        // return history.push("/app/page_example_1");
+        if (response.error) {
+            message.error(response.error);
+        } else if (response.status === 200) {
+            const token = response.data.access_token;
+            const username = response.data.payload.username;
+            const role = response.data.payload.role;
+            const id = response.data.payload.sub;
+
+            localStorage.setItem('user', username);
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
+            localStorage.setItem('id', id);
+
+            if (role === 'Super admin') {
+                router.push(`/super-admin/${id}/dashboard`);
+            } else if (role === 'Team Lead') {
+                router.push(`/team-lead/${id}/dashboard`);
+            } else if (role === 'Karyawan') {
+                router.push(`/karyawan/${id}/dashboard`);
+            }
+        } else {
+            message.error('Login gagal, silakan cek username dan password Anda.');
+        }
+        setLoading(false);
     };
 
     return (
-        
-        <div style={{ width: '90vw', display: 'flex', justifyContent: 'center', padding: '85px' ,textAlign:'center' }}>
-            {/* <header> */}
-                <img src="/logo.svg" alt="" style={{ width: 200, height: 100, margin: 20, position: 'absolute', top: 0, left: 0}} />
-            {/* </header> */}
-            <img src="/background.svg" alt="background" />
-            
-            <Row justify={'center'}>
-                <Col>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                        marginTop: '5vh',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-                            <Typography.Paragraph
-                                style={{
-                                    margin: 0,
-                                    padding: 0,
-                                    fontSize: 20,
-                                    marginLeft: 5,
-                                    fontWeight: 600,
-                                    color: "#413d3e",
-                                }}
-                            >
-                                {/* Office Task Manager */}
-                            </Typography.Paragraph>
+        <div style={{
+            width: '100vw',
+            height: '100vh',
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#FFFFFF',
+            overflow: 'hidden',
+        }}>
+            <Row style={{ width: '100%', minHeight: '5vh', maxHeight: '10vh' }} gutter={16}>
+                <img
+                    src="/logo.svg"
+                    alt="logo"
+                    style={{ width: 150, height: 50, position: 'absolute', top: 20, left: 20 }}
+                />
+            </Row>
+            <Row style={{ width: '100%', flex: '1 1 auto', display: 'flex', marginTop: '10px', }} gutter={16}>
+                <Col xs={24} md={12} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                }}>
+                    <img
+                        src="/image.png"
+                        alt="background"
+                        style={{ width: '100%', maxHeight: '100vh', objectFit: 'contain' }}
+                    />
+                </Col>
+
+                <Col xs={24} md={12} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                }}>
+                    <Card
+                        style={{ width: '500px', height: '500px', textAlign: 'center', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' }}
+                        headStyle={{ fontSize: 30, fontWeight: 200 }}
+                        bordered={true}
+                        bodyStyle={{ height: '100%' }}
+                    >
+                        <div style={{ width: '100%', textAlign: 'center', fontFamily: 'Roboto,san-serif', fontSize: '75px', height: '25%' }}>
+                            <p>LOGIN</p>
                         </div>
-                        <Card
-                            style={{ width: 320, textAlign: 'center' }}
-                            headStyle={{ fontSize: 30, fontWeight: 200 }}
-                            className={"shadow"}
-                            bordered={true}
-                            title={'Login'}
-                        >
+                        <div style={{ width: '100%', textAlign: 'center', height: '75%' }}>
                             <Form
                                 layout={'vertical'}
+                                initialValues={{ remember: true }}
                                 name="normal_login"
                                 className="login-form"
-                                onFinish={onFinish}
+                                onFinish={loginHandle}
                             >
                                 <Form.Item
-                                    label="Username"
                                     name="username"
-                                    // size={'large'}
-                                    rules={[{ required: false, message: 'Please input your Username!' }]}
+                                    rules={[{ required: true, message: 'Please input your Username!' }]}
+                                    style={{ marginBottom: '40px' }}
                                 >
                                     <Input
+                                        size="large"
                                         prefix={<UserOutlined className="site-form-item-icon" />}
-                                        type="text"
                                         placeholder="Username" />
                                 </Form.Item>
 
                                 <Form.Item
-                                    style={{
-                                        marginBottom: 0,
-                                    }}
-                                    label="Password"
                                     name="password"
-                                    // size={'large'}
-                                    rules={[{ required: false, message: 'Please input your Password!' }]}
+                                    rules={[{ required: true, message: 'Please input your Password!' }]}
+                                    style={{ marginBottom: '70px' }}
                                 >
                                     <Input.Password
+                                        size="large"
                                         prefix={<LockOutlined className="site-form-item-icon" />}
-                                        type="password"
                                         placeholder="Password"
                                     />
                                 </Form.Item>
 
-                                <Form.Item
-                                    style={{
-                                        marginTop: 0,
-                                        marginBottom: 20,
-                                        padding: 0
-                                    }}
-                                >
-                                </Form.Item>
-
-                                {/* <Form.Item
-                                    style={{
-                                        marginBottom: 5,
-                                        textAlign: 'left'
-                                    }}>
-                                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                                        <Checkbox>Remember me</Checkbox>
-                                    </Form.Item>
-                                </Form.Item> */}
-
-                                <Form.Item
-                                    style={{
-                                        marginBottom: 0,
-                                    }}>
-                                    <Button type="primary"
+                                <Form.Item>
+                                    <Button
+                                        type="primary"
                                         block
                                         loading={loading}
                                         htmlType="submit"
                                         size={'large'}
-                                        onSubmit={enterLoading}
                                         className="login-form-button">
                                         Sign In
                                     </Button>
                                 </Form.Item>
                             </Form>
-                        </Card>
-                    </div>
+                        </div>
+                    </Card>
                 </Col>
             </Row>
-
         </div>
-        )
+    );
 };
 
 export default Login;

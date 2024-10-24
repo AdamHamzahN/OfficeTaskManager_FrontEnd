@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Table, Tag, Row, Col, Spin, Alert } from 'antd';
 import CardDashboard from "#/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { useParams } from "next/navigation";
 import { InboxOutlined } from '@ant-design/icons';
+import { tugasRepository } from "#/repository/tugas";
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -90,16 +91,19 @@ const columnTugasProject = [
 const Page: React.FC = () => {
   const params = useParams();
   const idUser = params?.idUser as string | undefined;
+  const [pageTugas, setPageTugas] = useState(1);
+  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
+    setPageTugas(newPage);
+    setPageSizeTugas(newPageSize);
+  };
 
-  // const { data: updateTugas, error: tugasError, isValidating: tugasValidating } = idUser
-  //   ? dashboardRepository.hooks.useTugasKaryawanTerbaru(idUser)
-  //   : { data: null, error: null, isValidating: false };
 
   const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = idUser
     ? dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
     : { data: null, error: null, isValidating: false };
-  // const { tugas } = tugasProject;
-  const tugas: any = []
+
+  const { data: daftarTugas, error: daftarTugasError, isValidating: daftarTugasValidate } = tugasRepository.hooks.useGetTugasKaryawanByIdUser(idUser!, pageTugas, pageSizeTugas)
   const loading = tugasProjectValidating;
 
   return (
@@ -170,13 +174,13 @@ const Page: React.FC = () => {
             {tugasProject?.nama_project == null ? (
               <div
                 style={{
-                  display: 'flex',             
+                  display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center',        
-                  justifyContent: 'center',    
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   height: '100%',
-                  marginTop: 100, 
-                  marginBottom: 100       
+                  marginTop: 100,
+                  marginBottom: 100
                 }}
               >
                 <InboxOutlined style={{ fontSize: '48px', color: '#ccc' }} />
@@ -225,10 +229,19 @@ const Page: React.FC = () => {
             <Alert message="Error fetching data" type="error" />
           ) : tugasProject !== null ? (
             <Table
-              dataSource={tugasProject.tugas}
+              dataSource={daftarTugas?.data}
               columns={columnTugasProject}
-              style={{ display: 'block' }}
-              pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+              className="w-full custom-table"
+              loading={daftarTugasValidate}
+              pagination={{
+                current: pageTugas,
+                pageSize: pageSizeTugas,
+                total: daftarTugas?.count,
+                position: ['bottomCenter'],
+                onChange: (pageTugas, pageSizeTugas) => {
+                  handlePageChangeTugas(pageTugas, pageSizeTugas)
+                },
+              }}
             />
           ) : (
             <div style={{ textAlign: 'center', padding: '20px' }}>

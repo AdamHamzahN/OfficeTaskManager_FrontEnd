@@ -1,38 +1,36 @@
-import {http} from "#/utils/http";
+import { http } from "#/utils/http";
 import useSWR from "swr";
 
 
 const url = {
-	getLogin() {
-		return `/auth/login`;
-	},
-    getUser(){
+    getLogin() {
+        return `/auth/login`;
+    },
+    getUser() {
         return `http://localhost:3222/users`
     }
 }
 
 const hooks = {
-	useLogin() {
-		return useSWR(url.getLogin(), http.fetcher)
-	},
-    useGetUser(){
+    useGetUser() {
         return useSWR(url.getUser(), http.fetcher)
     }
 }
 
 const api = {
-    // async login(authData: {username: string; password: string}) {
-    //     try {
-    //         const response = await http.post(url.getLogin(), authData);
-    //         return response.data;
-    //     } catch (error) {
-    //         throw new Error('Login gagal');
-    //     }
-    // },
+    async login(body: { username: any; password: any }) {
+        try {
+            const response = await http.post(url.getLogin(), body);
+            console.log(response.body)
+            return response.body;
+        } catch (error) {
+            return 'Login gagal';
+        }
+    },
 }
 
-export const sampleRepository = {
-	url,
-    hooks, 
+export const authRepository = {
+    url,
+    hooks,
     api
 }

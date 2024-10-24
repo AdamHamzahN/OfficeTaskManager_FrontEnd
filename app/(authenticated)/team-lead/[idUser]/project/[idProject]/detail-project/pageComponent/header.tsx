@@ -31,7 +31,7 @@ const Header: React.FC<{
     const [formData, setFormData] = useState<{ status: string; file_bukti: File | null, fileName: string }>({
         status: status,
         file_bukti: null,
-        fileName: '' // State untuk menyimpan nama file
+        fileName: '' 
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +41,7 @@ const Header: React.FC<{
         setFormData(prevFormData => ({
             ...prevFormData,
             file_bukti: file,
-            fileName: file ? file.name : '' // Menyimpan nama file yang dipilih
+            fileName: file ? file.name : '' 
         }));
     };
 
