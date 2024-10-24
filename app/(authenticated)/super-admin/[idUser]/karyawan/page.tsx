@@ -121,7 +121,7 @@ const columnKaryawan = [
          )}
          content={(
            <>
-             <p>Masukkan Password Barus</p>
+             <p>Masukkan Password Baru</p>
              <Input.Password
                placeholder="Masukkan password"
                value={newPassword.password}
@@ -150,7 +150,14 @@ const columnKaryawan = [
   }
 ];
 
-  const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = karyawanRepository.hooks.useAllKaryawan();
+  const [pageTugas, setPageTugas] = useState(1);
+  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
+
+  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
+    setPageTugas(newPage);
+    setPageSizeTugas(newPageSize);
+  };
 
   const tambahKaryawan = async () => {
     console.log('p',newKaryawan)
@@ -231,11 +238,19 @@ const columnKaryawan = [
         </ModalComponent>
       </Space>
 
-      {apiResponse?.data?.result?.length > 0 ? (
+      {apiResponse?.data?.data?.length > 0 ? (
         <Table
           columns={columnKaryawan}
-          dataSource={apiResponse.data.result}
-          pagination={{ position: ['bottomCenter'] }}
+          dataSource={apiResponse.data.data}
+          pagination={{
+            current: pageTugas,
+            pageSize: pageSizeTugas,
+            total: apiResponse.data.count,
+            position: ['bottomCenter'],
+            onChange: (pageTugas, pageSizeTugas) => {
+                handlePageChangeTugas(pageTugas, pageSizeTugas)
+            },
+        }}
           style={{ marginLeft: '20px' }}
           className='custom-table'
           rowKey="id"

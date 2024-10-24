@@ -1,73 +1,69 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Space, Collapse } from 'antd';
+import { historyRepository } from '#/repository/history'; // Import historyRepository
 
 const { Panel } = Collapse;
 
-const text = 
-  "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.";
+const Page: React.FC = () => {
+  const [dataSource, setDataSource] = useState<any[]>([]); // State untuk menyimpan data yang di-fetch
+  const [loading, setLoading] = useState(true); // State untuk mengelola status loading
 
-const dataSource = [
-  {
-    key: '1',
-    title: 'UI / UX Perpustakaan',
-    author: 'John Doe',
-    genre: 'Pemrograman',
-    available: 'Ya',
-  },
-  {
-    key: '2',
-    title: 'Front End developer',
-    author: 'Jane Smith',
-    genre: 'Pemrograman',
-    available: 'Tidak',
-  },
-  {
-    key: '3',
-    title: 'Pengantar Machine Learning',
-    author: 'Sam Wilson',
-    genre: 'Teknologi',
-    available: 'Ya',
-  },
-];
+  const columns = [
+    {
+      title: 'Nama Tugas',
+      dataIndex: 'nama_tugas',
+      key: 'nama_tugas',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+    {
+      title: 'Update at',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
+    }
+  ];
 
-const columns = [
-  {
-    title: 'Nama Tugas',
-    dataIndex: 'title',
-    key: 'title',
-  },
-  {
-    title: 'Penulis',
-    dataIndex: 'author',
-    key: 'author',
-  },
-  {
-    title: 'Genre',
-    dataIndex: 'genre',
-    key: 'genre',
-  },
-  {
-    title: 'Tersedia',
-    dataIndex: 'available',
-    key: 'available',
-  },
-];
+  useEffect(() => {
+    const getHistoryData = async () => {
+      try {
+        const result = await historyRepository.getHistoryById(); // Ambil data dari repository
+        setDataSource(result.data); // Sesuaikan dengan struktur respons yang diharapkan
+      } catch (error) {
+        console.error('Error fetching history data:', error);
+      } finally {
+        setLoading(false); // Set loading menjadi false setelah data di-fetch
+      }
+    };
 
-const App: React.FC = () => (
-  <Space direction="vertical" style={{ width: '100%' }}>
-    <Collapse accordion>
-      <Panel header="Tugas Project 3" key="1">
-        <p>{text}</p>
-      </Panel>
-      <Panel header="Project Aplikasi Perpustakaan" key="2">
-        <Table dataSource={dataSource} columns={columns} pagination={false} />
-      </Panel>
-      <Panel header="Tugas Project 3" key="3">
-        <p>{text}</p>
-      </Panel>
-    </Collapse>
-  </Space>
-);
+    getHistoryData(); // Panggil fungsi untuk mengambil data
+  }, []);
 
-export default App;
+  if (loading) return <p>Loading...</p>; // Status loading saat data sedang diambil
+
+  return (
+    <Space direction="vertical" style={{ width: '100%' }}>
+      {/* Heading "History" */}
+      <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '20px' }}>
+        History
+      </h1>
+      
+      <Collapse accordion>
+        <Panel header="Tugas Project 3" key="1">
+          <Table dataSource={dataSource} columns={columns} pagination={false} />
+        </Panel>
+        <Panel header="Project Aplikasi Perpustakaan" key="2">
+          <Table dataSource={dataSource} columns={columns} pagination={false} />
+        </Panel>
+        <Panel header="Tugas Project 3" key="3">
+          <Table dataSource={dataSource} columns={columns} pagination={false} />
+        </Panel>
+      </Collapse>
+    </Space>
+  );
+};
+
+export default Page;

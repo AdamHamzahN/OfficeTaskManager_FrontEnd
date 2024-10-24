@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { Space, Table, Tag, Alert, Spin, Button } from 'antd';
 import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EyeOutlined } from "@ant-design/icons";
@@ -32,17 +32,17 @@ interface JobData {
 // Perbarui DataType untuk mencocokkan data yang diterima
 interface DataType {
   key: string;
-  job_nama_job: string;
+  nama_job: string;
   jumlah_karyawan: string;
-  job_created_at: string;
+  created_at: string;
   aksi: string[];
 }
 
 const columnJobs = [
   {
     title: 'Nama Jobs',
-    dataIndex: 'job_nama_job',
-    key: 'job_nama_job',
+    dataIndex: 'nama_job',
+    key: 'nama_job',
   },
   {
     title: 'Jumlah Karyawan',
@@ -51,8 +51,8 @@ const columnJobs = [
   },
   {
     title: 'Tanggal Di Tambahkan',
-    dataIndex: 'job_created_at',
-    key: 'job_created_at',
+    dataIndex: 'created_at',
+    key: 'created_at',
     render: (text: string) => formatTimeStr(text),
   },
   {
@@ -86,8 +86,15 @@ const columnJobs = [
 ];
 
 const Page: React.FC = () => {
-  const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs();
-  console.log('api :', apiResponse);
+  const [pageTugas, setPageTugas] = useState(1);
+  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
+
+  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
+    setPageTugas(newPage);
+    setPageSizeTugas(newPageSize);
+};
+
   if (updateValidating) {
     return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
   }
@@ -110,11 +117,19 @@ const Page: React.FC = () => {
           Daftar Job
         </h1>
       </Space>
-      {apiResponse?.data?.length > 0 ? (
+      {apiResponse?.data?.data?.length > 0 ? (
         <Table
           columns={columnJobs}
-          dataSource={apiResponse.data}
-          pagination={{ position: ['bottomCenter'] }}
+          dataSource={apiResponse.data.data}
+          pagination={{
+            current: pageTugas,
+            pageSize: pageSizeTugas,
+            total: apiResponse.data.count,
+            position: ['bottomCenter'],
+            onChange: (pageTugas, pageSizeTugas) => {
+                handlePageChangeTugas(pageTugas, pageSizeTugas)
+            },
+        }}
           style={{ marginLeft: '20px' }}
           className='custom-table'
         />

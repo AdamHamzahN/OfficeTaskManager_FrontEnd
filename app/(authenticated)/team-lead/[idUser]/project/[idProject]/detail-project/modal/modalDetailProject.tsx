@@ -76,13 +76,13 @@ const ModalDetailProject: React.FC<{
             )}
 
 
-            <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Detail Project</label>
+            <label htmlFor="bukti_pengerjaan" style={{ marginTop: '15px' ,marginBottom: '8px', display: 'block' }}>Detail Project</label>
             <a href={fileDetailProject} target="_blank" rel="noopener noreferrer">
                 <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
                     <SearchOutlined /> Lihat File Detail
                 </Button>
             </a>
-            {status === 'approved' && (
+            {status === 'done' && (
                 <>
 
                     <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Hasil Project</label>

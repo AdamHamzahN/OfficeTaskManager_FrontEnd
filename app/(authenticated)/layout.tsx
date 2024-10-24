@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined, UserOutlined, HistoryOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, Spin, theme, Modal, Input, Alert } from 'antd';
+import { Button, Layout, Menu, Spin, theme, Modal, Input, Alert, message } from 'antd';
 import { useRouter, useParams, usePathname } from 'next/navigation';
 import { userRepository } from '#/repository/user';
 import ProfileComponent from '#/component/ProfileComponent';
+import ModalComponent from '#/component/ModalComponent';
 
 const { Header, Content, Footer, Sider } = Layout;
 

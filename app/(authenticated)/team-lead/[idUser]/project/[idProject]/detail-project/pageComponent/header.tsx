@@ -1,6 +1,6 @@
 import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Modal, Select, message } from "antd";
 import { useRef, useState } from "react";
 import { ArrowLeftOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalComponent from "#/component/ModalComponent";
@@ -55,7 +55,8 @@ const Header: React.FC<{
         const { status, file_bukti } = formData;
 
         if (status === 'done' && file_bukti === null || file_bukti === undefined) {
-            alert('Masukkan file terlebih dahulu!');
+            // alert('Masukkan file terlebih dahulu!');
+            message.warning('Masukkan file terlebih dahulu!')
             return;
         }
 

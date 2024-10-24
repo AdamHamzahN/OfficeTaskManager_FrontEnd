@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Table, Alert, Spin, Button, Switch } from 'antd';
 import { karyawanRepository } from '#/repository/karyawan'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EyeOutlined } from "@ant-design/icons";
@@ -67,8 +67,14 @@ const columnKaryawan = [
 ];
 
 const Page: React.FC = () => {
-  const { data: apiResponse, error: updateError, isValidating: updateValidating } = karyawanRepository.hooks.useAllKaryawan();
-
+  const [pageTugas, setPageTugas] = useState(1);
+  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const { data: apiResponse, error: updateError, isValidating: updateValidating } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
+  
+  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
+    setPageTugas(newPage);
+    setPageSizeTugas(newPageSize);
+};
   useEffect(() => {
     console.log('apiResponse:', apiResponse);
     console.log('Error:', updateError);
@@ -96,11 +102,19 @@ const Page: React.FC = () => {
           Daftar Karyawan
         </h1>
       </Space>
-      {apiResponse?.data?.result?.length > 0 ? (
+      {apiResponse?.data?.data?.length > 0 ? (
         <Table
           columns={columnKaryawan}
-          dataSource={apiResponse.data.result}
-          pagination={{ position: ['bottomCenter'] }}
+          dataSource={apiResponse.data.data}
+          pagination={{
+            current: pageTugas,
+            pageSize: pageSizeTugas,
+            total: apiResponse.data.count,
+            position: ['bottomCenter'],
+            onChange: (pageTugas, pageSizeTugas) => {
+                handlePageChangeTugas(pageTugas, pageSizeTugas)
+            },
+        }}
           style={{ marginLeft: '20px' }}
           className='custom-table'
           rowKey="id"

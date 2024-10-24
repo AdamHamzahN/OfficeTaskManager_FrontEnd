@@ -1,6 +1,6 @@
 import ModalComponent from "#/component/ModalComponent";
 import { projectRepository } from "#/repository/project";
-import { Button, Modal, Row, Table } from "antd";
+import { Button, Modal, Row, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import ModalUbahNamaTeam from "../modal/modalUbahNamaTeam";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
@@ -53,7 +53,8 @@ const TableTeam: React.FC<{
     }, [data, idProject]);
     const tambahKaryawan = async () => {
         if (!selectedKaryawan) {
-            alert('Pilih Karyawan Terlebih Dahulu');
+            // alert('Pilih Karyawan Terlebih Dahulu');
+            message.warning('Pilih Karyawan Terlebih Dahulu');
             return;
         }
         try {
@@ -80,7 +81,8 @@ const TableTeam: React.FC<{
 
     const ubahNamaTeam = async () => {
         if (newNamaTeam === undefined || newNamaTeam === null) {
-            alert('Masukkan Nama Team terlebih dahulu!')
+            // alert('Masukkan Nama Team terlebih dahulu!')
+            message.warning('Masukkan Nama Team terlebih dahulu!')
         }
         try {
             await projectRepository.api.updateNamaTeam(idProject, {
