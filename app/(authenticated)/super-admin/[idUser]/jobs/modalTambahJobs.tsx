@@ -8,7 +8,6 @@ interface ModalTambahJobsProps {
 const ModalTambahJobs: React.FC<ModalTambahJobsProps> = ({ createjob }) => {
   const [nama_job, setJobName] = useState<string>(""); // State untuk nama job
   const [deskripsi_job, setJobDescription] = useState<string>(""); // State untuk deskripsi job
-
   // Fungsi untuk mengirim data job ke parent component saat ada perubahan
   const handleJobDataChange = () => {
     createjob({ nama_job, deskripsi_job });
