@@ -16,17 +16,17 @@ const formatTimeStr = (dateStr: string) => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
 interface JobData {
-  job_id: string;
+  id: string;
   nama_job: string;
   jumlah_karyawan: string;
-  job_created_at: string;
-  job_updated_at: string;
-  job_deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 }
 
 
@@ -35,7 +35,7 @@ const Page: React.FC = () => {
     nama_job: '',
     deskripsi_job: '',
   });
-  
+
   const [editsJob, setEditsJob] = useState<{ nama_job: string; deskripsi_job: string }>({
     nama_job: '',
     deskripsi_job: '',
@@ -65,7 +65,7 @@ const Page: React.FC = () => {
       title: 'Aksi',
       key: 'aksi',
       render: (record: JobData) => {
-        const idJob = record.job_id;
+        const idJob = record.id;
         return (
           <div>
             <ModalComponent
@@ -122,7 +122,7 @@ const Page: React.FC = () => {
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
     setPageTugas(newPage);
     setPageSizeTugas(newPageSize);
-};
+  };
 
   const tambahJob = async () => {
     if (!newJob.nama_job || !newJob.deskripsi_job) {
@@ -147,7 +147,7 @@ const Page: React.FC = () => {
     //   return;
     // }
     try {
-      await jobsRepository.api.editJobById(selectedJobId || '', {editsJob});
+      await jobsRepository.api.editJobById(selectedJobId || '', { editsJob });
       Modal.success({
         title: 'Job Diedit',
         content: 'Berhasil mengedit Job!',
@@ -171,7 +171,7 @@ const Page: React.FC = () => {
         <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginTop: '30px', marginBottom: '0' }}>
           Daftar Job
         </h1>
-        
+
         <ModalComponent
           title={'Tambah Job Baru'}
           content={<ModalTambahJobs createjob={setNewJob} />}
@@ -187,28 +187,21 @@ const Page: React.FC = () => {
           </Button>
         </ModalComponent>
       </Space>
-
-      {apiResponse?.data?.data?.length > 0 ? (
-        <Table
-          columns={columnJobs}
-          dataSource={apiResponse.data.data}
-          pagination={{
-            current: pageTugas,
-            pageSize: pageSizeTugas,
-            total: apiResponse.data.count,
-            position: ['bottomCenter'],
-            onChange: (pageTugas, pageSizeTugas) => {
-                handlePageChangeTugas(pageTugas, pageSizeTugas)
-            },
+      <Table
+        columns={columnJobs}
+        dataSource={apiResponse.data}
+        pagination={{
+          current: pageTugas,
+          pageSize: pageSizeTugas,
+          total: apiResponse.data.count,
+          position: ['bottomCenter'],
+          onChange: (pageTugas, pageSizeTugas) => {
+            handlePageChangeTugas(pageTugas, pageSizeTugas)
+          },
         }}
-          style={{ marginLeft: '20px' }}
-          className="custom-table"
-        />
-      ) : (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>No data availables</p>
-        </div>
-      )}
+        style={{ marginLeft: '20px' }}
+        className="custom-table"
+      />
     </div>
   );
 };

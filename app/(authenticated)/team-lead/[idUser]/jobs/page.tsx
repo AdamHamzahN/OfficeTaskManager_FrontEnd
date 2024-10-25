@@ -20,12 +20,12 @@ const formatTimeStr = (dateStr: string) => {
 
 // Definisikan tipe untuk objek job yang diterima dari API
 interface JobData {
-  job_id: string;
-  job_nama_job: string;
+  id: string;
+  nama_job: string;
   jumlah_karyawan: string;
-  job_created_at: string;
-  job_updated_at: string;
-  job_deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
   aksi: string[];
 }
 
@@ -59,7 +59,7 @@ const columnJobs = [
     title: 'Aksi',
     key: 'aksi',
     render: (record: any) => {
-      const idJob = record.job_id;
+      const idJob = record.id;
 
       return (
         <div>
@@ -117,10 +117,9 @@ const Page: React.FC = () => {
           Daftar Job
         </h1>
       </Space>
-      {apiResponse?.data?.data?.length > 0 ? (
         <Table
           columns={columnJobs}
-          dataSource={apiResponse.data.data}
+          dataSource={apiResponse.data}
           pagination={{
             current: pageTugas,
             pageSize: pageSizeTugas,
@@ -133,11 +132,6 @@ const Page: React.FC = () => {
           style={{ marginLeft: '20px' }}
           className='custom-table'
         />
-      ) : (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>No data available</p>
-        </div>
-      )}
     </div>
   );
 };
