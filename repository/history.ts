@@ -3,14 +3,14 @@ import useSWR from "swr";
 
 
 const url = {
-    getHistoryById(id_history: string) {
-    return `/team/${id_history}/history`
+    getHistoryById(id_user: string) {
+    return `/team/${id_user}/history`
     }
 }
 
 const hooks = {
-    useGetHistoryById(id_history: string) {
-        return useSWR(url.getHistoryById(id_history), http.fetcher);
+  useGetHistoryById(id_user: string) {
+      return useSWR(url.getHistoryById(id_user), http.fetcher);
     }
 }
 

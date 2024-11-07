@@ -14,6 +14,9 @@ const url = {
 	},
     editJobById(id_job:string){
         return `/job/${id_job}/update`
+    },
+    getJobs() {
+        return `/job/get-all`
     }
 }
 
@@ -29,6 +32,9 @@ const hooks = {
     },
     useEditJobById(id_job: string) {
         return useSWR(url.editJobById(id_job), http.fetcher);
+    },
+    useJobs() {
+        return useSWR(url.getJobs(), http.fetcher)
     }
 
 }

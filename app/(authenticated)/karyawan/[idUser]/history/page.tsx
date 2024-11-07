@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { Table, Space, Collapse } from 'antd';
+import React, { useEffect } from 'react';
+import { Table, Space, Collapse, Spin, Alert } from 'antd';
 import { historyRepository } from '#/repository/history'; // Import historyRepository
+import { useParams } from 'next/navigation';
 
 const { Panel } = Collapse;
 
@@ -30,31 +31,38 @@ const columns = [
 ];
 
 const Page: React.FC = () => {
-  const [dataSource, setDataSource] = useState<any[]>([]); // State untuk menyimpan data yang di-fetch
-  const [loading, setLoading] = useState(true); // State untuk mengelola status loading
+  const params = useParams();
+  const id_user = params?.idUser as string;
+  // Ambil data menggunakan id_user sebagai parameter
+  const { data: historyResponse, error: updateError, isValidating: updateValidating } = historyRepository.hooks.useGetHistoryById(id_user);
 
-  
-
+  // Cek hasil dari historyResponse
   useEffect(() => {
-    const getHistoryData = async () => {
-      try {
-        const result = await historyRepository.getHistoryById(); // Ambil data dari repository
-        setDataSource(result.data); // Sesuaikan dengan struktur respons yang diharapkan
-      } catch (error) {
-        console.error('Error fetching history data:', error);
-      } finally {
-        setLoading(false); // Set loading menjadi false setelah data di-fetch
-      }
-    };
+    console.log("History response:", historyResponse); // Log hasil respons dari API
+    console.log("Error:", updateError); // Log error jika ada
+  }, [historyResponse, updateError]);
 
-    getHistoryData(); // Panggil fungsi untuk mengambil data
-  }, []);
+  // Definisikan dataSource dari hasil historyResponse
+  const dataSource = historyResponse
+    ? historyResponse.data.map((item: HistoryData, index: number) => ({
+        ...item,
+        key: index, // Tambahkan key untuk setiap item
+      }))
+    : [];
 
-  if (loading) return <p>Loading...</p>; // Status loading saat data sedang diambil
+  // Loading state ketika data sedang diambil
+  if (updateValidating) {
+    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
+  }
 
+  // Tampilkan error jika ada
+  if (updateError) {
+    return <Alert message="Error fetching data" type="error" />;
+  }
+
+  // Tampilkan data dalam bentuk tabel dan panel
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      {/* Heading "History" */}
       <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '20px' }}>
         History
       </h1>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "antd";
 
 interface ModalTambahJobsProps {
@@ -8,10 +8,11 @@ interface ModalTambahJobsProps {
 const ModalTambahJobs: React.FC<ModalTambahJobsProps> = ({ createjob }) => {
   const [nama_job, setJobName] = useState<string>(""); // State untuk nama job
   const [deskripsi_job, setJobDescription] = useState<string>(""); // State untuk deskripsi job
-  // Fungsi untuk mengirim data job ke parent component saat ada perubahan
-  const handleJobDataChange = () => {
+
+  // Gunakan useEffect untuk memanggil createjob hanya ketika nama_job atau deskripsi_job berubah
+  useEffect(() => {
     createjob({ nama_job, deskripsi_job });
-  };
+  }, [nama_job, deskripsi_job, createjob]);
 
   return (
     <div>
@@ -20,10 +21,7 @@ const ModalTambahJobs: React.FC<ModalTambahJobsProps> = ({ createjob }) => {
       <Input
         id="jobName"
         value={nama_job}
-        onChange={(e) => {
-          setJobName(e.target.value);
-          handleJobDataChange();
-        }}
+        onChange={(e) => setJobName(e.target.value)}
         placeholder="Masukkan nama jobs baru"
         style={{ marginBottom: 10 }}
       />
@@ -33,10 +31,7 @@ const ModalTambahJobs: React.FC<ModalTambahJobsProps> = ({ createjob }) => {
       <Input
         id="jobDescription"
         value={deskripsi_job}
-        onChange={(e) => {
-          setJobDescription(e.target.value);
-          handleJobDataChange();
-        }}
+        onChange={(e) => setJobDescription(e.target.value)}
         placeholder="Masukkan deskripsi jobs baru"
         style={{ marginBottom: 10 }}
       />

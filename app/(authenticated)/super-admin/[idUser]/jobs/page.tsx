@@ -116,8 +116,7 @@ const Page: React.FC = () => {
 
   const [pageTugas, setPageTugas] = useState(1);
   const [pageSizeTugas, setPageSizeTugas] = useState(5);
-  const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
-  console.log(apiResponse)
+  const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
 
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
     setPageTugas(newPage);
@@ -135,6 +134,8 @@ const Page: React.FC = () => {
         title: 'Job Ditambahkan',
         content: 'Berhasil menambahkan Job baru!',
       });
+      mutate()
+      // setIsModalOpen(false); // Close the modal on success
     } catch (error) {
       console.error('Gagal menambahkan Job:', error);
     }
@@ -152,6 +153,8 @@ const Page: React.FC = () => {
         title: 'Job Diedit',
         content: 'Berhasil mengedit Job!',
       });
+      mutate()
+      // setIsModalOpen(false); // Close the modal on success
     } catch (error) {
       console.error('Gagal mengedit Job:', error);
     }
@@ -193,7 +196,7 @@ const Page: React.FC = () => {
         pagination={{
           current: pageTugas,
           pageSize: pageSizeTugas,
-          total: apiResponse.data.count,
+          total: apiResponse.count,
           position: ['bottomCenter'],
           onChange: (pageTugas, pageSizeTugas) => {
             handlePageChangeTugas(pageTugas, pageSizeTugas)

@@ -31,7 +31,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
   };
 
   // Mengambil data dari API melalui hooks
-  const { data: detailJob, error, isValidating: loading } = jobsRepository.hooks.useAllJobs();
+  const { data: detailJob, error, isValidating: loading } = jobsRepository.hooks.useJobs();
 
   // Fungsi untuk mengirim data karyawan ke parent component saat ada perubahan
   const handleKaryawanDataChange = () => {
@@ -138,8 +138,8 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
           onChange={handleSelectChange}
         >
           {detailJob?.data.map((jobItem: any) => (
-            <Select.Option key={jobItem.job_id} value={jobItem.job_id}>
-              {jobItem.job_nama_job}
+            <Select.Option key={jobItem.id} value={jobItem.id}>
+              {jobItem.nama_job}
             </Select.Option>
           ))}
         </Select>
