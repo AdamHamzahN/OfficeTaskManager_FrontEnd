@@ -14,6 +14,9 @@ const url = {
     },
     editKaryawanById(idUser:string){
         return `/users/${idUser}/super-admin-update-password`
+    },
+    editStatusKeaktifanKaryawan(id_karyawan:string){
+        return `/karyawan/${id_karyawan}/update-status-keaktifan`
     }
 }
 
@@ -54,7 +57,19 @@ const api = {
         } catch (error) {
             throw new Error('Gagal mengubah password');
         }
-    }
+
+    },
+    async updateStatusKeaktifanKaryawan(id_karyawan: string, body: {status: string}){
+        try {
+            const statusResponse = await http.put(url.editStatusKeaktifanKaryawan(id_karyawan), body);
+            return {
+                statusResponse: statusResponse.body
+            };
+        } catch (error) {
+            console.error('Gagal memperbarui status keaktifan:', error);
+            throw error;
+        }
+    },
 }
 
 export const karyawanRepository = {

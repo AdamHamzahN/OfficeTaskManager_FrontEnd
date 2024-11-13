@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Select } from "antd";
 import { jobsRepository } from "#/repository/jobs"; // Sesuaikan dengan path repository Anda
 
@@ -14,30 +14,13 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
   const [username, setUsername] = useState<string>(""); // State untuk Username
   const [job, setJob] = useState<string>(""); // State untuk Job
 
-  // Handler untuk perubahan input pekerjaan (job)
-  const handleSelectChange = (value: string) => {
-    if (!value) {
-      console.error("Job is required");
-      return;
-    }
-    setJob(value);
-    handleKaryawanDataChange(); // Kirim data ke parent saat ada perubahan job
-  };
-
-  // Handler untuk perubahan input gender
-  const handleSelectGender = (value: string) => {
-    setGender(value);
-    handleKaryawanDataChange(); // Kirim data ke parent saat ada perubahan gender
-  };
-
   // Mengambil data dari API melalui hooks
   const { data: detailJob, error, isValidating: loading } = jobsRepository.hooks.useJobs();
 
-  // Fungsi untuk mengirim data karyawan ke parent component saat ada perubahan
-  const handleKaryawanDataChange = () => {
-    console.log({ nik, nama, gender, email, username, job }); // Log semua state untuk memastikan nilainya benar
+  // useEffect untuk mengirim data karyawan ke parent component saat ada perubahan pada salah satu field
+  useEffect(() => {
     createkaryawan({ nik, nama, gender, email, username, job });
-  };
+  }, [nik, nama, gender, email, username, job]);
 
   return (
     <div>
@@ -46,10 +29,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <Input
         id="Nik"
         value={nik}
-        onChange={(e) => {
-          setNik(e.target.value);
-          handleKaryawanDataChange();
-        }}
+        onChange={(e) => setNik(e.target.value)}
         placeholder="Masukkan Nik"
         style={{ marginLeft: 59, width: 342 }}
       />
@@ -62,10 +42,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <Input
         id="nama"
         value={nama}
-        onChange={(e) => {
-          setNama(e.target.value);
-          handleKaryawanDataChange();
-        }}
+        onChange={(e) => setNama(e.target.value)}
         placeholder="Masukkan Nama"
         style={{ marginLeft: 46, width: 342 }}
       />
@@ -78,9 +55,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <Select
         placeholder="Pilih Gender"
         style={{ width: 337, marginLeft: 42 }}
-        onChange={(value) => {
-          handleSelectGender(value);
-        }}
+        onChange={(value) => setGender(value)}
       >
         <Select.Option value="laki-laki">Laki-Laki</Select.Option>
         <Select.Option value="perempuan">Perempuan</Select.Option>
@@ -94,10 +69,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <Input
         id="email"
         value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          handleKaryawanDataChange();
-        }}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder="Masukkan Email"
         style={{ marginLeft: 50, width: 339 }}
       />
@@ -110,10 +82,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
       <Input
         id="username"
         value={username}
-        onChange={(e) => {
-          setUsername(e.target.value);
-          handleKaryawanDataChange();
-        }}
+        onChange={(e) => setUsername(e.target.value)}
         placeholder="Masukkan Username"
         style={{ marginLeft: 22, width: 335 }}
       />
@@ -135,7 +104,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
         <Select
           placeholder="Pilih Pekerjaan"
           style={{ width: 330, marginBottom: '16px', marginLeft: 63 }}
-          onChange={handleSelectChange}
+          onChange={(value) => setJob(value)}
         >
           {detailJob?.data.map((jobItem: any) => (
             <Select.Option key={jobItem.id} value={jobItem.id}>
