@@ -22,8 +22,8 @@ const url = {
 	getProjectSelesai(id_user: string, page: number, page_size: number) {
 		return `/project/karyawan/${id_user}/project-selesai?page=${page}&page_size=${page_size}`
 	},
-	getProjectByStatus(status: string) {
-		return `/project?status=${status}`
+	getProjectByStatus(status: string, page: number, page_size: number) {
+		return `/project?status=${status}&page=${page}&page_size=${page_size}`
 	},
 
 	//create
@@ -47,6 +47,9 @@ const url = {
 	},
 	updateNoteProject(id_project: string) {
 		return `/project/${id_project}/update-note`
+	},
+	updateStatusTeamKaryawan(id_project: string) {
+		return `/team/${id_project}/ubah-status-karyawan`
 	},
 
 	// upload
@@ -78,8 +81,8 @@ const hooks = {
 	useGetProjectSelesaiKaryawan(id_project: string, page: number, page_size: number) {
 		return useSWR(url.getProjectSelesai(id_project, page, page_size), http.fetcher);
 	},
-	useGetProjectByStatus(status: string) {
-		return useSWR(url.getProjectByStatus(status), http.fetcher);
+	useGetProjectByStatus(status: string, page: number, page_size: number) {
+		return useSWR(url.getProjectByStatus(status, page, page_size), http.fetcher);
 	}
 }
 
@@ -180,6 +183,10 @@ const api = {
 				console.log('formData :', formData)
 				const uploadFileBuktiResponse: Response = await http.upload(url.uploadFileHasiProject(id_project), formData);
 				console.log('Response from uploadFileBukti:', uploadFileBuktiResponse.body);
+			}
+
+			if (body.status_project == 'approved') {
+				const updateStatusKaryawan: Response = await http.put(url.updateStatusTeamKaryawan(id_project));
 			}
 
 

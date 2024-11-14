@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Row, Button, Tabs, TabsProps, Modal, Spin, Alert, Col, message } from 'antd';
+import { Row, Button, Tabs, TabsProps, Modal, Spin, Alert, Col, message, Pagination } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useParams } from 'next/navigation';
 import ModalComponent from '#/component/ModalComponent';
@@ -24,7 +24,7 @@ const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any,
             <Col span={24}>
                 <div style={{ textAlign: 'center', padding: '20px' }}>
                     <p style={{ margin: 0 }}>Tidak Ada Data</p>
-                </div>
+                </div>  
             </Col>
         );
 
@@ -35,7 +35,7 @@ const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any,
                     key={index}
                     title={project.nama_project}
                     link={`/super-admin/${idUser}/project/${project.id}/detail-project`}
-                    teamLead={project.user?.username}
+                    teamLead={project.user?.nama}
                     startDate={project.start_date}
                     endDate={project.end_date}
                 />
@@ -98,9 +98,22 @@ const Page: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string>('pending');
     const params = useParams();
     const idUser = params?.idUser as string | undefined
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const handlePageChange = (newPage: number, newPageSize: number) => {
+        setPage(newPage);
+        setPageSize(newPageSize);
+    };
 
+    // const {data: projectData, error, isValidating} = 
+    //     projectRepository.hooks.useProjectSuperAdminByStatus(idUser, activeKey, page, pageSize);
+    // const {data, count} = projectData || {data: [], count: 0};
+    // console.log('p', count);
+    // console.log('pd', data);
+    
     const { data: project, error: errorProject, isValidating: validateProject, mutate } = 
-    projectRepository.hooks.useGetProjectByStatus(activeKey);
+        projectRepository.hooks.useGetProjectByStatus(activeKey, page, pageSize);
+    const {data, count} = project || {data: [], count: 0}
     // console.log(namaTeamLead)
 
     const onChange: TabsProps['onChange'] = (key) => {
@@ -155,14 +168,28 @@ const Page: React.FC = () => {
                     paddingBottom: 24, 
                     minHeight: '100vh', 
                     backgroundColor: '#FFFFFF', 
-                    borderRadius: 15 
+                    borderRadius: 15,
+                    position: 'relative',
                     }}>
-                {/* <div> */}
+
                     <Tabs defaultActiveKey='pending' items={items} onChange={onChange}/>
-                {/* </div> */}
+                
                 <Row style={{marginTop: 20}}>
-                    <ProjectListComponent data={project} isValidating={validateProject} error={errorProject} idUser={idUser} status={activeKey}/>
+                    <ProjectListComponent data={data} isValidating={validateProject} error={errorProject} idUser={idUser} status={activeKey}/>
                 </Row>
+
+                <div style={{position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)'}}>
+                    {pageSize > 0 && (
+                        <Pagination
+                            current={page}
+                            pageSize={pageSize}
+                            total={count}
+                            onChange={handlePageChange} 
+                            pageSizeOptions={[1, 2, 5, 10]}
+                        />
+                    )}
+                </div>
+
             </div>
         </>
     );

@@ -6,7 +6,10 @@ const url = {
 	getNamaTeamLead() {
 		return `/users/team-lead`;
 	},
-	getStatusKeaktifan(id_user: string) {
+	getNamaTeamLeadActive() {
+		return `/users/team-lead/active`;
+	},
+	editStatusKeaktifan(id_user: string) {
 		return `/users/${id_user}/update-status-keaktifan`;
 	},
 	tambahTeamLead() {
@@ -22,12 +25,23 @@ const hooks = {
 	useNamaTeamLead() {
 		return useSWR(url.getNamaTeamLead(), http.fetcher)
 	},
-	useStatusKeaktifan(id_user: string) {
-		return useSWR(url.getStatusKeaktifan(id_user), http.fetcher)
-	},
+	useNamaTeamLeadActive() {
+		return useSWR(url.getNamaTeamLeadActive(), http.fetcher)
+	}
 }
 
 const api = {
+	async editStatusKeaktifan(id_user: string, body: {status: string}) {
+		try {
+			const statusResponse = await http.put(url.editStatusKeaktifan(id_user), body);
+			return {
+				statusResponse: statusResponse.body
+			};
+		} catch (error) {
+			console.error('Gagal memperbarui status keaktifan:', error);
+			throw error;
+		}
+	},
 	async tambahTeamLead(body: any) {
 		// const { nama, username, email } = body.nama
 		console.log(body)
@@ -35,7 +49,7 @@ const api = {
 			const tambahTeamLeadResponse = await http.post(url.tambahTeamLead(), body);
 			
 			return {
-			tambahTeamLeadResponse: tambahTeamLeadResponse.body
+				tambahTeamLeadResponse: tambahTeamLeadResponse.body
 			};
 		} catch (error) {
 			console.error('Error tambah team lead:', error);
@@ -54,8 +68,8 @@ const api = {
 		} catch (error) {
 			throw new Error('Gagal mengubah password');
 		}
-
 	}
+
 }
 
 export const teamleadRepository = {

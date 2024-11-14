@@ -56,10 +56,10 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
         createproject(formData);
     });
 
-    const { data: teamLeadData } = teamleadRepository.hooks.useNamaTeamLead();
+    const { data: teamLeadData } = teamleadRepository.hooks.useNamaTeamLeadActive();
     const options = teamLeadData?.map((teamLead: any) => ({
         value: teamLead.id,
-        label: `${teamLead.username}`
+        label: `${teamLead.nama}`
     })) || []
     
     const handleChange = (key: keyof typeof formData, value: any) => {

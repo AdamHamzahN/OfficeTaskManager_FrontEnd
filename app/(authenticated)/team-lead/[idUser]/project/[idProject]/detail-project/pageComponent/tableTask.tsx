@@ -1,7 +1,7 @@
 import ModalComponent from "#/component/ModalComponent";
 import { Button, Modal, Row, Table, Tag, message } from "antd";
 import ModalDetailTugas from "../modal/modalDetailTugas";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import ModalTambahTugas from "../modal/modalTambahTugas";
 import { useState } from "react";
 import { tugasRepository } from "#/repository/tugas";
@@ -192,7 +192,7 @@ const TableTask: React.FC<{
                                 });
                                 setIsModalVisible(true);
                             }}>
-                            + Tambah Tugas
+                            <PlusOutlined /> Tambah Tugas
                         </button>
                     </ModalComponent>
                 </div>

@@ -21,6 +21,18 @@ const Page: React.FC = () => {
   
   const [selectedIdTeamLead, setSelectedIdTeamLead] = useState<string | null>(null);
   
+      // Function to handle status change
+  const handleStatusChange = async (id: string, status: boolean) => {
+    const newStatus = status ? 'inactive' : 'active';
+    try {
+      await teamleadRepository.api.editStatusKeaktifan(id, { status: newStatus });
+      message.success('Status keaktifan berhasil diperbarui');
+      mutate();
+    } catch (error) {
+      message.error('Gagal memperbarui status keaktifan');
+    }
+  };
+
      // Handle adding a new Team Lead
     const tambahTeamLead = async () => {
       if (!newTeamLead.nama || !newTeamLead.username || !newTeamLead.email) {
@@ -83,11 +95,13 @@ const columns = [
     title: 'Status Keaktifan',
     dataIndex: 'status',
     key: 'status',
-    render: (active: boolean) => (
-    // <Switch defaultChecked onChange={onChange} />
-    <Switch checked={active} onChange={(checked) => 
-        console.log(`Status keaktifan diubah menjadi ${checked}`)} />
-    ),
+    render: (status:any,record:any) => {
+    const status_user = status == "active" ? true : false;
+    const id_user = record.id;
+    return (
+      <Switch checked={status_user} onChange={()=> handleStatusChange(id_user,status_user)} />
+    )
+  },
   },
   {
     title: 'Aksi',
@@ -132,9 +146,17 @@ const columns = [
   },
 ];  
 
+const [page, setPage] = useState(1);
+const [pageSize, setPageSize] = useState(5);
+
 const { data: namaTeamLead, error: errorNamaTeamLead, isValidating: validateNamaTeamLead, mutate } = 
   teamleadRepository.hooks.useNamaTeamLead();
 console.log(namaTeamLead)
+
+const handlePageChange = (newPage: number, newPageSize: number) => {
+  setPageSize(newPage);
+  setPageSize(newPageSize);
+};
 
 // const dataSource = Array.isArray(namaTeamLead) ? namaTeamLead : [];
 // console.log(dataSource)
