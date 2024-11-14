@@ -1,8 +1,6 @@
 import {http} from "#/utils/http";
-import { get } from "superagent";
 import useSWR from "swr";
 
-// const baseURL = process.env.NEXT_PUBLIC_API || 'http://localhost:3222';
 
 const url = {
     // super admin
@@ -31,7 +29,7 @@ const url = {
     },
 
     //Karyawan
-    getTugasKaryawanByProject(id_user:string) {
+        getTugasKaryawanByProject(id_user:string) {
         return `/tugas/${id_user}/karyawan/tugas-project`
     }
 }

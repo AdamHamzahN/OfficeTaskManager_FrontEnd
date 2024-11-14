@@ -10,8 +10,12 @@ const url = {
 	getDetailProject(id_project: string) {
 		return `/project/${id_project}/detail-project`
 	},
-	getTeamByProject(id_project: string) {
-		return `/team/${id_project}/team-project`
+	getTeamByProject(id_project: string, page?: number, page_size?: number) {
+		if (page != null && page_size != null) {
+			return `/team/${id_project}/team-project?page=${page}&page_size=${page_size}`
+		}else{
+			return `/team/${id_project}/team-project`
+		}
 	},
 	getKaryawanAvailable() {
 		return `/karyawan/status-available`
@@ -53,7 +57,7 @@ const url = {
 	uploadFileProject(id_project: string) {
 		return `/project/${id_project}/upload-file-project `
 	},
-	uploadFileHasiProject(id_project: string){
+	uploadFileHasiProject(id_project: string) {
 		return `/project/${id_project}/upload-file-hasil`
 	},
 
@@ -66,8 +70,8 @@ const hooks = {
 	useDetailProject(id_project: string) {
 		return useSWR(url.getDetailProject(id_project), http.fetcher);
 	},
-	useTeamByProject(id_project: string) {
-		return useSWR(url.getTeamByProject(id_project), http.fetcher);
+	useTeamByProject(id_project: string,page?:number,page_size?:number) {
+		return useSWR(url.getTeamByProject(id_project,page,page_size), http.fetcher);
 	},
 	useGetKaryawanAvailable() {
 		return useSWR(url.getKaryawanAvailable(), http.fetcher);
@@ -159,19 +163,19 @@ const api = {
 	},
 
 	async updateStatusProject(id_project: string, body: { status_project: string, note?: string, file_hasil_project?: File | null }) {
-		const {note} = body
+		const { note } = body
 		try {
 			// Meng-update status proyek
 			const updateStatusResponse: Response = await http.put(url.updateStatusProject(id_project), {
 				status_project: body.status_project, // Hanya mengirim status_project di sini
 			});
 			console.log('Response from updateStatusProject:', updateStatusResponse.body);
-			
-			let  updateNoteProjectResponse;
+
+			let updateNoteProjectResponse;
 			if (note !== undefined && note !== null) {
-				updateNoteProjectResponse = await http.put(url.updateNoteProject(id_project), {note});
+				updateNoteProjectResponse = await http.put(url.updateNoteProject(id_project), { note });
 			}
-	
+
 			// Meng-upload file jika ada
 			if (body.file_hasil_project) {
 				console.log('file hasil project', body.file_hasil_project);

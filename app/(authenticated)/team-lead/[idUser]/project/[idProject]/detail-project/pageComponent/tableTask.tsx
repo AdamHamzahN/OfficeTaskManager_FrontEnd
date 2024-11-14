@@ -1,26 +1,25 @@
 import ModalComponent from "#/component/ModalComponent";
 import { Button, Modal, Row, Table, Tag, message } from "antd";
 import ModalDetailTugas from "../modal/modalDetailTugas";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { EyeOutlined } from "@ant-design/icons";
 import ModalTambahTugas from "../modal/modalTambahTugas";
 import { useState } from "react";
 import { tugasRepository } from "#/repository/tugas";
+import { projectRepository } from "#/repository/project";
 
 const TableTask: React.FC<{
-    dataTeam: any,
+    dataTugas: any,
+    status_project: any,
     idProject: string,
+    pageTugas: any,
+    pageSizeTugas: any,
+    handlePageChangeTugas: any,
     refreshTable: () => void,
     formatTimeStr: (text: string) => string,
-}> = ({ dataTeam, idProject, refreshTable, formatTimeStr }) => {
+}> = ({ dataTugas, status_project, idProject, pageTugas, pageSizeTugas, handlePageChangeTugas, refreshTable, formatTimeStr }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [pageTugas, setPageTugas] = useState(1);
-    const [pageSizeTugas, setPageSizeTugas] = useState(5);
-    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = tugasRepository.hooks.useGetTugasByProject(idProject, pageTugas, pageSizeTugas);
-
-    const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
-        setPageTugas(newPage);
-        setPageSizeTugas(newPageSize);
-    };
+    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = dataTugas;
+    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
     const [formData, setFormData] = useState<{
         nama_tugas: string;
         deskripsi_tugas: string;
@@ -52,7 +51,6 @@ const TableTask: React.FC<{
         const { nama_tugas, deskripsi_tugas, deadline, id_project, id_karyawan, file_tugas } = formData;
 
         if (!nama_tugas || !deskripsi_tugas || !deadline || !id_project || !id_karyawan || !file_tugas) {
-            // alert('Data yang diisi belum lengkap!');
             message.warning("Harap isi semua field yang diperlukan.");
             return;
         }
@@ -87,8 +85,6 @@ const TableTask: React.FC<{
         }
     }
 
-
-
     const columns = [
         {
             title: 'Tugas',
@@ -121,7 +117,7 @@ const TableTask: React.FC<{
         {
             title: 'Waktu Update',
             dataIndex: 'updated_at',
-            key:'waktu update',
+            key: 'waktu update',
             render: (text: string) => formatTimeStr(text)
         },
         {
@@ -137,7 +133,7 @@ const TableTask: React.FC<{
                             content={<ModalDetailTugas idTugas={idTugas} />}
                             footer={(handleCancel, handleOk) => (
                                 <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>  
+                                    <Button onClick={handleCancel}>Cancel</Button>
                                     <Button type="primary" onClick={handleOk}>OK</Button>
                                 </div>
                             )}
@@ -168,33 +164,35 @@ const TableTask: React.FC<{
                     </h1>
                 </div>
                 <div>
-                    <ModalComponent
-                        title={'Tambah Tugas Baru'}
-                        content={<ModalTambahTugas create_tugas={handleCreateTugas} karyawan={dataTeam} idProject={idProject} />}
-                        footer={(handleCancel) => (
-                            <div>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                                <Button type="primary" onClick={createTask} >Tambah</Button>
-                            </div>
-                        )}
-                        visible={isModalVisible}
-                        onCancel={() => setIsModalVisible(false)}
-                    >
-                        <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded"
-                            onClick={() => {
-                                setFormData({
-                                    nama_tugas: '',
-                                    deskripsi_tugas: '',
-                                    deadline: '',
-                                    id_project: idProject,
-                                    id_karyawan: '',
-                                    file_tugas: null
-                                });
-                                setIsModalVisible(true);
-                            }}>
-                            + Tambah Tugas
-                        </button>
-                    </ModalComponent>
+                    {(status_project !== 'done' && status_project !== 'approved') && (
+                        <ModalComponent
+                            title={'Tambah Tugas Baru'}
+                            content={<ModalTambahTugas create_tugas={handleCreateTugas} karyawan={teamProject?.data} idProject={idProject} />}
+                            footer={(handleCancel) => (
+                                <div>
+                                    <Button onClick={handleCancel}>Cancel</Button>
+                                    <Button type="primary" onClick={createTask} >Tambah</Button>
+                                </div>
+                            )}
+                            visible={isModalVisible}
+                            onCancel={() => setIsModalVisible(false)}
+                        >
+                            <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded"
+                                onClick={() => {
+                                    setFormData({
+                                        nama_tugas: '',
+                                        deskripsi_tugas: '',
+                                        deadline: '',
+                                        id_project: idProject,
+                                        id_karyawan: '',
+                                        file_tugas: null
+                                    });
+                                    setIsModalVisible(true);
+                                }}>
+                                + Tambah Tugas
+                            </button>
+                        </ModalComponent>
+                    )}
                 </div>
             </Row>
             <Row className="w-full">

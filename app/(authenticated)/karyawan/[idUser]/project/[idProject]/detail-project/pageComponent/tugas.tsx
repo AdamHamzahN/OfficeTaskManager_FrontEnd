@@ -3,12 +3,12 @@ import TugasBelumDiselesaikan from "./tugasBelumDiselesaikan";
 import DaftarTugasSaya from "./daftarTugasSaya";
 import { tugasRepository } from "#/repository/tugas";
 
-
 const TugasComponent: React.FC<{
     idUser: string,
+    status: any,
+    id_project: string
     formatTimeStr: (text: string) => string
-    status: any
-}> = ({ idUser, formatTimeStr, status }) => {
+}> = ({ idUser, id_project,status,formatTimeStr }) => {
     const [pageTugas, setPageTugas] = useState(1);
     const [pageSizeTugas, setPageSizeTugas] = useState(5);
     const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
@@ -23,8 +23,8 @@ const TugasComponent: React.FC<{
         setPageSizeDaftarTugas(newPageSize);
     };
 
-    const tugas = tugasRepository.hooks.useGetTugasKaryawanBelumSelesai(idUser, pageTugas, pageSizeTugas);
-    const daftarTugas = tugasRepository.hooks.useGetTugasKaryawanByIdUser(idUser, pageDaftarTugas, pageSizeDaftarTugas);
+    const tugas = tugasRepository.hooks.useGetTugasKaryawanBelumSelesai(idUser,id_project, pageTugas, pageSizeTugas);
+    const daftarTugas = tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(idUser,id_project, pageDaftarTugas, pageSizeDaftarTugas);
 
     const refreshTableTugas = async () => {
         tugas.mutate();

@@ -1,9 +1,11 @@
+'use client'
 import superagent from "superagent";
-// @ts-ignore
+//@ts-ignore
 import superagentIntercept from 'superagent-intercept';
 import { config } from '#/config/app';
 import { attachSuperagentLogger } from "./http_logger";
 import { TokenUtil } from './token';
+import { JwtToken } from "./jwtToken";
 
 let AuthIntercept = superagentIntercept((err: any, res: any) => {
     if ((res && res.status === 401)) {
@@ -14,6 +16,11 @@ let AuthIntercept = superagentIntercept((err: any, res: any) => {
     }
 });
 
+/**
+ * Mengambil token dari local storage
+ */
+let token = JwtToken.getAuthData()?.token;
+
 export const http = {
     get: (url: string, opts = {}) => {
         let req = superagent.get(config.baseUrl + url)
@@ -21,8 +28,10 @@ export const http = {
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+        if (token) {
+            // req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+            req = req.set('Authorization', 'Bearer ' +  token);
+
         }
 
         return req;
@@ -35,8 +44,10 @@ export const http = {
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+        if (token) {
+            // req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+            req = req.set('Authorization', 'Bearer ' + token);
+
         }
         return req;
     },
@@ -49,8 +60,10 @@ export const http = {
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+        if (token) {
+            // req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+            req = req.set('Authorization', 'Bearer ' + token);
+
         }
 
         return req;
@@ -62,8 +75,10 @@ export const http = {
             .use(AuthIntercept)
             .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+        if (token) {
+            // req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+            req = req.set('Authorization', 'Bearer ' + token);
+
         }
 
         return req;
@@ -85,8 +100,10 @@ export const http = {
             .use(AuthIntercept)
             .use(attachSuperagentLogger)
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+        if (token) {
+            // req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+            req = req.set('Authorization', 'Bearer ' + token);
+
         }
 
         const resp = await req

@@ -8,12 +8,12 @@ const TableTeam: React.FC<{
 }> = ({ data, nama_team, idProject }) => {
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
-
+    console.log('data',data);
     useEffect(() => {
         const fetchTugas = async () => {
             try {
-                if (data) {
-                    const counts = await Promise.all(data.map(async (record: any) => {
+                if (data.data) {
+                    const counts = await Promise.all(data.data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
                         const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
                         const data = await response.json();
@@ -38,10 +38,10 @@ const TableTeam: React.FC<{
             }
         };
 
-        if (data) {
+        if (data.data) {
             fetchTugas();
         }
-    }, [data, idProject]);
+    }, [data , idProject]);
 
 
     const columnTeam = [
@@ -91,7 +91,7 @@ const TableTeam: React.FC<{
             </Row>
             <Row className="w-full">
                 <Table
-                    dataSource={data}
+                    dataSource={data.data}
                     columns={columnTeam}
                     className="w-full custom-table"
                     pagination={{ position: ['bottomCenter'], pageSize: 5 }}

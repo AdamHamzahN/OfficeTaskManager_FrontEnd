@@ -1,4 +1,5 @@
 import {http} from "#/utils/http";
+import { message } from "antd";
 import useSWR from "swr";
 
 
@@ -24,11 +25,10 @@ const api = {
             const userResponse = await http.put(url.editPassword(id_user), bodyValue);
             return {
                 userResponse: userResponse.body,
-                // status: response.status, // status dari HTTP response
-                // data: response.data, // data dari body respons
             };
-        } catch (error) {
-            throw new Error('Gagal mengubah password');
+        } catch (error:any) {
+            const errorMessage = error.response.body.message;
+            throw new Error(errorMessage);
         }
     }
 }

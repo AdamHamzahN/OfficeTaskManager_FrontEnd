@@ -1,7 +1,5 @@
-import { Card, Col } from "antd";
 import Link from "next/link";
 import { CalendarOutlined, RightOutlined } from '@ant-design/icons';
-// import "@fontsource/plus-jakarta-sans/600.css";
 const ProjectList: React.FC<{
     title: React.ReactNode,
     link: string,

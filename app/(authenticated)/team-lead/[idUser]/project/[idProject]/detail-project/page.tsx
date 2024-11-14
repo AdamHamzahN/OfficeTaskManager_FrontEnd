@@ -11,19 +11,45 @@ import { tugasRepository } from "#/repository/tugas";
 
 const DetailProject: React.FC<{
     nama_team: any,
+    status: any,
     idProject: any,
     teamData: any,
+    pageTeam: any,
+    pageSizeTeam: any,
+    handlePageChange: any,
     mutateTeam: any,
     refreshTable: () => void,
     formatTimeStr: (text: string) => string
-}> = ({ nama_team, idProject, teamData,mutateTeam,refreshTable, formatTimeStr }) => {
+}> = ({ nama_team, status, idProject, teamData, pageTeam, pageSizeTeam, handlePageChange, mutateTeam, refreshTable, formatTimeStr }) => {
+    const [pageTugas, setPageTugas] = useState(1);
+    const [pageSizeTugas, setPageSizeTugas] = useState(5);
+    const tugasProject = tugasRepository.hooks.useGetTugasByProject(idProject, pageTugas, pageSizeTugas);
+    const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
+        setPageTugas(newPage);
+        setPageSizeTugas(newPageSize);
+    };
     return (
         <div>
-            <TableTeam idProject={idProject} nama_team={nama_team} data={teamData} mutate={mutateTeam} refreshTable={refreshTable} />
-            <TableTask
-                dataTeam={teamData}
+            <TableTeam
+                status_project={status}
+                dataTugas={tugasProject}
                 idProject={idProject}
-                refreshTable={refreshTable} 
+                nama_team={nama_team}
+                data={teamData}
+                mutate={mutateTeam}
+                refreshTable={refreshTable}
+                handlePageChange={handlePageChange}
+                page={pageTeam}
+                pageSize={pageSizeTeam}
+            />
+            <TableTask
+                status_project={status}
+                dataTugas={tugasProject}
+                idProject={idProject}
+                pageTugas={pageTugas}
+                pageSizeTugas={pageSizeTugas}
+                handlePageChangeTugas={handlePageChangeTugas}
+                refreshTable={refreshTable}
                 formatTimeStr={formatTimeStr} />
         </div>
     );
@@ -35,7 +61,12 @@ const Page = () => {
     const idUser = params?.idUser as string;
     const idProject = params?.idProject as string;
     const [activeKey, setActiveKey] = useState<string>('DetailProject');
-
+    const [pageTeam, setPageTeam] = useState(1);
+    const [pageSizeTeam, setPageSizeTeam] = useState(5);
+    const handlePageChange = (newPage: number, newPageSize: number) => {
+        setPageTeam(newPage);
+        setPageSizeTeam(newPageSize);
+    };
     const formatTimeStr = (dateStr: string) => {
         const date = new Date(dateStr);
         const day = String(date.getDate()).padStart(2, '0');
@@ -52,11 +83,10 @@ const Page = () => {
 
     const { data: tugasSelesai, error: errorTugasSelesai, isValidating: validateTugasSelesai, mutate: mutateTugasSelesai } = tugasRepository.hooks.useTugasSelesai(idProject);
 
-    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
+    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject, pageTeam, pageSizeTeam);
 
     const loading = validateDetailProject || validateTugasSelesai || validateTeam;
     const error = errorDetailProject || errorTugasSelesai || errorTeam;
-
 
     if (loading) {
         return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
@@ -77,12 +107,16 @@ const Page = () => {
     const items: TabsProps['items'] = [
         {
             key: 'DetailProject', label: 'Detail Project', children: <DetailProject
+                pageTeam={pageTeam}
+                pageSizeTeam={pageSizeTeam}
+                handlePageChange={handlePageChange}
                 nama_team={detailProject?.data.nama_team}
                 idProject={idProject}
                 teamData={teamProject}
                 refreshTable={refreshTable}
                 mutateTeam={mutateTeam}
                 formatTimeStr={formatTimeStr}
+                status={detailProject.data.status}
             />
         },
         { key: 'TugasDiselesaikan', label: 'Tugas Diselesaikan', children: <TugasDiselesaikan data={tugasSelesai} refreshTable={refreshTable} formatTimeStr={formatTimeStr} /> },

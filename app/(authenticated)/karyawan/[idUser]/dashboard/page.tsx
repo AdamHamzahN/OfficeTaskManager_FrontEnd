@@ -90,7 +90,7 @@ const columnTugasProject = [
 
 const Page: React.FC = () => {
   const params = useParams();
-  const idUser = params?.idUser as string | undefined;
+  const idUser = params?.idUser as string;
   const [pageTugas, setPageTugas] = useState(1);
   const [pageSizeTugas, setPageSizeTugas] = useState(5);
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
@@ -99,12 +99,25 @@ const Page: React.FC = () => {
   };
 
 
-  const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = idUser
-    ? dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
-    : { data: null, error: null, isValidating: false };
+  const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
 
-  const { data: daftarTugas, error: daftarTugasError, isValidating: daftarTugasValidate } = tugasRepository.hooks.useGetTugasKaryawanByIdUser(idUser!, pageTugas, pageSizeTugas)
-  const loading = tugasProjectValidating;
+  let daftarTugas, daftarTugasError, daftarTugasValidate;
+
+  if (tugasProject && tugasProject.id !== undefined) {
+    const result = tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
+      idUser!,
+      tugasProject.id_project,
+      pageTugas,
+      pageSizeTugas
+    );
+    daftarTugas = result.data;
+    daftarTugasError = result.error;
+    daftarTugasValidate = result.isValidating;
+  }
+
+  // Mengatur status loading
+  const loading = tugasProjectValidating || daftarTugasValidate;
+
 
   return (
     <div
@@ -124,7 +137,7 @@ const Page: React.FC = () => {
       <Row gutter={[16, 10]} style={{ marginBottom: 48, display: 'flex', justifyContent: 'center' }}>
         {/* 3 update Tugas Terbaru */}
         <Col xs={24} md={12} lg={14} style={{ display: 'flex', flexDirection: 'column' }}>
-          <CardDashboard title="Update Project Terbaru"
+          <CardDashboard title="Update Tugas Terbaru"
             style={{
               width: '100%',
               minHeight: 375,
@@ -133,12 +146,13 @@ const Page: React.FC = () => {
               flexDirection: 'column',
               position: 'relative',
               overflow: 'hidden',
-              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+              textAlign: 'center'
             }}
           >
             <div style={{ paddingBottom: '75%', position: 'relative' }}>
               {loading ? (
-                <Spin style={{ textAlign: 'center', padding: '20px' }} />
+                <Spin style={{ textAlign: 'center' }} />
               ) : tugasProjectError ? (
                 <Alert message="Error fetching data" type="error" />
               ) : loading !== null ? (
@@ -224,28 +238,33 @@ const Page: React.FC = () => {
         {/*Tugas Project Yang Sedang dikerjakan */}
         <div style={{ display: 'block' }}>
           {loading ? (
-            <Spin style={{ textAlign: 'center', padding: '20px' }} />
-          ) : tugasProjectError ? (
+            <Spin style={{ textAlign: 'center', padding: '20px', display: 'block' }} />
+          ) : daftarTugasError ? (
             <Alert message="Error fetching data" type="error" />
-          ) : tugasProject !== null ? (
-            <Table
-              dataSource={daftarTugas?.data}
-              columns={columnTugasProject}
-              className="w-full custom-table"
-              loading={daftarTugasValidate}
-              pagination={{
-                current: pageTugas,
-                pageSize: pageSizeTugas,
-                total: daftarTugas?.count,
-                position: ['bottomCenter'],
-                onChange: (pageTugas, pageSizeTugas) => {
-                  handlePageChangeTugas(pageTugas, pageSizeTugas)
-                },
-              }}
-            />
+          ) : tugasProject?.nama_project !== null ? (
+            <div style={{textAlign:'center',fontSize:'29px'}}>
+              <h1>Tugas project {tugasProject?.nama_project}</h1>
+              <br />
+              <Table
+                dataSource={daftarTugas?.data}
+                columns={columnTugasProject}
+                className="w-full custom-table"
+                loading={daftarTugasValidate}
+                pagination={{
+                  current: pageTugas,
+                  pageSize: pageSizeTugas,
+                  total: daftarTugas?.count,
+                  position: ['bottomCenter'],
+                  onChange: (pageTugas, pageSizeTugas) => {
+                    handlePageChangeTugas(pageTugas, pageSizeTugas)
+                  },
+                }}
+              />
+            </div>
+
           ) : (
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <p>No data available</p>
+            <div style={{ textAlign: 'center', padding: '20px', fontSize: '30px' }}>
+              <h4>Belum Ada Project</h4>
             </div>
           )}
         </div>

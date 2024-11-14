@@ -5,7 +5,6 @@ import { Alert, Col, Pagination, Row, Spin, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
 import ProjectList from "#/component/ProjectList";
 
-
 const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, error: any }> = ({ idUser, data, loading, error }) => {
     if (loading) return (
         <Col span={24}>
@@ -22,6 +21,7 @@ const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, 
             </div>
         </Col>
     );
+    console.log(data)
 
     return (
         <>
@@ -92,13 +92,12 @@ const Page: React.FC = () => {
                     left: '50%',
                     transform: 'translateX(-50%)',
                 }}>
-                    {pageSize > 0 && (
+                    {count >= 5 && (
                         <Pagination
                             current={page}
                             pageSize={pageSize}
                             total={count}
                             onChange={handlePageChange} 
-                            pageSizeOptions={[1, 2, 5, 10]}
                         />
                     )}
                 </div>

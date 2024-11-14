@@ -12,8 +12,14 @@ const url = {
     getKaryawanById(id_karyawan: string) {
         return `/karyawan/${id_karyawan}/detail`
     },
+    getKaryawanByIdUser(idUser: string) {
+        return `/karyawan/${idUser}/karyawan-by-id-user`
+    },
     editKaryawanById(idUser:string){
         return `/users/${idUser}/super-admin-update-password`
+    },
+    editAlamat(idUser:string){
+        return `karyawan/${idUser}/update-profile`
     }
 }
 
@@ -26,6 +32,9 @@ const hooks = {
     },
     useGetKaryawanById(id_karyawan: string) {
         return useSWR(url.getKaryawanById(id_karyawan), http.fetcher);
+    },
+    useGetKaryawanByIdUser(id_user: string) {
+        return useSWR(url.getKaryawanByIdUser(id_user), http.fetcher);
     }
 }
 
@@ -54,7 +63,21 @@ const api = {
         } catch (error) {
             throw new Error('Gagal mengubah password');
         }
+    },
+
+    async editAlamat(id_user: string, body: any) {
+        try {
+            const karyawanResponse = await http.put(url.editAlamat(id_user), body);
+            return {
+                karyawanResponse: karyawanResponse.body,
+                // status: response.status, // status dari HTTP response
+                // data: response.data, // data dari body respons
+            };
+        } catch (error) {
+            throw new Error('Gagal mengubah password');
+        }
     }
+
 }
 
 export const karyawanRepository = {

@@ -60,7 +60,7 @@ const Page = () => {
             >
                 <TableTeam idProject={idProject} nama_team={detailProject?.data.nama_team} data={teamProject} />
             </div>
-            <TugasComponent idUser={idUser} status={detailProject.data.status} formatTimeStr={formatTimeStr}/>
+            <TugasComponent idUser={idUser} id_project={idProject} status={detailProject.data.status} formatTimeStr={formatTimeStr}/>
         </div>
     );
 };

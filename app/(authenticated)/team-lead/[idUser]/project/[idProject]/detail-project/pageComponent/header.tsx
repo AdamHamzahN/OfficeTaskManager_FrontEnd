@@ -1,4 +1,3 @@
-import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
 import { Button, Input, Modal, Select, message } from "antd";
 import { useRef, useState } from "react";

@@ -4,11 +4,11 @@ import useSWR from "swr";
 
 const url = {
 	//get
-	getTugasKaryawanByIdUser(id_user: string,page?:number,page_size?:number) {
-		return `/tugas/${id_user}/karyawan/tugas-karyawan?page=${page}&page_size=${page_size}`
+	getTugasProjectKaryawanByIdUser(id_user: string,id_project:string,page?:number,page_size?:number) {
+		return `/tugas/${id_user}/karyawan/${id_project}/tugas-karyawan?page=${page}&page_size=${page_size}`
 	},
-	getTugasKaryawanBelumSelesai(id_user: string,page:number,page_size:number) {
-		return `/tugas/${id_user}/karyawan/tugas-karyawan-belum-selesai?page=${page}&page_size=${page_size}`
+	getTugasKaryawanBelumSelesai(id_user: string,id_project:string,page:number,page_size:number) {
+		return `/tugas/${id_user}/karyawan/${id_project}/tugas-karyawan-belum-selesai?page=${page}&page_size=${page_size}`
 	},
 	getTugasByProject(id_project: string,page: number,page_size: number) {
 		return `/tugas/${id_project}/tugas-project?page=${page}&page_size=${page_size}`
@@ -46,11 +46,11 @@ const url = {
 }
 
 const hooks = {
-	useGetTugasKaryawanBelumSelesai(id_user: string,page:number,page_size:number) {
-		return useSWR(url.getTugasKaryawanBelumSelesai(id_user,page,page_size), http.fetcher);
+	useGetTugasKaryawanBelumSelesai(id_user: string,id_project:string,page:number,page_size:number) {
+		return useSWR(url.getTugasKaryawanBelumSelesai(id_user,id_project,page,page_size), http.fetcher);
 	},
-	useGetTugasKaryawanByIdUser(id_user: string,page?:number,page_size?:number) {
-		return useSWR(url.getTugasKaryawanByIdUser(id_user,page,page_size), http.fetcher);
+	useGetTugasProjectKaryawanByIdUser(id_user: string,id_project:string,page?:number,page_size?:number) {
+		return useSWR(url.getTugasProjectKaryawanByIdUser(id_user,id_project,page,page_size), http.fetcher);
 	},
 	useGetTugasByProject(id_project: string , page: number , page_size: number) {
 		return useSWR(url.getTugasByProject(id_project,page,page_size), http.fetcher);

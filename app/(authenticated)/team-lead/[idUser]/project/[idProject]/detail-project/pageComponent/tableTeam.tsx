@@ -3,26 +3,34 @@ import { projectRepository } from "#/repository/project";
 import { Button, Modal, Row, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import ModalUbahNamaTeam from "../modal/modalUbahNamaTeam";
-import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import ModalTambahAnggota from "../modal/modalTambahAnggota";
 
 const TableTeam: React.FC<{
     data: any,
+    status_project: any,
+    dataTugas: any,
+    page: any,
+    pageSize: any,
+    handlePageChange: any,
     nama_team: string,
     idProject: string,
-    mutate:any
+    mutate: any
     refreshTable: () => void
-}> = ({ data, nama_team, idProject, mutate,refreshTable }) => {
+}> = ({ data, status_project, dataTugas, page, pageSize, handlePageChange, nama_team, idProject, mutate, refreshTable }) => {
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
     const [newNamaTeam, setNewNamaTeam] = useState(nama_team);
-
+    const [namaTeam, setNamaTeam] = useState('');
+    useEffect(() => {
+        setNamaTeam(nama_team);
+    }, [nama_team]);
     useEffect(() => {
         const fetchTugas = async () => {
             try {
                 if (data) {
-                    const counts = await Promise.all(data.map(async (record: any) => {
+                    const counts = await Promise.all(data.data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
                         const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
                         const data = await response.json();
@@ -50,10 +58,9 @@ const TableTeam: React.FC<{
         if (data) {
             fetchTugas();
         }
-    }, [data, idProject]);
+    }, [data, idProject, dataTugas]);
     const tambahKaryawan = async () => {
         if (!selectedKaryawan) {
-            // alert('Pilih Karyawan Terlebih Dahulu');
             message.warning('Pilih Karyawan Terlebih Dahulu');
             return;
         }
@@ -81,7 +88,6 @@ const TableTeam: React.FC<{
 
     const ubahNamaTeam = async () => {
         if (newNamaTeam === undefined || newNamaTeam === null) {
-            // alert('Masukkan Nama Team terlebih dahulu!')
             message.warning('Masukkan Nama Team terlebih dahulu!')
         }
         try {
@@ -146,26 +152,28 @@ const TableTeam: React.FC<{
             <Row className="content-center w-full mb-4 justify-between">
                 <div>
                     <h1 className="text-xl flex items-center">
-                        <span className="text-2xl">{nama_team}</span>
-                        <ModalComponent
-                            title={'Ubah Nama Team'}
-                            content={<ModalUbahNamaTeam nama_team={nama_team} onNamaTeamChange={setNewNamaTeam} />}
-                            footer={(handleCancel) => (
-                                <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={ubahNamaTeam}>Ubah</Button>
-                                </div>
-                            )}
-                            onCancel={() => setNewNamaTeam(nama_team)}
-                        >
-                            <a>
-                                <EditOutlined className="ml-2 text-xl" />
-                            </a>
-                        </ModalComponent>
-
+                        <span className="text-2xl">{namaTeam}</span>
+                        {(status_project !== 'done' && status_project !== 'approved') && (
+                            <ModalComponent
+                                title={'Ubah Nama Team'}
+                                content={<ModalUbahNamaTeam nama_team={nama_team} onNamaTeamChange={setNewNamaTeam} />}
+                                footer={(handleCancel) => (
+                                    <div>
+                                        <Button onClick={handleCancel}>Cancel</Button>
+                                        <Button type="primary" onClick={ubahNamaTeam}>Ubah</Button>
+                                    </div>
+                                )}
+                                onCancel={() => setNewNamaTeam(nama_team)}
+                            >
+                                <a>
+                                    <EditOutlined className="ml-2 text-xl" />
+                                </a>
+                            </ModalComponent>
+                        )}
                     </h1>
                 </div>
                 <div>
+                {(status_project !== 'done' && status_project !== 'approved') && (
                     <ModalComponent
                         title={'Tambah Anggota Team'}
                         content={<ModalTambahAnggota onSelectKaryawan={setSelectedKaryawan} />}
@@ -182,15 +190,23 @@ const TableTeam: React.FC<{
                             + Tambah Anggota
                         </button>
                     </ModalComponent>
-
+                )}
                 </div>
             </Row>
             <Row className="w-full">
                 <Table
-                    dataSource={data}
+                    dataSource={data?.data}
                     columns={columnTeam}
                     className="w-full custom-table"
-                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                    pagination={{
+                        current: page,
+                        pageSize: pageSize,
+                        total: data?.count,
+                        position: ['bottomCenter'],
+                        onChange: (pageTugas, pageSizeTugas) => {
+                            handlePageChange(pageTugas, pageSizeTugas)
+                        },
+                    }}
                 />
             </Row>
         </div>

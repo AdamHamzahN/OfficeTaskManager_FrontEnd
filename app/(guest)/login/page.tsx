@@ -4,6 +4,7 @@ import { Button, Card, Col, Form, Input, Row, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { authRepository } from "#/repository/auth";
 import { useRouter } from "next/navigation";
+import { JwtToken } from "#/utils/jwtToken";
 
 const Login = () => {
     const router = useRouter()
@@ -11,24 +12,37 @@ const Login = () => {
 
     const loginHandle = async (values: any) => {
         setLoading(true);
+        // Kirim username dan password ke api 
         const response = await authRepository.api.login({
             username: values.username,
             password: values.password
         });
 
+        //cek error
         if (response.error) {
+            //bila error tampilkan error
             message.error(response.error);
         } else if (response.status === 200) {
+            /**
+             * Ambil data dari response dan masukkan ke variable
+             */
             const token = response.data.access_token;
-            const username = response.data.payload.username;
-            const role = response.data.payload.role;
-            const id = response.data.payload.sub;
+            const role = response.data.user.role;
+            const id = response.data.user.sub;
+            const expiryTime = response.data.expires_in;
+            /**
+             * Masukkan token dan expiryTime ke variable authData
+             */
+            const authData = { token , expiryTime };
 
-            localStorage.setItem('user', username);
-            localStorage.setItem('token', token);
-            localStorage.setItem('role', role);
-            localStorage.setItem('id', id);
+            /**
+             * simpan authData ke local storage
+             */
+            JwtToken.storeToken(authData);
 
+            /**
+             * Cek role dan redirect ke dashboard berdasarkan role user
+             */
             if (role === 'Super admin') {
                 router.push(`/super-admin/${id}/dashboard`);
             } else if (role === 'Team Lead') {
@@ -37,7 +51,7 @@ const Login = () => {
                 router.push(`/karyawan/${id}/dashboard`);
             }
         } else {
-            message.error('Login gagal, silakan cek username dan password Anda.');
+            message.error('Login gagal, username atau password salah.');
         }
         setLoading(false);
     };
@@ -99,7 +113,7 @@ const Login = () => {
                             >
                                 <Form.Item
                                     name="username"
-                                    rules={[{ required: true, message: 'Please input your Username!' }]}
+                                    rules={[{ required: true, message: 'Username tidak boleh kosong!' }]}
                                     style={{ marginBottom: '40px' }}
                                 >
                                     <Input
@@ -110,7 +124,7 @@ const Login = () => {
 
                                 <Form.Item
                                     name="password"
-                                    rules={[{ required: true, message: 'Please input your Password!' }]}
+                                    rules={[{ required: true, message: 'Password tidak boleh kosong!' }]}
                                     style={{ marginBottom: '70px' }}
                                 >
                                     <Input.Password

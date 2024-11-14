@@ -98,7 +98,7 @@ const DaftarTugasSaya: React.FC<{
                 <Table
                     dataSource={data}
                     columns={columns}
-                    className="w-full custom-table"
+                    className="w-full custom-table"  
                     loading={validateDaftarTugas}
                     pagination={{
                         current: page,

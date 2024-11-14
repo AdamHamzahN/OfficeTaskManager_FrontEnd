@@ -12,8 +12,6 @@ const ProjectListComponent: React.FC<{
     loading: any,
     error: any
 }> = ({ idUser, status, data, loading, error }) => {
-
-    // Loading state
     if (loading) {
         return (
             <Col span={24}>
@@ -43,7 +41,6 @@ const ProjectListComponent: React.FC<{
             </Col>
         );
     }
-    // Menampilkan data project
     return (
         <>
             {data.map((project: any, index: number) => (
@@ -84,8 +81,6 @@ const Page: React.FC = () => {
     const error = errorDikerjakan || errorSelesai;
     const loading = projectDikerjakanValidating || projectSelesaiValidating;
     
-
-    console.log('projects  :',projects)
     const { data, count } = projects || {data: [], count:0};
     const onChange: TabsProps['onChange'] = (key) => {
         setActiveKey(key);
@@ -127,15 +122,14 @@ const Page: React.FC = () => {
                     left: '50%',
                     transform: 'translateX(-50%)',
                 }}>
-                    {activeKey === "projectSelesai" && pageSize > 0 && (
+                    {activeKey === "projectSelesai" && count > 10 && (
                         <Pagination
-                            current={1}
-                            pageSize={10}
+                            current={page}
+                            pageSize={pageSize}
                             total={count}
                             onChange={handlePageChange}
-                            pageSizeOptions={[1, 2, 5, 10]}
                         />
-                    )}
+                    )} 
                 </div>
             </div>
         </div>
