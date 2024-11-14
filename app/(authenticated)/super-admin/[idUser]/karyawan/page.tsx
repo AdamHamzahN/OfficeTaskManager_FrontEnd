@@ -58,6 +58,17 @@
       }
     };  
 
+    const handleStatusChange = async (id:string,status:boolean)=>{
+      const newStatus = status ? 'inactive' : 'active';
+      try{
+        await karyawanRepository.api.updateStatusKeaktifanKaryawan(id,{status:newStatus});
+        mutate();
+        
+      }catch(e){
+        return e;
+      }
+    }
+
   const columnKaryawan = [
     {
       title: 'Nama Karyawan',
@@ -77,12 +88,14 @@
     {
       title: 'Status Keaktifan',
       key: 'status',
-      dataIndex: 'status',
-      render: (active: boolean) => (
-        // <Switch defaultChecked onChange={onChange} />
-        <Switch checked={active} onChange={(checked) => 
-            console.log(`Status keaktifan diubah menjadi ${checked}`)} />
-      ),
+      render: (record:any) => {
+
+        const status_user = record.user.status == 'active' ? true : false;
+        const id_karyawan = record.id;
+        return(
+          <Switch checked={status_user} onChange={()=>handleStatusChange(id_karyawan,status_user)} />
+        )
+      }
     },
     {
       title: 'Status Project',
@@ -171,7 +184,7 @@
           title: 'Karyawan Ditambahkan',
           content: 'Berhasil menambahkan Karyawan baru!',
         });
-        mutate()
+        mutate();
         // setIsModalOpen(false); // Close the modal on success
       } catch (error) {
         console.error('Gagal menambahkan Karyawan:', error);
@@ -198,6 +211,7 @@
           minHeight: '100vh',
           backgroundColor: '#fff',
           borderRadius: 15,
+          // justifyContent: 'space-between',
         }}
       >
         {/* ALERT WARNING */}
@@ -220,7 +234,7 @@
             </>
           )}
 
-        <Space style={{ marginLeft: '20px', marginBottom: '10px' }}>
+        <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: '10px'}}>
           <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0', marginTop: '30px' }}>
             Daftar Karyawan
           </h1>
@@ -235,7 +249,7 @@
             )}
           >
             <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right' }}>
-              Tambah Karyawan
+              Tambah
             </Button>
           </ModalComponent>
         </Space>

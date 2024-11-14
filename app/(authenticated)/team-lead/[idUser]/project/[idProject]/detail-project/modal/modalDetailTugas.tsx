@@ -54,7 +54,7 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
                 readOnly
             />
 
-            <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>Detail Tugas</label>
+            <label htmlFor="bukti_pengerjaan" style={{ marginBottom: '8px', display: 'block' }}>File Detail Tugas</label>
             <a href={fileDetailTugas} target="_blank" rel="noopener noreferrer">
                 <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
                     <SearchOutlined /> Lihat Detail

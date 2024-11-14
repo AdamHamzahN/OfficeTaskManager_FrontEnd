@@ -3,7 +3,7 @@ import { projectRepository } from "#/repository/project";
 import { Button, Modal, Row, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import ModalUbahNamaTeam from "../modal/modalUbahNamaTeam";
-import { EditOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import ModalTambahAnggota from "../modal/modalTambahAnggota";
 
 const TableTeam: React.FC<{
@@ -187,7 +187,7 @@ const TableTeam: React.FC<{
                         onCancel={() => setSelectedKaryawan(undefined)}
                     >
                         <button className="bg-[#1890ff] hover:bg-blue-700 text-white py-2 px-2 border border-blue-700 rounded">
-                            + Tambah Anggota
+                            <PlusOutlined /> Tambah Anggota
                         </button>
                     </ModalComponent>
                 )}

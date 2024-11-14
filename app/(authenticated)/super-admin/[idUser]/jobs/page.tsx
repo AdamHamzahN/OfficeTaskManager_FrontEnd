@@ -186,7 +186,7 @@ const Page: React.FC = () => {
           )}
         >
           <Button type="primary" icon={<PlusOutlined />} style={{ float: 'right' }}>
-            Tambah Job
+            Tambah
           </Button>
         </ModalComponent>
       </Space>

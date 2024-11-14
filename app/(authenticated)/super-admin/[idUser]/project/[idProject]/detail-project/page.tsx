@@ -4,6 +4,30 @@ import { Alert, Spin } from "antd";
 import { useParams } from "next/navigation";
 import Header from "./header";
 import { projectRepository } from "#/repository/project";
+import TableTeam from "./tableTeam";
+import TableTask from "./tableTask";
+
+const DetailProject: React.FC<{
+    nama_team: any,
+    idProject: string,
+    teamData: string,
+    formatTimeStr: (text: string) => string
+    // mutateTeam: any,
+    // refreshTable: () => void
+}> = ({nama_team, idProject, teamData, formatTimeStr}) => {
+    return (
+        <>
+            <TableTeam
+                idProject={idProject}
+                nama_team={nama_team}
+                data={teamData}
+                // mutate={mutateTeam}
+                // refreshTable={refreshTable}
+            />
+            <TableTask idProject={idProject} formatTimeStr={formatTimeStr}/>
+        </>
+    );
+};
 
 const Page = () => {
     const params = useParams();
@@ -12,6 +36,10 @@ const Page = () => {
 
     const {data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate: mutateDetailProject}
         = projectRepository.hooks.useDetailProject(idProject);
+
+    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam }
+        = projectRepository.hooks.useTeamByProject(idProject);
+
 
     const loading = validateDetailProject
     const error = errorDetailProject
@@ -48,7 +76,12 @@ const Page = () => {
             />
 
             <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15, marginTop: 30 }}>
-
+                <DetailProject
+                    nama_team={detailProject?.data.nama_team}
+                    idProject={idProject}
+                    teamData={teamProject}
+                    formatTimeStr={formatTimeStr}
+                />
             </div>
         </>
     );

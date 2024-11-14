@@ -1,18 +1,13 @@
 "use client";
-import React, { useEffect } from 'react';
-import { Table, Space, Collapse, Spin, Alert } from 'antd';
+import { Table, Space, Collapse, Spin, Alert, Tag, Input } from 'antd';
 import { historyRepository } from '#/repository/history'; // Import historyRepository
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
 
 const { Panel } = Collapse;
+const { Search } = Input;
 
-interface HistoryData {
-  nama_tugas: string;
-  status: string;
-  updated_at: string;
-}
-
-const columns = [
+const columnHistory = [
   {
     title: 'Nama Tugas',
     dataIndex: 'nama_tugas',
@@ -22,6 +17,16 @@ const columns = [
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
+    render: (status: string) => {
+      const getColor = () => {
+        switch (status) {
+          case 'done': return '#2196F3';
+          case 'redo': return '#F44336';
+        }
+      };
+
+      return <Tag color={getColor()}>{status}</Tag>;
+    }
   },
   {
     title: 'Update at',
@@ -33,22 +38,12 @@ const columns = [
 const Page: React.FC = () => {
   const params = useParams();
   const id_user = params?.idUser as string;
+
+  // State untuk menampung hasil search
+  const [searchText, setSearchText] = useState('');
+
   // Ambil data menggunakan id_user sebagai parameter
   const { data: historyResponse, error: updateError, isValidating: updateValidating } = historyRepository.hooks.useGetHistoryById(id_user);
-
-  // Cek hasil dari historyResponse
-  useEffect(() => {
-    console.log("History response:", historyResponse); // Log hasil respons dari API
-    console.log("Error:", updateError); // Log error jika ada
-  }, [historyResponse, updateError]);
-
-  // Definisikan dataSource dari hasil historyResponse
-  const dataSource = historyResponse
-    ? historyResponse.data.map((item: HistoryData, index: number) => ({
-        ...item,
-        key: index, // Tambahkan key untuk setiap item
-      }))
-    : [];
 
   // Loading state ketika data sedang diambil
   if (updateValidating) {
@@ -60,25 +55,52 @@ const Page: React.FC = () => {
     return <Alert message="Error fetching data" type="error" />;
   }
 
+  // Filter tugas berdasarkan search text
+  const filteredData = historyResponse.data
+    .filter((project: any) =>
+      project.project.nama_project.toLowerCase().includes(searchText.toLowerCase())
+    );
+  console.log(filteredData);
+
   // Tampilkan data dalam bentuk tabel dan panel
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
-      <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '20px' }}>
-        History
-      </h1>
-      
-      <Collapse accordion>
-        <Panel header="Tugas Project 3" key="1">
-          <Table dataSource={dataSource} columns={columns} pagination={false} />
-        </Panel>
-        <Panel header="Project Aplikasi Perpustakaan" key="2">
-          <Table dataSource={dataSource} columns={columns} pagination={false} />
-        </Panel>
-        <Panel header="Tugas Project 3" key="3">
-          <Table dataSource={dataSource} columns={columns} pagination={false} />
-        </Panel>
-      </Collapse>
-    </Space>
+    <div
+      style={{
+        paddingRight: 24,
+        paddingBottom: 24,
+        paddingLeft: 24,
+        minHeight: '100vh',
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        position: 'relative',
+      }}
+    >
+      <Space direction="vertical" style={{ width: '100%', marginTop: '30px' }}>
+        <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '20px' }}>
+          History
+        </h1>
+
+        {/* Search input positioned at the top-right corner */}
+        <div style={{ position: 'absolute', top: 30, right: 24 }}>
+          <Search
+            placeholder="Search Nama Tugas"
+            onChange={(e) => setSearchText(e.target.value)}
+            style={{ width: '300px' }}
+          />
+        </div>
+
+        {filteredData.map((project: any, index: number) => (
+          <Collapse accordion key={index}>
+            <Panel header={project.project.nama_project} key={index}>
+              <Table
+                columns={columnHistory}
+                dataSource={project.tugas}
+              />
+            </Panel>
+          </Collapse>
+        ))}
+      </Space>
+    </div>
   );
 };
 
