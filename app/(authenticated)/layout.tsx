@@ -41,7 +41,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const isTeamLead = pathname.includes(`/team-lead/${idUser}`);
   const isKaryawan = pathname.includes(`/karyawan/${idUser}`);
   const isProjectActive = pathname.includes('/project');
-
+  
   //variable cek user
   let checkUser = false;
 
@@ -98,11 +98,10 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       /**
        * Memanggil hook untuk detail karyawan bila role user adalah karyawan
        */
-      const { data: karyawanData, isLoading: karyawanLoading } = role === 'Karyawan' ? 
+      const { data: karyawanData, isLoading: karyawanLoading } = role == 'Karyawan' ? 
         karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
 
       let loading = userLoading || karyawanLoading;
-
       if (loading) {
         return <div style={{
           display: 'flex',
@@ -290,7 +289,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             >
               <div style={{ marginRight: 27, fontSize: 20, color: 'white' }}>
                 <ProfileComponent
-                  userData={userData} karyawanData={karyawanData?.data} pathname={pathname} idUser={idUser} mutate={karyawanData?.mutate}
+                  userData={userData} karyawanData={karyawanData?.data} pathname={pathname} idUser={id} mutate={karyawanData?.mutate}
                 >
                   <a style={{ textDecoration: 'none', color: 'black' }}>
                     {userData?.data?.nama!}

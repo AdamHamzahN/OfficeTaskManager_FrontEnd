@@ -43,7 +43,7 @@ const ModalDetailJobs: React.FC<{idJobs: string}> = ({idJobs}) => {
             <label htmlFor="jumlah_karyawan" style={{ marginBottom: '8px', display: 'block' }}>Jumlah Karyawan</label>
             <Input value={detailJob.jumlah_karyawan} readOnly style={{ marginBottom: '16px' }} />
 
-`            <label htmlFor="created_at" style={{ marginBottom: '8px', display: 'block' }}>Di Tambahkan Pada</label>
+            <label htmlFor="created_at" style={{ marginBottom: '8px', display: 'block' }}>Di Tambahkan Pada</label>
             <Input value={detailJob.data.created_at} readOnly style={{ marginBottom: '16px' }}  />
             
             <label htmlFor="updated_at" style={{ marginBottom: '8px', display: 'block' }}>Terakhir Di Update</label>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Tag, Row, Col, Spin, Alert } from 'antd';
 import CardDashboard from "#/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
@@ -101,22 +101,20 @@ const Page: React.FC = () => {
 
   const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
 
-  let daftarTugas, daftarTugasError, daftarTugasValidate;
-
-  if (tugasProject && tugasProject.id !== undefined) {
-    const result = tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
-      idUser!,
-      tugasProject.id_project,
-      pageTugas,
-      pageSizeTugas
-    );
-    daftarTugas = result.data;
-    daftarTugasError = result.error;
-    daftarTugasValidate = result.isValidating;
-  }
-
+  const {
+    data: daftarTugas,
+    error: daftarTugasError,
+    isValidating: daftarTugasValidate,
+  } = tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
+    idUser!,
+    tugasProject?.id_project || null,  // Berikan nilai default jika undefined
+    pageTugas,
+    pageSizeTugas
+  );
   // Mengatur status loading
   const loading = tugasProjectValidating || daftarTugasValidate;
+
+  const { data, count } = daftarTugas || { data: [], count: 0 };
 
 
   return (
@@ -128,12 +126,6 @@ const Page: React.FC = () => {
         borderRadius: 15,
       }}
     >
-      <style>{`
-          .card-table .ant-table-thead > tr > th {
-           background-color: #EEEEEE !important;
-          color: #001529 !important;
-          }
-      `}</style>
       <Row gutter={[16, 10]} style={{ marginBottom: 48, display: 'flex', justifyContent: 'center' }}>
         {/* 3 update Tugas Terbaru */}
         <Col xs={24} md={12} lg={14} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -203,7 +195,7 @@ const Page: React.FC = () => {
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 30, marginBottom: 40 }}>
 
-                <div style={{ textAlign: 'center', flex: 1 }}>  {/* Tambahkan flex: 1 untuk lebar yang sama */}
+                <div style={{ textAlign: 'center', flex: 1 }}>
                   <h2 style={{ fontSize: 30 }}>{tugasProject?.jumlahBelumSelesai} Tugas</h2>
                   <Tag bordered={false} color="red" style={{ fontSize: 17, lineHeight: '30px', borderRadius: 5 }}>
                     Belum Diselesaikan
@@ -242,18 +234,18 @@ const Page: React.FC = () => {
           ) : daftarTugasError ? (
             <Alert message="Error fetching data" type="error" />
           ) : tugasProject?.nama_project !== null ? (
-            <div style={{textAlign:'center',fontSize:'29px'}}>
-              <h1>Tugas project {tugasProject?.nama_project}</h1>
+            <div style={{ textAlign: 'center', fontSize: '29px' }}>
+              <h3>Tugas {tugasProject?.nama_project}</h3>
               <br />
               <Table
-                dataSource={daftarTugas?.data}
+                dataSource={data}
                 columns={columnTugasProject}
                 className="w-full custom-table"
                 loading={daftarTugasValidate}
                 pagination={{
                   current: pageTugas,
                   pageSize: pageSizeTugas,
-                  total: daftarTugas?.count,
+                  total: count,
                   position: ['bottomCenter'],
                   onChange: (pageTugas, pageSizeTugas) => {
                     handlePageChangeTugas(pageTugas, pageSizeTugas)

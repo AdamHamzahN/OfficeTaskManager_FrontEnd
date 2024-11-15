@@ -22,7 +22,7 @@ const url = {
         return `/karyawan/${id_karyawan}/update-status-keaktifan`
     },
     editAlamat(idUser:string){
-        return `karyawan/${idUser}/update-profile`
+        return `/   karyawan/${idUser}/update-profile`
     }
 }
 
@@ -89,7 +89,7 @@ const api = {
                 // data: response.data, // data dari body respons
             };
         } catch (error) {
-            throw new Error('Gagal mengubah password');
+            throw new Error('Gagal mengubah alamat' , body);
         }
     }
 }

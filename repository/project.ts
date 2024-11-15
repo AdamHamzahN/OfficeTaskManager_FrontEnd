@@ -53,7 +53,7 @@ const url = {
 		return `/project/${id_project}/update-note`
 	},
 	updateStatusTeamKaryawan(id_project: string) {
-		return `/team/${id_project}/ubah-status-karyawan`
+		return `/team/${id_project}/update-status-karyawan`
 	},
 
 	// upload
@@ -192,7 +192,6 @@ const api = {
 			if (body.status_project == 'approved') {
 				const updateStatusKaryawan: Response = await http.put(url.updateStatusTeamKaryawan(id_project));
 			}
-
 
 			return {
 				updateStatusResponse: updateStatusResponse.body,

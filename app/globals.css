@@ -13,6 +13,10 @@
     color: white !important;
   }
 
+.card-table .ant-table-thead > tr > th {
+    background-color: #EEEEEE !important;
+    color: #001529 !important;
+}
 .ant-upload{
     width: 100%;
 }

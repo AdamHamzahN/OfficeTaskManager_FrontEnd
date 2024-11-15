@@ -97,12 +97,11 @@ const Page: React.FC = () => {
         borderRadius: 15,
       }}
     >
-      <Space style={{ marginLeft: '20px', marginBottom: '10px' }}>
+      <Space style={{ marginLeft: '20px', marginBottom: '30px' }}>
         <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0', marginTop: '30px' }}>
           Daftar Karyawan
         </h1>
       </Space>
-      {apiResponse?.data?.data?.length > 0 ? (
         <Table
           columns={columnKaryawan}
           dataSource={apiResponse.data.data}
@@ -119,11 +118,6 @@ const Page: React.FC = () => {
           className='custom-table'
           rowKey="id"
         />
-      ) : (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>No data available</p>
-        </div>
-      )}
     </div>
   );
 };

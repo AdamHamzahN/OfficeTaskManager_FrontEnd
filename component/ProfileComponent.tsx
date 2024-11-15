@@ -74,14 +74,13 @@ const ProfileComponent: React.FC<{
       message.error('mohon masukkan alamat dengan benar')
     }
     try {
-      const response = await karyawanRepository.api.editAlamat(karyawanData?.data?.id, { alamat: newAlamat.alamat });
+      const response = await karyawanRepository.api.editAlamat(karyawanData?.id, { alamat: newAlamat.alamat });
       if (response.karyawanResponse.statusCode === 200) {
         Modal.success({
           title: 'Berhasil Diubah',
           content: 'Alamat Berhasil Diubah',
           okText: 'OK',
         });
-        mutate();
         setModalAlamat(false);
       } else {
         message.error(response.karyawanResponse.message)
@@ -143,28 +142,28 @@ const ProfileComponent: React.FC<{
       return (
         <>
           <p style={{ margin: 0 }}>Nik :</p>
-          <p>{karyawanData?.data?.nik}</p>
+          <p>{karyawanData?.nik}</p>
 
           <p style={{ margin: 0 }}>Nama :</p>
-          <p>{userData?.data?.nama}</p>
+          <p>{userData?.data.nama}</p>
 
           <p style={{ margin: 0 }}>Alamat :</p>
           {
-            karyawanData?.data?.alamat !== null ? (
-              <p>{karyawanData?.data?.alamat}<a onClick={() => { setModalAlamat(true); hide() }}><EditOutlined /></a></p>
+            karyawanData?.alamat !== null ? (
+              <p style={{wordWrap: "break-word", maxWidth: "280px"}}>{karyawanData?.alamat}<a onClick={() => { setModalAlamat(true); hide() }}><EditOutlined /></a></p>
             ) : (
               <p>kosong <a onClick={() => { setModalAlamat(true); hide() }}><EditOutlined /></a></p>
             )
           }
 
           <p style={{ margin: 0 }}>Gender :</p>
-          <p>{karyawanData?.data?.gender}</p>
+          <p>{karyawanData?.gender}</p>
 
           <p style={{ margin: 0 }}>Username :</p>
-          <p>{userData?.data?.username}</p>
+          <p>{userData?.data.username}</p>
 
           <p style={{ margin: 0 }}>email :</p>
-          <p>{userData?.data?.email}</p>
+          <p>{userData?.data.email}</p>
 
           {buttonPassword()}
         </>

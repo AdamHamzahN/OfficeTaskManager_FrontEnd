@@ -30,7 +30,7 @@ const ModalDetailTask: React.FC<{idTask: string}> =({idTask}) => {
         return <>Error loading data</>
     }
 
-    const fileDetailTask = `${config.baseUrl}/${detailTask.data.file_task.replace(/\\/g, '/')}`;
+    const fileDetailTask = `${config.baseUrl}/${detailTask.data.file_tugas.replace(/\\/g, '/')}`;
     const fileHasilTask = `${config.baseUrl}/${detailTask.data.file_bukti.replace(/\\/g, '/')}`;
 
     return (

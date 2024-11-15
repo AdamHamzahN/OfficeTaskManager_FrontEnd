@@ -49,7 +49,7 @@ const ModalDetailKaryawan: React.FC<{ idKaryawan: string }> = ({ idKaryawan }) =
 
     console.log('p',karyawanData)
     return (
-        <div style={{ borderTop: '2px solid #ddd', paddingTop: '16px' }}>
+        <div>
             {/* NIK */}
             <label htmlFor="nik" style={{ marginBottom: '8px', display: 'block' }}>NIK</label>
             <Input value={karyawanData?.nik} readOnly style={{ marginBottom: '16px' }} />
@@ -61,7 +61,7 @@ const ModalDetailKaryawan: React.FC<{ idKaryawan: string }> = ({ idKaryawan }) =
             {/* Alamat */}
             <label htmlFor="alamat" style={{ marginBottom: '8px', display: 'block' }}>Alamat</label>
             <TextArea
-                value={karyawanData?.alamat}
+                value={karyawanData?.alamat || 'kosong'}
                 readOnly
                 autoSize={{ minRows: 3, maxRows: 9 }}
                 style={{

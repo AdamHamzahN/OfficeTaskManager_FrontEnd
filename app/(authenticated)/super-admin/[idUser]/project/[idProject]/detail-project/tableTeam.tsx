@@ -13,33 +13,32 @@ const TableTeam: React.FC<{
     const [taskCountAll, setTaskCountAll] = useState <{[key: string]: number | null}> ({});
     const [taskCountSelesai, setTaskCountSelesai] = useState <{[key: string]: number | null}> ({});
     // const [newNamaTeam, setNewNamaTeam] = useState(nama_team)
-
     useEffect(() => {
         const fetchTugas = async () => {
             try {
                 if (data) {
-                    const counts = await Promise.all(data.map(async (record: any) => {
+                    const counts = await Promise.all(data.data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
-                        const response = await fetch(`http://localhost:3222/tugas${idKaryawan}/project/${idProject}/count-tugas`);
+                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
                         const data = await response.json();
-                        return {idKaryawan, taskCountAll: data.taskCountAll, taskCountSelesai: data.taskCountSelesai};
+                        return { idKaryawan, countAll: data.countAll, countSelesai: data.countSelesai };
                     }));
 
-                    const taskCountAll = counts.reduce((acc: any, {idKaryawan, taskCountAll}) => {
-                        acc[idKaryawan] = taskCountAll;
+                    const countAll = counts.reduce((acc: any, { idKaryawan, countAll }) => {
+                        acc[idKaryawan] = countAll;
                         return acc;
                     }, {});
 
-                    const taskCountSelesai = counts.reduce((acc: any, {idKaryawan, taskCountSelesai}) => {
-                        acc[idKaryawan] = taskCountSelesai
+                    const countSelesai = counts.reduce((acc: any, { idKaryawan, countSelesai }) => {
+                        acc[idKaryawan] = countSelesai;
                         return acc;
                     }, {});
 
-                    setTaskCountAll(taskCountAll);
-                    setTaskCountSelesai(taskCountSelesai);
+                    setTaskCountAll(countAll);
+                    setTaskCountSelesai(countSelesai);
                 }
             } catch (error) {
-                console.error('Error fetching task counts', error);
+                console.error('Error fetching task counts:', error);
             }
         };
 
@@ -93,7 +92,7 @@ const TableTeam: React.FC<{
             </Row>
 
             <Table
-                dataSource={data}
+                dataSource={data?.data}
                 columns={columnTeam}
                 // pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />

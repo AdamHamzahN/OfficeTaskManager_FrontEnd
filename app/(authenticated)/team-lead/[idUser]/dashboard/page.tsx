@@ -120,13 +120,6 @@ const Page: React.FC = () => {
                 borderRadius: 15,
             }}
         >
-            <style>{`
-                .ant-table-thead > tr > th {
-                    background-color: #EEEEEE !important;
-                color: #001529 !important;
-                 }
-            `}</style>
-
             <Row gutter={[16, 10]} style={{ marginBottom: 48, display: 'flex', justifyContent: 'center' }}>
                 {/* 3 update Project Terbaru */}
                 <Col xs={24} md={12} lg={10} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -149,6 +142,7 @@ const Page: React.FC = () => {
                                 <Alert message="Error fetching data" type="error" />
                             ) : updateProjectTerbaru !== null ? (
                                 <Table
+                                    className="card-table"
                                     dataSource={updateProjectTerbaru}
                                     columns={columnProjectTerbaru}
                                     pagination={false}
@@ -183,6 +177,7 @@ const Page: React.FC = () => {
                                 <Alert message="Error fetching data" type="error" />
                             ) : updateTugasTerbaru !== null ? (
                                 <Table
+                                    className="card-table"
                                     dataSource={updateTugasTerbaru}
                                     columns={columnTugasTerbaru}
                                     pagination={false}
