@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { projectRepository } from "#/repository/project";
 import { Alert, Col, Pagination, Row, Spin, Tabs, TabsProps } from "antd";
-import { useParams } from "next/navigation";
 import ProjectList from "#/component/ProjectList";
+import { JwtToken } from "#/utils/jwtToken";
+import { slugify } from "#/utils/slugify";
 
 const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, error: any }> = ({ idUser, data, loading, error }) => {
     if (loading) return (
@@ -29,7 +30,7 @@ const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, 
                 <ProjectList
                     key={index}
                     title={project.nama_project}
-                    link={`/team-lead/${idUser}/project/${project.id}/detail-project`}
+                    link={`/team-lead/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                     teamLead={project.user.nama}
                     startDate={project.start_date}
                     endDate={project.end_date}
@@ -40,11 +41,11 @@ const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, 
 };  
 
 const Page: React.FC = () => {
-    const [activeKey, setActiveKey] = useState<string>('pending');
-    const params = useParams();
-    const idUser = params?.idUser as string | undefined;
+    const idUser = JwtToken.getPayload().sub;
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
+    const [activeKey, setActiveKey] = useState<string>('pending');
+
     const handlePageChange = (newPage: number, newPageSize: number) => {
         setPage(newPage);
         setPageSize(newPageSize);

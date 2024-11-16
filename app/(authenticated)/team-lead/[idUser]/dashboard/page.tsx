@@ -4,7 +4,8 @@ import { Table, Row, Col, Alert, Spin, Tag } from "antd";
 import CardProjectDashboard from "#/component/CardProjectDashboard";
 import CardDashboard from "#/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
-import { useParams } from "next/navigation";
+import { JwtToken } from "#/utils/jwtToken";
+import { slugify } from "#/utils/slugify";
 
 
 const formatTimeStr = (dateStr: string) => {
@@ -90,8 +91,8 @@ const columnTugasTerbaru = [
 
 
 const Page: React.FC = () => {
-    const params = useParams();
-    const idUser = params?.idUser as string | undefined;
+    //Ambil id dari local Storage
+    const idUser = JwtToken.getPayload().sub;
 
     // Hook 3 update project terbaru
     const { data: updateProjectTerbaru, error: updateError, isValidating: updateValidating } = idUser
@@ -210,7 +211,7 @@ const Page: React.FC = () => {
                             <Col xs={24} sm={12} md={8} lg={8} key={project.id || index}>
                                 <CardProjectDashboard
                                     title={<div>{project.nama_project}</div>}
-                                    link={`/team-lead/${idUser}/project/${project.id}/detail-project`}
+                                    link={`/team-lead/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                                     teamLead={<div>{project.user.nama}</div>}
                                     startDate={project.start_date}
                                     endDate={project.end_date}

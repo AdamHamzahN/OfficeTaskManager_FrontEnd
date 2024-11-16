@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { Row, Button, Tabs, TabsProps, Modal, Spin, Alert, Col, message, Pagination } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -8,6 +7,7 @@ import ModalComponent from '#/component/ModalComponent';
 import TambahProject from './modalTambahProject';
 import { projectRepository } from '#/repository/project';
 import ProjectList from '#/component/ProjectList';
+import { slugify } from '#/utils/slugify';
 
 const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any, idUser: string, status: string }> = ({ data, isValidating, error, idUser, status }) => {
     if (isValidating) 
@@ -34,7 +34,7 @@ const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any,
                 <ProjectList
                     key={index}
                     title={project.nama_project}
-                    link={`/super-admin/${idUser}/project/${project.id}/detail-project`}
+                    link={`/super-admin/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                     teamLead={project.user?.nama}
                     startDate={project.start_date}
                     endDate={project.end_date}

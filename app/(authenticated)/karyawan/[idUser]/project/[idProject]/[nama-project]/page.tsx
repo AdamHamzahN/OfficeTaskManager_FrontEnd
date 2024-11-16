@@ -5,16 +5,14 @@ import { useParams } from "next/navigation";
 import { projectRepository } from "#/repository/project";
 import Header from "./pageComponent/header";
 import TableTeam from "./pageComponent/tableTeam";
-import TugasBelumDiselesaikan from "./pageComponent/tugasBelumDiselesaikan";
-import DaftarTugasSaya from "./pageComponent/daftarTugasSaya";
-import { tugasRepository } from "#/repository/tugas";
 import TugasComponent from "./pageComponent/tugas";
+import { JwtToken } from "#/utils/jwtToken";
 
 
 // Page Component
 const Page = () => {
     const params = useParams();
-    const idUser = params?.idUser as string;
+    const idUser = JwtToken.getPayload().sub;
     const idProject = params?.idProject as string;
 
     const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject } = projectRepository.hooks.useDetailProject(idProject);

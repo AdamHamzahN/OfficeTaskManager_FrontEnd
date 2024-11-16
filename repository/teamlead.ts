@@ -3,8 +3,12 @@ import useSWR from "swr";
 
 
 const url = {
-	getNamaTeamLead() {
-		return `/users/team-lead`;
+	getNamaTeamLead(page?:number,page_size?:number) {
+		if(page && page_size){
+			return `/users/team-lead?page=${page}&page_size=${page_size}`;
+		}else{
+			return `/users/team-lead`;
+		}
 	},
 	getNamaTeamLeadActive() {
 		return `/users/team-lead/active`;
@@ -22,8 +26,12 @@ const url = {
 }
 
 const hooks = {
-	useNamaTeamLead() {
-		return useSWR(url.getNamaTeamLead(), http.fetcher)
+	useNamaTeamLead(page?:number,page_size?:number) {
+		if(page && page_size){
+			return useSWR(url.getNamaTeamLead(page,page_size), http.fetcher);
+		}else{
+			return useSWR(url.getNamaTeamLead(), http.fetcher);
+		}
 	},
 	useNamaTeamLeadActive() {
 		return useSWR(url.getNamaTeamLeadActive(), http.fetcher)

@@ -6,6 +6,7 @@ import CardDashboard from "#/component/CardDashboard";
 import CardProjectDashboard from "#/component/CardProjectDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { useParams } from "next/navigation";
+import { slugify } from "#/utils/slugify";
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -177,7 +178,7 @@ const Page: React.FC = () => {
               <Col xs={24} sm={12} md={8} lg={8} key={project.id || index}>
                 <CardProjectDashboard
                   title={<div>{project.nama_project}</div>}
-                  link={`/super-admin/${idUser}/project/${project.id}/detail-project`}
+                  link={`/super-admin/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                   teamLead={<>{project.user.nama}</>}
                   startDate={project.start_date}
                   endDate={project.end_date}

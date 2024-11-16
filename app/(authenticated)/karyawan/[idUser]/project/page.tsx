@@ -4,6 +4,8 @@ import { projectRepository } from "#/repository/project";
 import { Alert, Col, Pagination, Row, Spin, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
 import ProjectList from "#/component/ProjectList";
+import { JwtToken } from "#/utils/jwtToken";
+import { slugify } from "#/utils/slugify";
 
 const ProjectListComponent: React.FC<{
     idUser: string,
@@ -47,7 +49,7 @@ const ProjectListComponent: React.FC<{
                 <ProjectList
                     key={index}
                     title={project.nama_project}
-                    link={`/karyawan/${idUser}/project/${project.id}/detail-project`}
+                    link={`/karyawan/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                     teamLead={project.user?.nama}
                     startDate={project?.start_date}
                     endDate={project?.end_date}
@@ -59,8 +61,7 @@ const ProjectListComponent: React.FC<{
 
 const Page: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string>('projectDikerjakan');
-    const params = useParams();
-    const idUser = params?.idUser as string | undefined;
+    const idUser = JwtToken.getPayload().sub;;
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const handlePageChange = (newPage: number, newPageSize: number) => {

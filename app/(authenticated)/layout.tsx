@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined, UserOutlined, HistoryOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
@@ -20,14 +20,14 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const params = useParams();
   const pathname = usePathname() || '';
   // Mengambil data auth ( token dan expiryTime ) dari local storage
-  let authData = JwtToken.getAuthData() || {};
+  let authData = JwtToken.getAuthData();
 
   //mengambil token dan expiryTime dari authData
   const token = authData?.token || null;
   const expiryTime = authData?.expiryTime || null;
 
   //Mengambil payload yang ada di token
-  let payload = JwtToken.getPayload(token); 
+  let payload = JwtToken.getPayload(); 
 
   //mengambil id/sub dari payload
   const id = payload?.sub;
@@ -37,9 +37,9 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const idUser = params?.idUser as string | undefined;
 
   //cek apakah user berada di path / url tertentu
-  const isSuperAdmin = pathname.includes(`/super-admin/${idUser}`);
-  const isTeamLead = pathname.includes(`/team-lead/${idUser}`);
-  const isKaryawan = pathname.includes(`/karyawan/${idUser}`);
+  const isSuperAdmin = pathname.includes(`/super-admin/`) && pathname.split('/super-admin/')[1];
+  const isTeamLead = pathname.startsWith(`/team-lead/`) && pathname.split('/team-lead/')[1];
+  const isKaryawan = pathname.startsWith('/karyawan/') && pathname.split('/karyawan/')[1];
   const isProjectActive = pathname.includes('/project');
   
   //variable cek user

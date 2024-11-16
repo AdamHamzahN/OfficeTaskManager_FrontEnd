@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Table, Tag, Row, Col, Spin, Alert } from 'antd';
 import CardDashboard from "#/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
-import { useParams } from "next/navigation";
 import { InboxOutlined } from '@ant-design/icons';
 import { tugasRepository } from "#/repository/tugas";
+import { JwtToken } from "#/utils/jwtToken";
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -89,8 +89,7 @@ const columnTugasProject = [
 
 
 const Page: React.FC = () => {
-  const params = useParams();
-  const idUser = params?.idUser as string;
+  const idUser = JwtToken.getPayload().sub;
   const [pageTugas, setPageTugas] = useState(1);
   const [pageSizeTugas, setPageSizeTugas] = useState(5);
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {

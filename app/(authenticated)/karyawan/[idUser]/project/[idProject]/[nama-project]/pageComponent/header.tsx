@@ -3,7 +3,8 @@ import { Button, Select } from "antd";
 import { ArrowLeftOutlined,SearchOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import ModalComponent from "#/component/ModalComponent";
-import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/modal/modalDetailProject";
+import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/[nama-project]/modal/modalDetailProject";
+
 
 
 const Header: React.FC<{

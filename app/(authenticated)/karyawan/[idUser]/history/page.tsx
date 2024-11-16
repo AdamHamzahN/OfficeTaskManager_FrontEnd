@@ -1,8 +1,8 @@
 "use client";
 import { Table, Space, Collapse, Spin, Alert, Tag, Input } from 'antd';
 import { historyRepository } from '#/repository/history'; // Import historyRepository
-import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import { JwtToken } from '#/utils/jwtToken';
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -36,8 +36,7 @@ const columnHistory = [
 ];
 
 const Page: React.FC = () => {
-  const params = useParams();
-  const id_user = params?.idUser as string;
+  const id_user = JwtToken.getPayload().sub;;
 
   // State untuk menampung hasil search
   const [searchText, setSearchText] = useState('');

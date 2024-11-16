@@ -22,8 +22,10 @@ export class JwtToken{
         return authData;
     }
 
-    static getPayload(token:any){
+    static getPayload(){
         let payload;
+        const authData = JwtToken.getAuthData() || null;
+        const token = authData?.token || null;
         if (token && token !== null) {
             const parts = token?.split('.');
             payload = JwtToken.jwtDecode(parts ? parts[1] : null);

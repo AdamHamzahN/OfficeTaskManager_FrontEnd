@@ -1,7 +1,7 @@
 import { Button, Modal, Input } from "antd";
 import ModalComponent from "#/component/ModalComponent";
 import {ArrowLeftOutlined, SearchOutlined} from "@ant-design/icons";
-import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/detail-project/modal/modalDetailProject";
+import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/[nama-project]/modal/modalDetailProject";
 import Link from "next/link";
 import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
