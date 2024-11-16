@@ -55,15 +55,12 @@ const TugasBelumDiselesaikan: React.FC<{
                 onOk:() => {
                     modalInstance.destroy();
                     // setIsModalVisible(false);
-                    
                 }
             });
         } catch (error) {
             console.error('Gagal mengubah status project:', error);
         }
     };
-
-
 
     const columns = [
         {

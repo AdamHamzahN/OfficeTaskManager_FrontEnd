@@ -1,74 +1,25 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Space, Table, Alert, Spin, Button, Switch, Modal, Tag, Input } from 'antd';
+import { Space, Table, Alert, Spin, Button, Switch, Modal, Tag, Input, message } from 'antd';
 import { karyawanRepository } from '#/repository/karyawan'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailKaryawan from './modalDetailKaryawan';
 import ModalTambahKaryawan from './modalTambahKaryawan';
-import { render } from 'react-dom';
 
 interface KaryawanData {
   id: string;
   user: { nama: string, id: string };
   nik: string;
-  job: { nama_job: string };
+  job: { nama_job: string, id: string };
   status_project: string;
 }
 
 const Page: React.FC = () => {
-  const [newKaryawan, setNewKaryawan] = useState<{ nik: string, nama: string, gender: string, email: string, username: string, job: string }>({
-    nik: '',
-    nama: '',
-    gender: '',
-    email: '',
-    username: '',
-    job: '',
-  });
-
-  const [newPassword, setNewPassword] = useState<{ password: string }>({
-    password: ''
-  });
-
-  const [selectedIdKaryawan, setSelectedIdKaryawan] = useState<string | null>(null);
-
-  // state alert warning
-  const [showAlert, setShowAlert] = useState(false);
-
-  // handle edit password
-  const editPassword = async () => {
-    if (!newPassword.password) {
-      setShowAlert(true);
-      return;
-    }
-    // const password = newPassword.password
-    try {
-      console.log('tes', selectedIdKaryawan);
-      await karyawanRepository.api.editPassword(selectedIdKaryawan || '', { newPassword });
-      Modal.success({
-        title: 'Password berhasil diubah',
-        content: 'Password karyawan berhasil diubah...',
-        okText: 'OK',
-      });
-      mutate()
-      // setIsModalOpen(false); // Close the modal on success
-    } catch (error) {
-      console.error('Gagal edit password:', error);
-    }
-  };
-
-  const handleStatusChange = async (id: string, status: boolean) => {
-    const newStatus = status ? 'inactive' : 'active';
-    try {
-      await karyawanRepository.api.updateStatusKeaktifanKaryawan(id, { status: newStatus });
-      mutate();
-
-    } catch (e) {
-      return e;
-    }
-  }
-
+  /**
+   * Struktur column table
+   */
   const columnKaryawan = [
     {
       title: 'Nama Karyawan',
@@ -107,22 +58,28 @@ const Page: React.FC = () => {
       key: 'aksi',
       render: (record: KaryawanData) => {
         const idKaryawan = record.id;
+        const currentJob = record.job.id;
+        setJob(currentJob);
         return (
           <div style={{ display: 'flex', gap: '2px' }}>
             <ModalComponent
               title={'Detail Tugas'}
-              content={<ModalDetailKaryawan idKaryawan={idKaryawan} />}
-              footer={(handleCancel, handleOk) => (
+              content={<ModalDetailKaryawan idKaryawan={idKaryawan} jobChange={setJob} />}
+              footer={(handleCancel) => (
                 <div>
                   <Button onClick={handleCancel}>Cancel</Button>
-                  <Button type="primary" onClick={handleOk}>OK</Button>
+                  <Button type="primary"
+                    onClick={() => {
+                      handleJobUpdate(idKaryawan, job, currentJob, handleCancel)
+                    }}>OK</Button>
                 </div>
-              )}
+              )
+              }
             >
               <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
                 <EyeOutlined /> Detail
               </Button>
-            </ModalComponent>
+            </ModalComponent >
 
             <ModalComponent
               title="Ubah Password"
@@ -154,21 +111,106 @@ const Page: React.FC = () => {
               </Button>
 
             </ModalComponent>
-          </div>
+          </div >
         );
       },
     }
   ];
 
+  // useState page
   const [pageTugas, setPageTugas] = useState(1);
+
+  // useState page size
   const [pageSizeTugas, setPageSizeTugas] = useState(5);
+
+  //hook get all karyawan
   const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
 
+  // useState form create karyawan
+  const [newKaryawan, setNewKaryawan] = useState<{ nik: string, nama: string, gender: string, email: string, username: string, job: string }>({
+    nik: '',
+    nama: '',
+    gender: '',
+    email: '',
+    username: '',
+    job: '',
+  });
+
+  //useState form update password
+  const [newPassword, setNewPassword] = useState<{ password: string }>({
+    password: ''
+  });
+
+  // state update job
+  const [job, setJob] = useState<string>("");
+
+  //set selected id karyawan
+  const [selectedIdKaryawan, setSelectedIdKaryawan] = useState<string | null>(null);
+
+  // state alert warning
+  const [showAlert, setShowAlert] = useState(false);
+
+  //useEffect error logging
+  useEffect(() => {
+    console.log('apiResponse:', apiResponse);
+    console.log('Error:', updateError);
+  }, [apiResponse, updateError]);
+
+  // handle loading fetch
+  if (updateValidating) {
+    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
+  }
+
+  //handle fetch error
+  if (updateError) {
+    return <Alert message="Error fetching data" type="error" />;
+  }
+
+  // handle edit password
+  const editPassword = async () => {
+    if (!newPassword.password) {
+      setShowAlert(true);
+      return;
+    }
+    if (newPassword.password.length < 6) {
+      message.error('Password harus terdiri dari 6 karakter');
+      return;
+    }
+    // const password = newPassword.password
+    try {
+      console.log('tes', selectedIdKaryawan);
+      await karyawanRepository.api.editPassword(selectedIdKaryawan || '', { newPassword });
+      Modal.success({
+        title: 'Password berhasil diubah',
+        content: 'Password karyawan berhasil diubah...',
+        okText: 'OK',
+      });
+      mutate();
+      // setIsModalOpen(false); // Close the modal on success
+    } catch (error) {
+      console.error('Gagal edit password:', error);
+    }
+  };
+
+  //handle update status keaktifan
+  const handleStatusChange = async (id: string, status: boolean) => {
+    const newStatus = status ? 'inactive' : 'active';
+    try {
+      await karyawanRepository.api.updateStatusKeaktifanKaryawan(id, { status: newStatus });
+      mutate();
+
+    } catch (e) {
+      return e;
+    }
+  }
+
+  //handle pagination
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
     setPageTugas(newPage);
     setPageSizeTugas(newPageSize);
   };
 
+  //handle tambah karyawan
   const tambahKaryawan = async () => {
     console.log('p', newKaryawan)
     // if (!newKaryawan.nik || !newKaryawan.nama || !newKaryawan.gender || !newKaryawan.email || !newKaryawan.username || !newKaryawan.job) {
@@ -188,17 +230,34 @@ const Page: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('apiResponse:', apiResponse);
-    console.log('Error:', updateError);
-  }, [apiResponse, updateError]);
-
-  if (updateValidating) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-
-  if (updateError) {
-    return <Alert message="Error fetching data" type="error" />;
+  //handle update job
+  const handleJobUpdate = async (id: string, job: any, currentJob: any, handleCancel: any) => {
+    if (job === currentJob) {
+      handleCancel();
+      return;
+    }
+    Modal.confirm({
+      title: 'Ubah Job?',
+      content: 'Apakah yakin ingin mengubah job karyawan ini?',
+      async onOk() {
+        try {
+          await karyawanRepository.api.editJob(id, { job: job });
+          Modal.success({
+            title: 'Berhasil',
+            content: 'Berhasil mengubah job karyawan',
+            async onOk() {
+              mutate();
+              handleCancel();
+            }
+          })
+        } catch (error) {
+          message.error('gagal mengupdate job')
+        }
+      },
+      onCancel() {
+        console.log('Dialog dibatalkan');
+      },
+    });
   }
 
   return (
@@ -232,7 +291,7 @@ const Page: React.FC = () => {
       )}
 
       <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: '10px', marginTop: '10px', padding: '20px' }}>
-        <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0' }}>
+        <h1 style={{ fontSize: '36px', marginBottom: '0' }}>
           Daftar Karyawan
         </h1>
         <ModalComponent

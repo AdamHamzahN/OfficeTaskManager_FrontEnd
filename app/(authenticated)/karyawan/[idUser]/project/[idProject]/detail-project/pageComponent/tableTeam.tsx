@@ -8,7 +8,6 @@ const TableTeam: React.FC<{
 }> = ({ data, nama_team, idProject }) => {
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
-    console.log('data',data);
     useEffect(() => {
         const fetchTugas = async () => {
             try {

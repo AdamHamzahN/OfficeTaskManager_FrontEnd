@@ -24,6 +24,7 @@ interface JobData {
   id: string;
   nama_job: string;
   jumlah_karyawan: string;
+  deskripsi_job: string;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -31,19 +32,9 @@ interface JobData {
 
 
 const Page: React.FC = () => {
-  const [newJob, setNewJob] = useState<{ nama_job: string; deskripsi_job: string }>({
-    nama_job: '',
-    deskripsi_job: '',
-  });
-
-  const [editsJob, setEditsJob] = useState<{ nama_job: string; deskripsi_job: string }>({
-    nama_job: '',
-    deskripsi_job: '',
-  });
-  console.log(editsJob)
-
-  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-
+  /**
+   * struktur table job
+   */
   const columnJobs = [
     {
       title: 'Nama Jobs',
@@ -66,6 +57,8 @@ const Page: React.FC = () => {
       key: 'aksi',
       render: (record: JobData) => {
         const idJob = record.id;
+        const nama_job = record.nama_job;
+        const deskripsi_job = record.deskripsi_job;
         return (
           <div style={{display:'flex',gap:'2px'}}>
             <ModalComponent
@@ -89,7 +82,7 @@ const Page: React.FC = () => {
 
             <ModalComponent
               title={'Edit Jobs'}
-              content={<ModalEditJobs editjob={setEditsJob} />}
+              content={<ModalEditJobs editjob={setEditsJob} job={editsJob} />}
               footer={(handleCancel) => (
                 <div>
                   <Button onClick={handleCancel}>Cancel</Button>
@@ -102,7 +95,7 @@ const Page: React.FC = () => {
                 style={{ backgroundColor: 'rgba(254, 243, 232, 1)', color: '#EA7D2A', border: 'none' }}
                 onClick={() => {
                   setSelectedJobId(idJob);
-                  setEditsJob({ nama_job: record.nama_job, deskripsi_job: '' }); // Mengisi data edit
+                  setEditsJob({ nama_job: nama_job, deskripsi_job: deskripsi_job }); // Mengisi data edit
                 }}
               >
                 <EditOutlined /> Edit
@@ -113,6 +106,18 @@ const Page: React.FC = () => {
       },
     },
   ];
+
+  const [newJob, setNewJob] = useState<{ nama_job: string; deskripsi_job: string }>({
+    nama_job: '',
+    deskripsi_job: '',
+  });
+
+  const [editsJob, setEditsJob] = useState<{ nama_job: string; deskripsi_job: string }>({
+    nama_job: '',
+    deskripsi_job: '',
+  });
+
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   const [pageTugas, setPageTugas] = useState(1);
   const [pageSizeTugas, setPageSizeTugas] = useState(5);
@@ -171,7 +176,7 @@ const Page: React.FC = () => {
   return (
     <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#fff', borderRadius: 15 }}>
       <Space style={{ width: '100%', justifyContent: 'space-between', marginTop: '10px', padding: '20px' }}>
-        <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif' ,marginBottom: '0'}}>
+        <h1 style={{ fontSize: '36px' ,marginBottom: '0'}}>
           Daftar Job
         </h1>
 

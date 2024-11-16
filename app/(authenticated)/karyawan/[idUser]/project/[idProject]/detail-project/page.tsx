@@ -17,6 +17,13 @@ const Page = () => {
     const idUser = params?.idUser as string;
     const idProject = params?.idProject as string;
 
+    const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
+
+    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
+
+    const loading = validateDetailProject || validateTeam;
+    const error = errorDetailProject || errorTeam;
+
     const formatTimeStr = (dateStr: string) => {
         const date = new Date(dateStr);
         const day = String(date.getDate()).padStart(2, '0');
@@ -28,14 +35,6 @@ const Page = () => {
 
         return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
     };
-
-    const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
-
-
-    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
-
-    const loading = validateDetailProject || validateTeam;
-    const error = errorDetailProject || errorTeam;
 
     if (loading) {
         return <Spin style={{ textAlign: 'center', padding: '20px' }} />;

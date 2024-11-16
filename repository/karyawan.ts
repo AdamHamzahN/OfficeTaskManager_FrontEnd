@@ -22,7 +22,10 @@ const url = {
         return `/karyawan/${id_karyawan}/update-status-keaktifan`
     },
     editAlamat(idUser:string){
-        return `/   karyawan/${idUser}/update-profile`
+        return `/karyawan/${idUser}/update-profile`
+    },
+    editJob(id_karyawan:string){
+        return `/karyawan/${id_karyawan}/update-job`
     }
 }
 
@@ -91,7 +94,20 @@ const api = {
         } catch (error) {
             throw new Error('Gagal mengubah alamat' , body);
         }
-    }
+    },
+
+    async editJob(id_karyawan: string, body: any) {
+        try {
+            const karyawanResponse = await http.put(url.editJob(id_karyawan), body);
+            return {
+                karyawanResponse: karyawanResponse.body,
+            };
+        } catch (error) {
+            throw new Error('Gagal mengubah job' , body);
+        }
+    },
+
+
 }
 
 

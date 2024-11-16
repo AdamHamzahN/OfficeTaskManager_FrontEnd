@@ -13,6 +13,14 @@ const Header: React.FC<{
     refreshTable: () => void
 }> = ({ data,idUser, refreshTable }) => {
     const { id, nama_project, nama_team, file_project, start_date, end_date, note, status, user,file_hasil_project } = data;
+    const [formData, setFormData] = useState<{ status: string; file_bukti: File | null, fileName: string }>({
+        status: status,
+        file_bukti: null,
+        fileName: '' 
+    });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const getButtonStyles = (status: string) => {
         switch (status) {
             case 'pending':
@@ -27,14 +35,7 @@ const Header: React.FC<{
                 return { backgroundColor: 'rgba(76, 175, 80, 0.1)', borderColor: '#4CAF50', color: '#4CAF50' };
         }
     };
-    const [formData, setFormData] = useState<{ status: string; file_bukti: File | null, fileName: string }>({
-        status: status,
-        file_bukti: null,
-        fileName: '' 
-    });
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
+    
     const handleFileUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
         setFormData(prevFormData => ({

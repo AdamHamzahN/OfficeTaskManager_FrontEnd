@@ -23,6 +23,10 @@ const TableTeam: React.FC<{
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
     const [newNamaTeam, setNewNamaTeam] = useState(nama_team);
     const [namaTeam, setNamaTeam] = useState('');
+
+    /**
+     * useEffect jumlah tugas
+     */
     useEffect(() => {
         setNamaTeam(nama_team);
     }, [nama_team]);
@@ -59,6 +63,10 @@ const TableTeam: React.FC<{
             fetchTugas();
         }
     }, [data, idProject, dataTugas]);
+
+    /**
+     * Handle tambah anggota team
+     */
     const tambahKaryawan = async () => {
         if (!selectedKaryawan) {
             message.warning('Pilih Karyawan Terlebih Dahulu');
@@ -86,6 +94,9 @@ const TableTeam: React.FC<{
         }
     };
 
+    /**
+     * Handle ubah nama team
+     */
     const ubahNamaTeam = async () => {
         if (newNamaTeam === undefined || newNamaTeam === null) {
             message.warning('Masukkan Nama Team terlebih dahulu!')

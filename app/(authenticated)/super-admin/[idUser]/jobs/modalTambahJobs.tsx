@@ -28,7 +28,7 @@ const ModalTambahJobs: React.FC<ModalTambahJobsProps> = ({ createjob }) => {
 
       {/* Input untuk deskripsi job */}
       <label htmlFor="jobDescription">Masukkan Deskripsi Jobs</label>
-      <Input
+      <Input.TextArea
         id="jobDescription"
         value={deskripsi_job}
         onChange={(e) => setJobDescription(e.target.value)}

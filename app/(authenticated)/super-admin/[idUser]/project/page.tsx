@@ -143,8 +143,8 @@ const Page: React.FC = () => {
 
     return (
         <>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h1 style={{ fontSize: 30, padding: 20}}>Project</h1>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center',marginBottom:25}}>
+                <h1 style={{ fontSize: 40,margin:2}}>Project</h1>
 
                 <ModalComponent
                     title='Tambah Project'
@@ -156,7 +156,7 @@ const Page: React.FC = () => {
                         </>
                     )}
                 >
-                    <Button type='primary' style={{ marginRight: 30 }}>
+                    <Button  size='large' type='primary'>
                             <PlusOutlined />Tambah
                     </Button>
                 </ModalComponent>
@@ -174,7 +174,7 @@ const Page: React.FC = () => {
 
                     <Tabs defaultActiveKey='pending' items={items} onChange={onChange}/>
                 
-                <Row style={{marginTop: 20}}>
+                <Row style={{marginTop: 0}}>
                     <ProjectListComponent data={data} isValidating={validateProject} error={errorProject} idUser={idUser} status={activeKey}/>
                 </Row>
 

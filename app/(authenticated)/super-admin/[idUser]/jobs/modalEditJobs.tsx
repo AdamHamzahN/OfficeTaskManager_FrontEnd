@@ -3,11 +3,12 @@ import { Input } from "antd";
 
 interface ModalEditJobsProps {
   editjob: (jobData: { nama_job: string; deskripsi_job: string }) => void;
+  job:any
 }
 
-const ModalEditJobs: React.FC<ModalEditJobsProps> = ({ editjob }) => {
-  const [nama_job, setJobName] = useState<string>(""); // State untuk nama job
-  const [deskripsi_job, setJobDescription] = useState<string>(""); // State untuk deskripsi job
+const ModalEditJobs: React.FC<ModalEditJobsProps> = ({ editjob ,job}) => {
+  const [nama_job, setJobName] = useState<string>(job.nama_job); // State untuk nama job
+  const [deskripsi_job, setJobDescription] = useState<string>(job.deskripsi_job); // State untuk deskripsi job
 
   // Mengirim data hanya saat ada perubahan pada state nama_job atau deskripsi_job
   useEffect(() => {
@@ -28,7 +29,7 @@ const ModalEditJobs: React.FC<ModalEditJobsProps> = ({ editjob }) => {
 
       {/* Input untuk deskripsi job */}
       <label htmlFor="jobDescription">Masukkan Deskripsi Jobs</label>
-      <Input
+      <Input.TextArea
         id="jobDescription"
         value={deskripsi_job}
         onChange={(e) => setJobDescription(e.target.value)}

@@ -1,17 +1,31 @@
 "use client";
-import { Button, Input } from "antd";
+import { Button, Input, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { karyawanRepository } from "#/repository/karyawan";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { jobsRepository } from "#/repository/jobs";
 
-const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    console.log('Change:', e.target.value);
-};
-
-const ModalDetailKaryawan: React.FC<{ idKaryawan: string }> = ({ idKaryawan }) => {
-
+const ModalDetailKaryawan: React.FC<{ idKaryawan: string, jobChange: any }> = ({ idKaryawan, jobChange }) => {
     // Hook untuk mengambil data karyawan berdasarkan ID
     const { data: detailKaryawan, error, isValidating: loading } = karyawanRepository.hooks.useGetKaryawanById(idKaryawan);
+    //hook untuk job
+    const { data: detailJob } = jobsRepository.hooks.useJobs();
+
+    //state job
+    const [job, setJob] = useState<string>(detailKaryawan?.data?.job?.id);
+
+    useEffect(() => {
+        jobChange(job);
+    });
+    
+    const [jobName, setJobName] = useState<string | undefined>();
+
+    useEffect(() => {
+        if (detailKaryawan?.data?.job?.id) {
+            setJob(detailKaryawan.data.job.id); // Set ID job
+            setJobName(detailKaryawan.data.job.nama_job); // Set nama job
+        }
+    }, [detailKaryawan]);
 
     // Logging the ID and response data for debugging
     useEffect(() => {
@@ -47,7 +61,6 @@ const ModalDetailKaryawan: React.FC<{ idKaryawan: string }> = ({ idKaryawan }) =
     // Ambil data karyawan dari response
     const karyawanData = detailKaryawan.data;
 
-    console.log('p',karyawanData)
     return (
         <div>
             {/* NIK */}
@@ -85,7 +98,22 @@ const ModalDetailKaryawan: React.FC<{ idKaryawan: string }> = ({ idKaryawan }) =
 
             {/* Job */}
             <label htmlFor="job" style={{ marginBottom: '8px', display: 'block' }}>Job</label>
-            <Input value={karyawanData?.job.nama_job} readOnly style={{ marginBottom: '16px' }} />
+            <Select
+                style={{ display: 'block', marginBottom: '16px' }}
+                value={job} // Gunakan ID job sebagai value
+                onChange={(value) => {
+                    setJob(value); // Perbarui ID job
+                    const selectedJob = detailJob?.data.find((jobItem: any) => jobItem.id === value);
+                    setJobName(selectedJob?.nama_job); // Perbarui nama job berdasarkan pilihan
+                    jobChange(value);
+                }}
+            >
+                {detailJob?.data.map((jobItem: any) => (
+                    <Select.Option key={jobItem.id} value={jobItem.id}>
+                        {jobItem.nama_job}
+                    </Select.Option>
+                ))}
+            </Select>
         </div>
     );
 };

@@ -59,8 +59,6 @@ const Page: React.FC = () => {
   const { data: updateProjectTerbaru, error: updateError, isValidating: updateValidating }
     = dashboardRepository.hooks.useUpdateProjectSuperAdminTerbaru();
 
-
-
   // hook jumlah project dalam proses
   const { data: projectDalamProses } = dashboardRepository.hooks.useProjectDalamProses();
   console.log("project:", projectDalamProses?.count);
