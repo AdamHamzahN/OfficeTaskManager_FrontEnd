@@ -3,7 +3,7 @@ import React from 'react';
 import { DashboardOutlined, TeamOutlined, IdcardOutlined, ProjectOutlined, UserOutlined, HistoryOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, Spin, theme, Modal } from 'antd';
-import { useRouter, useParams, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { userRepository } from '#/repository/user';
 import ProfileComponent from '#/component/ProfileComponent';
 import { karyawanRepository } from '#/repository/karyawan';
@@ -17,7 +17,6 @@ interface AuthenticatedLayoutProps {
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   const router = useRouter();
-  const params = useParams();
   const pathname = usePathname() || '';
   // Mengambil data auth ( token dan expiryTime ) dari local storage
   let authData = JwtToken.getAuthData();
@@ -27,21 +26,21 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const expiryTime = authData?.expiryTime || null;
 
   //Mengambil payload yang ada di token
-  let payload = JwtToken.getPayload(); 
+  let payload = JwtToken.getPayload();
 
   //mengambil id/sub dari payload
-  const id = payload?.sub;
+  const idUser = payload?.sub;
   const role = payload?.role;
 
   //mengambil idUser dari params
-  const idUser = params?.idUser as string | undefined;
+
 
   //cek apakah user berada di path / url tertentu
   const isSuperAdmin = pathname.includes(`/super-admin/`) && pathname.split('/super-admin/')[1];
   const isTeamLead = pathname.startsWith(`/team-lead/`) && pathname.split('/team-lead/')[1];
   const isKaryawan = pathname.startsWith('/karyawan/') && pathname.split('/karyawan/')[1];
   const isProjectActive = pathname.includes('/project');
-  
+
   //variable cek user
   let checkUser = false;
 
@@ -79,12 +78,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       router.push('/login');
     } else if (isKaryawan && role !== 'Karyawan') {
       router.push('/login');
-    } else if (idUser !== id) {
-      /**
-       * mengecek apakah id user pada local storage sama dengan yang di url 
-       * Bila tidak cocok maka kembalikan ke halaman login
-       */
-      router.push('/login');
     } else {
       checkUser = true;
     }
@@ -93,14 +86,17 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       /**
        * Memanggil hook untuk detail user
        */
-      const { data: userData, isLoading:userLoading } = userRepository.hooks.useGetUser(idUser);
+      const { data: userData, isLoading: userLoading } = userRepository.hooks.useGetUser(idUser);
 
       /**
        * Memanggil hook untuk detail karyawan bila role user adalah karyawan
        */
-      const { data: karyawanData, isLoading: karyawanLoading } = role == 'Karyawan' ? 
+      const { data: karyawanData, isLoading: karyawanLoading } = role == 'Karyawan' ?
         karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
 
+      /**
+       * Handle loading
+       */
       let loading = userLoading || karyawanLoading;
       if (loading) {
         return <div style={{
@@ -120,13 +116,16 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         router.push('/login');
       }
 
+      /**
+       * Active key
+       */
       const selectedKey = () => {
         if (isProjectActive && isSuperAdmin) {
-          return `/super-admin/${idUser}/project`
+          return `/super-admin/project`
         } else if (isProjectActive && isTeamLead) {
-          return `/team-lead/${idUser}/project`
+          return `/team-lead/project`
         } else if (isProjectActive && isKaryawan) {
-          return `/karyawan/${idUser}/project`
+          return `/karyawan/project`
         } else {
           return pathname;
         }
@@ -138,72 +137,72 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       const menuItemsByRole = {
         superAdmin: [
           {
-            key: `/super-admin/${idUser}/dashboard`,
+            key: `/super-admin/dashboard`,
             icon: <DashboardOutlined style={{ fontSize: 23 }} />,
             label: 'Dashboard',
           },
           {
-            key: `/super-admin/${idUser}/team-lead`,
+            key: `/super-admin/team-lead`,
             icon: <UserOutlined style={{ fontSize: 23 }} />,
             label: 'Team Lead',
           },
           {
-            key: `/super-admin/${idUser}/karyawan`,
+            key: `/super-admin/karyawan`,
             icon: <TeamOutlined style={{ fontSize: 23 }} />,
             label: 'Karyawan',
           },
           {
-            key: `/super-admin/${idUser}/jobs`,
+            key: `/super-admin/jobs`,
             icon: <IdcardOutlined style={{ fontSize: 23 }} />,
             label: 'Jobs',
           },
           {
-            key: `/super-admin/${idUser}/project`,
+            key: `/super-admin/project`,
             icon: <ProjectOutlined style={{ fontSize: 25 }} />,
             label: 'Project',
           },
         ],
         teamLead: [
           {
-            key: `/team-lead/${idUser}/dashboard`,
+            key: `/team-lead/dashboard`,
             icon: <DashboardOutlined style={{ fontSize: 23 }} />,
             label: 'Dashboard',
           },
           {
-            key: `/team-lead/${idUser}/karyawan`,
+            key: `/team-lead/karyawan`,
             icon: <TeamOutlined style={{ fontSize: 23 }} />,
             label: 'Karyawan',
           },
           {
-            key: `/team-lead/${idUser}/jobs`,
+            key: `/team-lead/jobs`,
             icon: <IdcardOutlined style={{ fontSize: 23 }} />,
             label: 'Jobs',
           },
           {
-            key: `/team-lead/${idUser}/project`,
+            key: `/team-lead/project`,
             icon: <ProjectOutlined style={{ fontSize: 23 }} />,
             label: 'Project',
           },
         ],
         karyawan: [
           {
-            key: `/karyawan/${idUser}/dashboard`,
+            key: `/karyawan/dashboard`,
             icon: <DashboardOutlined style={{ fontSize: 23 }} />,
             label: 'Dashboard',
           },
           {
-            key: `/karyawan/${idUser}/project`,
+            key: `/karyawan/project`,
             icon: <ProjectOutlined style={{ fontSize: 23 }} />,
             label: 'Project',
           },
           {
-            key: `/karyawan/${idUser}/history`,
+            key: `/karyawan/history`,
             icon: <HistoryOutlined style={{ fontSize: 23 }} />,
             label: 'History',
           },
         ],
       };
-      
+
       /**
        * Menampilkan menu item berdasarkan role
        */
@@ -215,7 +214,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       } else if (isKaryawan) {
         items = menuItemsByRole.karyawan;
       }
-      
+
       return (
         <Layout>
           <Sider
@@ -289,7 +288,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             >
               <div style={{ marginRight: 27, fontSize: 20, color: 'white' }}>
                 <ProfileComponent
-                  userData={userData} karyawanData={karyawanData?.data} pathname={pathname} idUser={id} mutate={karyawanData?.mutate}
+                  userData={userData} karyawanData={karyawanData?.data} role={role} idUser={idUser}
                 >
                   <a style={{ textDecoration: 'none', color: 'black' }}>
                     {userData?.data?.nama!}

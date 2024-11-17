@@ -20,19 +20,22 @@ const formatTimeStr = (dateStr: string) => {
 
 const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
 
+    /**
+     * Hook detail tugas
+     */
     const { data: detailTugas, error, isValidating: loading } = tugasRepository.hooks.useGetTugasById(idTugas);
 
     if (loading) {
-        console.log('Loading data...');
         return <div>Loading...</div>; // Tampilkan loader atau message jika data sedang dimuat
     }
 
     if (error) {
-        console.error('Error fetching data:', error);
         return <div>Error loading data</div>; // Tangani error jika ada
     }
+    // alias untuk url file detail tugas
     const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
 
+    // alias untuk url file bukti tugas
     const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti?.replace(/\\/g, '/')}`;
     return (
         <div style={{ borderTop: '2px ' }}>

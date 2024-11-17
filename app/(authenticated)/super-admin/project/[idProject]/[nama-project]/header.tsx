@@ -1,7 +1,7 @@
 import { Button, Modal, Input } from "antd";
 import ModalComponent from "#/component/ModalComponent";
 import {ArrowLeftOutlined, SearchOutlined} from "@ant-design/icons";
-import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/[nama-project]/modal/modalDetailProject";
+import ModalDetailProject from "#/app/(authenticated)/team-lead/project/[idProject]/[nama-project]/modal/modalDetailProject";
 import Link from "next/link";
 import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
@@ -111,7 +111,7 @@ const Header: React.FC <{
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <Button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-1 px-2 rounded-full w-8 h-8 border-0 flex justify-center items-center ml-2">
-                    <Link href={`/super-admin/${idUser}/project`} className="no-underline text-black">
+                    <Link href={`/super-admin/project`} className="no-underline text-black">
                         <ArrowLeftOutlined />
                     </Link>
                 </Button>

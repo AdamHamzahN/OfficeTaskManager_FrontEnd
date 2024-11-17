@@ -34,7 +34,7 @@ const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any,
                 <ProjectList
                     key={index}
                     title={project.nama_project}
-                    link={`/super-admin/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
+                    link={`/super-admin/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                     teamLead={project.user?.nama}
                     startDate={project.start_date}
                     endDate={project.end_date}

@@ -28,7 +28,6 @@ const Login = () => {
              */
             const token = response.data.access_token;
             const role = response.data.user.role;
-            const id = response.data.user.sub;
             const expiryTime = response.data.expires_in;
             /**
              * Masukkan token dan expiryTime ke variable authData
@@ -44,13 +43,16 @@ const Login = () => {
              * Cek role dan redirect ke dashboard berdasarkan role user
              */
             if (role === 'Super admin') {
-                router.push(`/super-admin/${id}/dashboard`);
+                router.push(`/super-admin/dashboard`);
             } else if (role === 'Team Lead') {
-                router.push(`/team-lead/${id}/dashboard`);
+                router.push(`/team-lead/dashboard`);
             } else if (role === 'Karyawan') {
-                router.push(`/karyawan/${id}/dashboard`);
+                router.push(`/karyawan/dashboard`);
             }
         } else {
+            /**
+             * Bila status response nya bukan 200
+             */
             message.error('Login gagal, username atau password salah.');
         }
         setLoading(false);

@@ -12,14 +12,17 @@ interface ModalTambahAnggotaProps {
 }
 
 const ModalTambahAnggota: React.FC<ModalTambahAnggotaProps> = ({ onSelectKaryawan }) => {
+    // state untuk menyimpan id karyawan 
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
 
+    // Hook untuk mendapatkan data karyawan yang belum ada di project
     const { data: karyawanData } = projectRepository.hooks.useGetKaryawanAvailable();
     const options: KaryawanOption[] = karyawanData?.map((karyawan: any) => ({
         value: karyawan.id,
         label: `${karyawan.user.nama} | ${karyawan.job.nama_job}`,
     })) || [];
 
+    //handle ketika value select berubah
     const handleSelectChange = (value: string) => {
         setSelectedKaryawan(value);
         onSelectKaryawan(value);

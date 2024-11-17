@@ -178,7 +178,7 @@ const Page: React.FC = () => {
               <Col xs={24} sm={12} md={8} lg={8} key={project.id || index}>
                 <CardProjectDashboard
                   title={<div>{project.nama_project}</div>}
-                  link={`/super-admin/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
+                  link={`/super-admin/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                   teamLead={<>{project.user.nama}</>}
                   startDate={project.start_date}
                   endDate={project.end_date}

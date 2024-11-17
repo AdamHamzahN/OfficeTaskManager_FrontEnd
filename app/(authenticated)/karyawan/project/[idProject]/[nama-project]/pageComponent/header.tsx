@@ -3,7 +3,7 @@ import { Button, Select } from "antd";
 import { ArrowLeftOutlined,SearchOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import ModalComponent from "#/component/ModalComponent";
-import ModalDetailProject from "#/app/(authenticated)/team-lead/[idUser]/project/[idProject]/[nama-project]/modal/modalDetailProject";
+import ModalDetailProject from "#/app/(authenticated)/team-lead/project/[idProject]/[nama-project]/modal/modalDetailProject";
 
 
 
@@ -30,7 +30,7 @@ const Header: React.FC<{
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-1 px-2 rounded-full w-8 h-8 border-0 flex justify-center items-center ml-2">
-                    <Link href={`/karyawan/${idUser}/project`} className="no-underline text-black">
+                    <Link href={`/karyawan/project`} className="no-underline text-black">
                         <ArrowLeftOutlined />
                     </Link>
                 </button>

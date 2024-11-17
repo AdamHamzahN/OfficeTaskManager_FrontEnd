@@ -49,7 +49,7 @@ const ProjectListComponent: React.FC<{
                 <ProjectList
                     key={index}
                     title={project.nama_project}
-                    link={`/karyawan/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
+                    link={`/karyawan/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                     teamLead={project.user?.nama}
                     startDate={project?.start_date}
                     endDate={project?.end_date}

@@ -7,7 +7,6 @@ import { dashboardRepository } from "#/repository/dashboard";
 import { JwtToken } from "#/utils/jwtToken";
 import { slugify } from "#/utils/slugify";
 
-
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
     const day = String(date.getDate()).padStart(2, '0');
@@ -20,6 +19,9 @@ const formatTimeStr = (dateStr: string) => {
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
+/**
+ * Struktur table project terbaru
+ */
 const columnProjectTerbaru = [
     {
         title: 'Waktu Update',
@@ -52,6 +54,9 @@ const columnProjectTerbaru = [
     },
 ];
 
+/**
+ * Struktur table tugas terbaru
+ */
 const columnTugasTerbaru = [
     {
         title: 'Waktu Update',
@@ -109,6 +114,7 @@ const Page: React.FC = () => {
         ? dashboardRepository.hooks.useUpdateTugasTeamLeadTerbaru(idUser)
         : { data: null, error: null, isValidating: false };
 
+    //alias loading dan error
     const loading = updateValidating || progressValidating || tugasValidating;
     const error = updateError || progressError || tugasError;
 
@@ -211,7 +217,7 @@ const Page: React.FC = () => {
                             <Col xs={24} sm={12} md={8} lg={8} key={project.id || index}>
                                 <CardProjectDashboard
                                     title={<div>{project.nama_project}</div>}
-                                    link={`/team-lead/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
+                                    link={`/team-lead/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                                     teamLead={<div>{project.user.nama}</div>}
                                     startDate={project.start_date}
                                     endDate={project.end_date}

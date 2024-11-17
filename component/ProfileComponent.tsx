@@ -8,10 +8,9 @@ const ProfileComponent: React.FC<{
   children: React.ReactNode,
   userData: any,
   karyawanData: any
-  pathname: any,
   idUser: any,
-  mutate: any
-}> = ({ children, userData, karyawanData, pathname, idUser, mutate }) => {
+  role:any,
+}> = ({ children, userData, karyawanData, idUser, role }) => {
   const [open, setOpen] = useState(false);
   let [isModalOpen, setIsModalOpen] = useState(false); // state modal Password
   let [modalAlamat, setModalAlamat] = useState(false); // state modal Alamat
@@ -118,7 +117,7 @@ const ProfileComponent: React.FC<{
         </Button>
       )
     }
-    if (pathname.includes(`/super-admin`) || pathname.includes(`/team-lead/${idUser}`)) {
+    if (role == 'Super admin' || role == 'Team Lead') {
       return (
         <>
           <p style={{ margin: 0 }}>Nama :</p>
@@ -129,7 +128,7 @@ const ProfileComponent: React.FC<{
 
           <p style={{ margin: 0 }}>email :</p>
           <p>{userData?.data?.email}</p>
-          {pathname.includes(`/team-lead/${idUser}`) && (
+          {role == 'Team Lead' && (
             <>
               <p style={{ margin: 0 }}>status :</p>
               <p>{userData?.data?.status}</p>

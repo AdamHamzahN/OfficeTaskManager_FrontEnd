@@ -30,7 +30,7 @@ const ProjectListComponent: React.FC<{ idUser: string, data: any, loading: any, 
                 <ProjectList
                     key={index}
                     title={project.nama_project}
-                    link={`/team-lead/${idUser}/project/${project.id}/${slugify.slugify(project.nama_project)}`}
+                    link={`/team-lead/project/${project.id}/${slugify.slugify(project.nama_project)}`}
                     teamLead={project.user.nama}
                     startDate={project.start_date}
                     endDate={project.end_date}

@@ -18,7 +18,10 @@ const ModalDetailProject: React.FC<{
     file_hasil_project: string,
 }> = ({ nama_project, nama_team, file_project, start_date, end_date, note, status, team_lead, file_hasil_project }) => {
 
+    // alias untuk url file project
     const fileDetailProject = `${config.baseUrl}/${file_project?.replace(/\\/g, '/')}`;
+
+    // alias untuk url file hasil project
     const fileHasilProject = `${config.baseUrl}/${file_hasil_project?.replace(/\\/g, '/')}`;
 
     return (
