@@ -9,7 +9,7 @@ import { projectRepository } from '#/repository/project';
 import ProjectList from '#/component/ProjectList';
 import { slugify } from '#/utils/slugify';
 
-const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any, idUser: string, status: string }> = ({ data, isValidating, error, idUser, status }) => {
+const ProjectListComponent: React.FC<{ data: any, isValidating: any, error: any, status: string }> = ({ data, isValidating, error, status }) => {
     if (isValidating) 
         return (
             <Col span={24}>
@@ -97,7 +97,6 @@ const Page: React.FC = () => {
 
     const [activeKey, setActiveKey] = useState<string>('pending');
     const params = useParams();
-    const idUser = params?.idUser as string | undefined
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const handlePageChange = (newPage: number, newPageSize: number) => {
@@ -139,7 +138,6 @@ const Page: React.FC = () => {
         },
     ];
 
-    if(!idUser) return <>Invalid user</>
 
     return (
         <>
@@ -175,7 +173,7 @@ const Page: React.FC = () => {
                     <Tabs defaultActiveKey='pending' items={items} onChange={onChange}/>
                 
                 <Row style={{marginTop: 0}}>
-                    <ProjectListComponent data={data} isValidating={validateProject} error={errorProject} idUser={idUser} status={activeKey}/>
+                    <ProjectListComponent data={data} isValidating={validateProject} error={errorProject} status={activeKey}/>
                 </Row>
 
                 <div style={{position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)'}}>
