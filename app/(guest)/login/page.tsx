@@ -42,7 +42,7 @@ const Login = () => {
             /**
              * Cek role dan redirect ke dashboard berdasarkan role user
              */
-            if (role === 'Super admin') {
+            if (role === 'Super Admin') {
                 router.push(`/super-admin/dashboard`);
             } else if (role === 'Team Lead') {
                 router.push(`/team-lead/dashboard`);

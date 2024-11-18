@@ -33,7 +33,7 @@ const Page: React.FC = () => {
   }
 
   const handlePageChange = (newPage: number, newPageSize: number) => {
-    setPageSize(newPage);
+    setPage(newPage);
     setPageSize(newPageSize);
   };
 

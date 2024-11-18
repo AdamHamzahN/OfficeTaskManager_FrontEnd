@@ -41,6 +41,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const isKaryawan = pathname.startsWith('/karyawan/') && pathname.split('/karyawan/')[1];
   const isProjectActive = pathname.includes('/project');
 
+  console.log(isSuperAdmin && role === 'Super Admin')
   //variable cek user
   let checkUser = false;
 
@@ -72,7 +73,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     router.push('/login');
   } else {
     //cek Role bila token ada
-    if (isSuperAdmin && role !== 'Super admin') {
+    if (isSuperAdmin && role !== 'Super Admin') {
       router.push('/login');
     } else if (isTeamLead && role !== 'Team Lead') {
       router.push('/login');

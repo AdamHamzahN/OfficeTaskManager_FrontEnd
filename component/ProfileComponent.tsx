@@ -117,7 +117,7 @@ const ProfileComponent: React.FC<{
         </Button>
       )
     }
-    if (role == 'Super admin' || role == 'Team Lead') {
+    if (role == 'Super Admin' || role == 'Team Lead') {
       return (
         <>
           <p style={{ margin: 0 }}>Nama :</p>
