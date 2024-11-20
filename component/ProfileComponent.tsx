@@ -59,7 +59,6 @@ const ProfileComponent: React.FC<{
         console.log(response.userResponse.message)
         message.error(response.userResponse.message)
       }
-      setIsModalOpen(false);
     } catch (error: any) {
       message.error(error.message);
     }

@@ -52,16 +52,15 @@ const api = {
 	},
 	async tambahTeamLead(body: any) {
 		// const { nama, username, email } = body.nama
-		console.log(body)
 		try {
 			const tambahTeamLeadResponse = await http.post(url.tambahTeamLead(), body);
-			
 			return {
-				tambahTeamLeadResponse: tambahTeamLeadResponse.body
+				tambahTeamLeadResponse: tambahTeamLeadResponse.body.response
 			};
-		} catch (error) {
-			console.error('Error tambah team lead:', error);
-			throw new Error('Gagal menambah team lead');
+		} catch (error:any) {
+			const errorMessage = error.response.body.message[0];
+           	throw new Error(errorMessage);
+			
 		}
 	},
 

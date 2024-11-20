@@ -50,11 +50,13 @@ const api = {
 		try {
 			const karyawanResponse = await http.post(url.tambahKaryawan(), bodyValue);
 			console.log('Response from createAnggotaTeam:', karyawanResponse.body);
+        
 			return {
 				karyawanResponse: karyawanResponse.body,
 			};
-		} catch (error) {
-			throw new Error('Gagal mengubah nama Karyawan');
+		} catch (error:any) {
+			const errorMessage = error.response.body.message[0];
+           	throw new Error(errorMessage);
 		}
 	},
     async editPassword(id_user: string, body: any) {

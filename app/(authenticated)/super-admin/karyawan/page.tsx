@@ -212,20 +212,23 @@ const Page: React.FC = () => {
 
   //handle tambah karyawan
   const tambahKaryawan = async () => {
-    console.log('p', newKaryawan)
     if (!newKaryawan.nik || !newKaryawan.nama || !newKaryawan.gender || !newKaryawan.email || !newKaryawan.username || !newKaryawan.job) {
       message.warning('Lengkapi data Karyawan Terlebih Dahulu');
       return;
     }
     try {
-      await karyawanRepository.api.tambahKaryawan({ newKaryawan });
-      Modal.success({
-        title: 'Karyawan Ditambahkan',
-        content: 'Berhasil menambahkan Karyawan baru!',
-      });
-      mutate();
-    } catch (error) {
-      console.error('Gagal menambahkan Karyawan:', error);
+      const response = await karyawanRepository.api.tambahKaryawan({ newKaryawan });
+      if (response.karyawanResponse?.statusCode == 201) {
+        Modal.success({
+          title: 'Karyawan Ditambahkan',
+          content: 'Berhasil menambahkan Karyawan baru!',
+        });
+        mutate();
+      } else {
+        message.warning(response.karyawanResponse.message);
+      }
+    } catch (error: any) {
+      message.warning(error.message);
     }
   };
 
