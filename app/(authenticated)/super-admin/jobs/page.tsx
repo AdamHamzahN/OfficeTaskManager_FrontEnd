@@ -175,8 +175,8 @@ const Page: React.FC = () => {
 
   return (
     <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#fff', borderRadius: 15 }}>
-      <Space style={{ width: '100%', justifyContent: 'space-between', marginTop: '10px', padding: '20px' }}>
-        <h1 style={{ fontSize: '36px' ,marginBottom: '0'}}>
+      <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+        <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>
           Daftar Job
         </h1>
 
@@ -190,8 +190,8 @@ const Page: React.FC = () => {
             </div>
           )}
         >
-          <Button type="primary" icon={<PlusOutlined />}>
-            Tambah
+          <Button type="primary">
+            <PlusOutlined />Tambah
           </Button>
         </ModalComponent>
       </Space>
@@ -207,7 +207,6 @@ const Page: React.FC = () => {
             handlePageChangeTugas(pageTugas, pageSizeTugas)
           },
         }}
-        style={{ marginLeft: '20px' }}
         className="custom-table"
       />
     </div>

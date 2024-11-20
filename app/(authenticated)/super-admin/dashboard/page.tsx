@@ -122,14 +122,14 @@ const Page: React.FC = () => {
         </Col>
         <Col xs={24} md={12} lg={10} style={{ display: 'flex', flexDirection: 'column' }}>
           <Card style={{
-             width: '100%',
-             minHeight: 375,
-             maxHeight: 375,
-             display: 'flex',
-             flexDirection: 'column',
-             position: 'relative',
-             overflow: 'hidden',
-             boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+            width: '100%',
+            minHeight: 375,
+            maxHeight: 375,
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
           }}>
 
             <div style={{ display: 'flex', alignItems: 'center',justifyContent: 'center',margin:50 }}>
@@ -142,10 +142,10 @@ const Page: React.FC = () => {
               </div>
 
               <div className="vertical-line" style={{
-                width: 2,
-                height: 150,
-                backgroundColor: 'black',
-                margin: 20,
+                width: 5,
+                height: 200,
+                backgroundColor: 'black', 
+                margin: '10px 0',
                 borderRadius: 10
               }}></div>
 

@@ -94,7 +94,7 @@ const TableTeam: React.FC<{
             <Table
                 dataSource={data?.data}
                 columns={columnTeam}
-                // pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />
         </>
     );

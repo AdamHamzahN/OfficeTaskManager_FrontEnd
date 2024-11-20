@@ -56,12 +56,12 @@ const ModalDetailTask: React.FC<{idTask: string}> =({idTask}) => {
                 </Button>
             </a>
 
-            {detailTask.data.status === 'done' &&(
+            {detailTask.data.status === 'approved' &&(
                 <>
-                    <label htmlFor="waktu_selesai_done" style={{marginBottom: 8, display: 'block'}}>Waktu Selesai</label>
-                    <Input id="waktu_selesai_done" value={formatTimeStr(detailTask.data.updated_at)} style={{marginBottom: 16}}/>
+                    <label htmlFor="waktu_selesai_approved" style={{marginBottom: 8, display: 'block'}}>Waktu Selesai</label>
+                    <Input id="waktu_selesai_approved" value={formatTimeStr(detailTask.data.updated_at)} style={{marginBottom: 16}}/>
 
-                    <label htmlFor="bukti_pengerjaan_done" style={{marginBottom: 8, display: 'block'}}>Bukti Hasil Pengerjaan</label>
+                    <label htmlFor="bukti_pengerjaan_approved" style={{marginBottom: 8, display: 'block'}}>Bukti Hasil Pengerjaan</label>
                     <a href={fileHasilTask} target="_blank" rel="noopener noreferrer">
                         <Button block style={{textAlign: 'left', marginBottom: 16}}>
                             <SearchOutlined /> Lihat Hasil
