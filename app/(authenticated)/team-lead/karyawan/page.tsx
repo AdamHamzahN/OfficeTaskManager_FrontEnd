@@ -68,7 +68,7 @@ const columnKaryawan = [
 
 const Page: React.FC = () => {
   const [pageTugas, setPageTugas] = useState(1);
-  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const [pageSizeTugas, setPageSizeTugas] = useState(10);
   const { data: apiResponse, error: updateError, isValidating: updateValidating } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
   
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {

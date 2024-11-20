@@ -121,7 +121,7 @@ const Page: React.FC = () => {
   const [pageTugas, setPageTugas] = useState(1);
 
   // useState page size
-  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const [pageSizeTugas, setPageSizeTugas] = useState(10);
 
   //hook get all karyawan
   const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
@@ -198,7 +198,7 @@ const Page: React.FC = () => {
     try {
       await karyawanRepository.api.updateStatusKeaktifanKaryawan(id, { status: newStatus });
       mutate();
-
+      message.success('Status berhasil diperbarui');
     } catch (e) {
       return e;
     }
@@ -213,10 +213,10 @@ const Page: React.FC = () => {
   //handle tambah karyawan
   const tambahKaryawan = async () => {
     console.log('p', newKaryawan)
-    // if (!newKaryawan.nik || !newKaryawan.nama || !newKaryawan.gender || !newKaryawan.email || !newKaryawan.username || !newKaryawan.job) {
-    //   alert('Lengkapi data Karyawan Terlebih Dahulu');
-    //   return;
-    // }
+    if (!newKaryawan.nik || !newKaryawan.nama || !newKaryawan.gender || !newKaryawan.email || !newKaryawan.username || !newKaryawan.job) {
+      message.warning('Lengkapi data Karyawan Terlebih Dahulu');
+      return;
+    }
     try {
       await karyawanRepository.api.tambahKaryawan({ newKaryawan });
       Modal.success({
@@ -224,7 +224,6 @@ const Page: React.FC = () => {
         content: 'Berhasil menambahkan Karyawan baru!',
       });
       mutate();
-      // setIsModalOpen(false); // Close the modal on success
     } catch (error) {
       console.error('Gagal menambahkan Karyawan:', error);
     }
@@ -311,11 +310,11 @@ const Page: React.FC = () => {
       </Space>
       <Table
         columns={columnKaryawan}
-        dataSource={apiResponse.data.data}
+        dataSource={apiResponse.data}
         pagination={{
           current: pageTugas,
           pageSize: pageSizeTugas,
-          total: apiResponse.data.count,
+          total: apiResponse.count,
           position: ['bottomCenter'],
           onChange: (pageTugas, pageSizeTugas) => {
             handlePageChangeTugas(pageTugas, pageSizeTugas)

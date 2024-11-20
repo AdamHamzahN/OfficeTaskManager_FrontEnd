@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Space, Table, Alert, Spin, Button, Modal } from 'antd';
+import { Space, Table, Alert, Spin, Button, Modal, message } from 'antd';
 import { jobsRepository } from '#/repository/jobs';
 import { EyeOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
@@ -120,7 +120,7 @@ const Page: React.FC = () => {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   const [pageTugas, setPageTugas] = useState(1);
-  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const [pageSizeTugas, setPageSizeTugas] = useState(10);
   const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
 
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
@@ -130,7 +130,7 @@ const Page: React.FC = () => {
 
   const tambahJob = async () => {
     if (!newJob.nama_job || !newJob.deskripsi_job) {
-      alert('Lengkapi data Job Terlebih Dahulu');
+      message.warning('Lengkapi data Job Terlebih Dahulu');
       return;
     }
     try {
@@ -148,10 +148,10 @@ const Page: React.FC = () => {
 
   const handleEditJobs = async () => {
     console.log("handleEditJobs called", { selectedJobId, editsJob });
-    // if (!selectedJobId || !editsJob.nama_job || !editsJob.deskripsi_job) {
-    //   alert('Pilih Job dan lengkapi data edit');
-    //   return;
-    // }
+    if (!selectedJobId || !editsJob.nama_job || !editsJob.deskripsi_job) {
+      message.warning('Data tidak boleh kosong');
+      return;
+    }
     try {
       await jobsRepository.api.editJobById(selectedJobId || '', { editsJob });
       Modal.success({

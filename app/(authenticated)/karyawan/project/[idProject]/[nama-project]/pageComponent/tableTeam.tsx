@@ -1,3 +1,4 @@
+import { JwtToken } from "#/utils/jwtToken";
 import { Row, Table } from "antd";
 import { useEffect, useState } from "react";
 
@@ -6,6 +7,7 @@ const TableTeam: React.FC<{
     nama_team: string,
     idProject: string,
 }> = ({ data, nama_team, idProject }) => {
+    const token = JwtToken.getAuthData().token || null;
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     useEffect(() => {
@@ -14,7 +16,15 @@ const TableTeam: React.FC<{
                 if (data.data) {
                     const counts = await Promise.all(data.data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
-                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
+                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`,
+                            {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`,
+                                },
+                            }
+                        );
                         const data = await response.json();
                         return { idKaryawan, countAll: data.countAll, countSelesai: data.countSelesai };
                     }));

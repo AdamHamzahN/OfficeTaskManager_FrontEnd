@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Table } from "antd";
 import { title } from "process";
 import { render } from "react-dom";
+import { JwtToken } from "#/utils/jwtToken";
 
 const TableTeam: React.FC<{
     data: any,
@@ -9,17 +10,26 @@ const TableTeam: React.FC<{
     nama_team: string,
     // mutate: any,
     // refreshTable: () => void
-}> = ({data, idProject, nama_team}) => {
-    const [taskCountAll, setTaskCountAll] = useState <{[key: string]: number | null}> ({});
-    const [taskCountSelesai, setTaskCountSelesai] = useState <{[key: string]: number | null}> ({});
+}> = ({ data, idProject, nama_team }) => {
+    const [taskCountAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
+    const [taskCountSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
+    const token = JwtToken.getAuthData().token || null;
     // const [newNamaTeam, setNewNamaTeam] = useState(nama_team)
     useEffect(() => {
         const fetchTugas = async () => {
             try {
-                if (data) {
+                if (data && token) {
                     const counts = await Promise.all(data.data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
-                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
+                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`,
+                            {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`,
+                                },
+                            }
+                        );
                         const data = await response.json();
                         return { idKaryawan, countAll: data.countAll, countSelesai: data.countSelesai };
                     }));
@@ -51,17 +61,17 @@ const TableTeam: React.FC<{
         {
             title: 'Nama Karyawan',
             key: 'karyawan.nama',
-            render: (record: any) => record.karyawan ? record.karyawan.user.nama: 'N/A',
+            render: (record: any) => record.karyawan ? record.karyawan.user.nama : 'N/A',
         },
         {
             title: 'NIK',
             key: 'nik',
-            render: (record: any) => record.karyawan ? record.karyawan.nik: 'N/A',
+            render: (record: any) => record.karyawan ? record.karyawan.nik : 'N/A',
         },
         {
             title: 'Job',
             key: 'job',
-            render: (record: any) => record.karyawan ? record.karyawan.job.nama_job: 'N/A',
+            render: (record: any) => record.karyawan ? record.karyawan.job.nama_job : 'N/A',
         },
         {
             title: 'Jumlah Tugas',
@@ -86,15 +96,15 @@ const TableTeam: React.FC<{
     return (
         <>
             <Row className="mb-4">
-                    <h1 className="text-xl flex items-center">
-                        <span className="text-2xl">{nama_team}</span>
-                    </h1>
+                <h1 className="text-xl flex items-center">
+                    <span className="text-2xl">{nama_team}</span>
+                </h1>
             </Row>
 
             <Table
                 dataSource={data?.data}
                 columns={columnTeam}
-                // pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+            // pagination={{ position: ['bottomCenter'], pageSize: 5 }}
             />
         </>
     );

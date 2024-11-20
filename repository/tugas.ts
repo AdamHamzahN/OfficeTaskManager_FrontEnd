@@ -19,6 +19,9 @@ const url = {
 	getTugasById(id_tugas: string) {
 		return `/tugas/${id_tugas}/detail`
 	},
+	getCountTugas(id_karyawan:string,id_project:string) {
+		return `tugas/${id_karyawan}/project/${id_project}/count-tugas`
+	},
 
 	//create
 	createTugas() {
@@ -61,6 +64,9 @@ const hooks = {
 	useGetTugasById(id_project: string) {
 		return useSWR(url.getTugasById(id_project), http.fetcher);
 	},
+	useGetCountTugas(id_karyawan: string,id_project: string) {
+        return useSWR(url.getCountTugas(id_karyawan,id_project), http.fetcher);
+    },
 }
 
 const api = {
