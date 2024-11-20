@@ -87,7 +87,7 @@ const columnJobs = [
 
 const Page: React.FC = () => {
   const [pageTugas, setPageTugas] = useState(1);
-  const [pageSizeTugas, setPageSizeTugas] = useState(5);
+  const [pageSizeTugas, setPageSizeTugas] = useState(10);
   const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
 
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {

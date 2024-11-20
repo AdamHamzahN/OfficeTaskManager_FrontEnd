@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import ModalUbahNamaTeam from "../modal/modalUbahNamaTeam";
 import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import ModalTambahAnggota from "../modal/modalTambahAnggota";
+import { tugasRepository } from "#/repository/tugas";
+import { JwtToken } from "#/utils/jwtToken";
 
 const TableTeam: React.FC<{
     data: any,
@@ -18,6 +20,7 @@ const TableTeam: React.FC<{
     mutate: any
     refreshTable: () => void
 }> = ({ data, status_project, dataTugas, page, pageSize, handlePageChange, nama_team, idProject, mutate, refreshTable }) => {
+    const token = JwtToken.getAuthData().token || null;
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
@@ -36,8 +39,15 @@ const TableTeam: React.FC<{
                 if (data) {
                     const counts = await Promise.all(data.data.map(async (record: any) => {
                         const idKaryawan = record.karyawan.id;
-                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`);
-                        const data = await response.json();
+                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`,
+                            {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`,
+                                },
+                            }
+                        );
                         return { idKaryawan, countAll: data.countAll, countSelesai: data.countSelesai };
                     }));
 

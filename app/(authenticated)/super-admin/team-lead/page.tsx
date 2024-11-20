@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { Table, Button, Switch, Tag, Modal, Input, Form, Spin, Alert, message } from 'antd';
 import { PlusOutlined, EditOutlined } from '@ant-design/icons';
@@ -59,21 +58,29 @@ const Page: React.FC = () => {
     const nama = newTeamLead.nama;
     const username = newTeamLead.username;
     const email = newTeamLead.email
-    // console.log('nama', nama)
     try {
-      await teamleadRepository.api.tambahTeamLead({ nama, username, email });
-      Modal.success({
-        title: 'Team Lead Ditambahkan',
-        content: 'Berhasil menambahkan Team Lead baru!',
-        okText: 'OK',
-        onOk() {
-          console.log('Team Lead berhasil ditambahkan');
-        },
-      });
-      mutate()
-      // setIsAddModalOpen(false); // Close the modal on success
-    } catch (error) {
-      console.error('Gagal menambahkan Team Lead:', error);
+      const response = await teamleadRepository.api.tambahTeamLead({ nama, username, email });
+      /**
+       * Cek apakah berhasil?
+       */
+      if(response.tambahTeamLeadResponse.statusCode === 409){
+        //bila gagal tampilkan message error
+        return message.warning(response.tambahTeamLeadResponse.message);
+      }else{
+        //bila berhasil tampilkan success message
+        Modal.success({
+          title: 'Team Lead Ditambahkan',
+          content: 'Berhasil menambahkan Team Lead baru!',
+          okText: 'OK',
+          onOk() {
+            console.log('Team Lead berhasil ditambahkan');
+          },
+        });
+        mutate();
+        setNewTeamLead({nama: '', username: '', email: ''});
+      }
+    } catch (error:any) {
+      message.warning(error.message);
     }
   };
 
@@ -83,17 +90,19 @@ const Page: React.FC = () => {
       message.warning("Harap isi semua field yang diperlukan.");
       return;
     }
-    // const password = newPassword.password
+    if(newPassword.password.length < 6){
+      message.warning("Password minimal 6 karakter.");
+      return;
+    }
     try {
-      console.log('tes', selectedIdTeamLead);
       await teamleadRepository.api.editPassword(selectedIdTeamLead || '', { newPassword });
       Modal.success({
         title: 'Password berhasil diubah',
         content: 'Password team lead berhasil diubah...',
         okText: 'OK',
       });
+      setNewPassword({password:''});
       mutate()
-      // setIsModalOpen(false); // Close the modal on success
     } catch (error) {
       console.error('Gagal edit password:', error);
     }
