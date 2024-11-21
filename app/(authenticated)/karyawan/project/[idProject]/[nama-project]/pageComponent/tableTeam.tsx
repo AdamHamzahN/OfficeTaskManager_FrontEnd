@@ -6,7 +6,10 @@ const TableTeam: React.FC<{
     data: any,
     nama_team: string,
     idProject: string,
-}> = ({ data, nama_team, idProject }) => {
+    pageTeam: any,
+    pageSizeTeam: any,
+    handlePageChange: any,
+}> = ({ data, nama_team, idProject, pageTeam, pageSizeTeam, handlePageChange }) => {
     const token = JwtToken.getAuthData().token || null;
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
@@ -50,7 +53,7 @@ const TableTeam: React.FC<{
         if (data.data) {
             fetchTugas();
         }
-    }, [data , idProject]);
+    }, [data, idProject]);
 
 
     const columnTeam = [
@@ -103,7 +106,15 @@ const TableTeam: React.FC<{
                     dataSource={data.data}
                     columns={columnTeam}
                     className="w-full custom-table"
-                    pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                    pagination={{
+                        current: pageTeam,
+                        pageSize: pageSizeTeam,
+                        total: data?.count,
+                        position: ['bottomCenter'],
+                        onChange: (pageTeam, pageSizeTeam) => {
+                            handlePageChange(pageTeam, pageSizeTeam)
+                        },
+                    }}
                 />
             </Row>
         </div>

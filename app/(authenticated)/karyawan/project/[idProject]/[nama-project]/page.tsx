@@ -14,10 +14,16 @@ const Page = () => {
     const params = useParams();
     const idUser = JwtToken.getPayload().sub;
     const idProject = params?.idProject as string;
+    const [pageTeam, setPageTeam] = useState(1);
+    const [pageSizeTeam, setPageSizeTeam] = useState(5);
+    const handlePageChange = (newPage: number, newPageSize: number) => {
+        setPageTeam(newPage);
+        setPageSizeTeam(newPageSize);
+    };
 
     const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject } = projectRepository.hooks.useDetailProject(idProject);
 
-    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
+    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject, pageTeam, pageSizeTeam);
 
     const loading = validateDetailProject || validateTeam;
     const error = errorDetailProject || errorTeam;
@@ -55,9 +61,15 @@ const Page = () => {
                     marginTop: 10,
                 }}
             >
-                <TableTeam idProject={idProject} nama_team={detailProject?.data.nama_team} data={teamProject} />
+                <TableTeam
+                    idProject={idProject}
+                    nama_team={detailProject?.data.nama_team}
+                    data={teamProject}
+                    pageTeam={pageTeam}
+                    pageSizeTeam={pageSizeTeam}
+                    handlePageChange={handlePageChange} />
             </div>
-            <TugasComponent idUser={idUser} id_project={idProject} status={detailProject.data.status} formatTimeStr={formatTimeStr}/>
+            <TugasComponent idUser={idUser} id_project={idProject} status={detailProject.data.status} formatTimeStr={formatTimeStr} />
         </div>
     );
 };

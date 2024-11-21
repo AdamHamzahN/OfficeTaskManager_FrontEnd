@@ -48,6 +48,7 @@ const TableTeam: React.FC<{
                                 },
                             }
                         );
+                        const data = await response.json();
                         return { idKaryawan, countAll: data.countAll, countSelesai: data.countSelesai };
                     }));
 
@@ -87,9 +88,6 @@ const TableTeam: React.FC<{
                 id_project: idProject,
                 id_karyawan: selectedKaryawan
             });
-            setSelectedKaryawan(undefined);
-
-            mutate();
             Modal.success({
                 title: 'Anggota Ditambahkan',
                 content: 'Berhasil menambahkan anggota ke dalam tim!',
@@ -97,10 +95,12 @@ const TableTeam: React.FC<{
                 cancelText: 'Tutup',
                 onOk() {
                     console.log('OK clicked');
+                    mutate();
                 },
             });
+            setSelectedKaryawan(undefined);
         } catch (error) {
-            console.error('Gagal menambahkan anggota:', error);
+            console.log('Gagal menambahkan anggota:', error);
         }
     };
 

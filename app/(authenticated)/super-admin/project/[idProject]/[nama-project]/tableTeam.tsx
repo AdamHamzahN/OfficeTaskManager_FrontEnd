@@ -8,9 +8,12 @@ const TableTeam: React.FC<{
     data: any,
     idProject: string,
     nama_team: string,
+    pageTeam: any,
+    pageSizeTeam: any,
+    handlePageChange: any,
     // mutate: any,
     // refreshTable: () => void
-}> = ({ data, idProject, nama_team }) => {
+}> = ({ data, idProject, nama_team ,pageTeam,pageSizeTeam,handlePageChange}) => {
     const [taskCountAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [taskCountSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
     const token = JwtToken.getAuthData().token || null;
@@ -104,7 +107,15 @@ const TableTeam: React.FC<{
             <Table
                 dataSource={data?.data}
                 columns={columnTeam}
-                pagination={{ position: ['bottomCenter'], pageSize: 5 }}
+                pagination={{
+                    current: pageTeam,
+                    pageSize: pageSizeTeam,
+                    total: data?.count,
+                    position: ['bottomCenter'],
+                    onChange: (pageTeam, pageSizeTeam) => {
+                        handlePageChange(pageTeam, pageSizeTeam)
+                    },
+                }}
             />
         </>
     );

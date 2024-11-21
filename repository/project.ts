@@ -98,7 +98,7 @@ const api = {
 
 			// Request POST untuk menambahkan anggota tim
 			const teamResponse = await http.post(url.createAnggotaTeam(), body);
-			const id_karyawan = teamResponse.body.data.karyawan;
+			const id_karyawan = teamResponse.body.id;
 
 			// Request PUT untuk memperbarui status project karyawan
 			const statusResponse = await http.put(url.updateStatusProjectKaryawan(id_karyawan), status)

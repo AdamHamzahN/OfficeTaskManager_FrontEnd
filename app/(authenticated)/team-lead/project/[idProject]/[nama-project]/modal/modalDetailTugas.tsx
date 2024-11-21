@@ -2,7 +2,6 @@
 import { Button, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { SearchOutlined } from "@ant-design/icons";
-import { projectRepository } from "#/repository/project";
 import { config } from "#/config/app";
 import { tugasRepository } from "#/repository/tugas";
 
