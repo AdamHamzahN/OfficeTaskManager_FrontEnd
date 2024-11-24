@@ -1,5 +1,5 @@
 "use client";
-import { Table, Space, Collapse, Spin, Alert, Tag, Input, Pagination } from 'antd';
+import { Table, Space, Collapse, Spin, Alert, Tag, Input, Pagination, Button } from 'antd';
 import { historyRepository } from '#/repository/history'; // Import historyRepository
 import { useEffect, useState } from 'react';
 import { JwtToken } from '#/utils/jwtToken';
@@ -96,8 +96,15 @@ const Page: React.FC = () => {
   // Filter tugas berdasarkan search text
   const onSearch = (search: any) => {
     //Set value searchText menjadi value yang diambil dari input search
+    console.log(search)
     setSearchText(search);
   };
+
+  //Mengembalikan search ke semula
+  const getAllHistory = () => {
+    setSearchText('');
+    document.activeElement instanceof HTMLElement && document.activeElement.blur();
+  }
 
   return (
     <div
@@ -118,9 +125,11 @@ const Page: React.FC = () => {
 
         {/* Search input positioned at the top-right corner */}
         <div style={{ position: 'absolute', top: 30, right: 24 }}>
+        <Button style={{marginRight:5}} onClick={getAllHistory}>All</Button>
           <Search
-            placeholder="Search Nama Tugas"
+            placeholder="Search Nama Project"
             style={{ width: '400px' }}
+            allowClear
             onSearch={(value) => onSearch(value)}
           />
         </div>
