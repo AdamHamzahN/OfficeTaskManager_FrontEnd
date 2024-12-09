@@ -131,6 +131,7 @@ const Page: React.FC = () => {
             style={{ width: '400px' }}
             allowClear
             onSearch={(value) => onSearch(value)}
+            // onChange={(e)=>setSearchText(e.target.value)}
           />
         </div>
         {/* Panggil History Item */}
