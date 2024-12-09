@@ -130,7 +130,6 @@ const api = {
 			console.log('Respon project:', tambahProjectResponse); // log response
 			const parsedResponse = JSON.parse(tambahProjectResponse.text);
 			const idProject = parsedResponse.id;
-
 			console.log('id project', idProject, file_project);
 
 			let updateFileProjectResponse;

@@ -104,7 +104,7 @@ const Page: React.FC = () => {
       </Space>
         <Table
           columns={columnKaryawan}
-          dataSource={apiResponse.data.data}
+          dataSource={apiResponse.data}
           pagination={{
             current: pageTugas,
             pageSize: pageSizeTugas,

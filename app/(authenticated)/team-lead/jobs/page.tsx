@@ -63,18 +63,17 @@ const columnJobs = [
 
       return (
         <div>
-          <ModalComponent 
-          title={'Detail Tugas'} 
-          content={<ModalDetailJobs idJobs={idJob} />}
+          <ModalComponent
+            title={'Detail Tugas'}
+            content={<ModalDetailJobs idJobs={idJob} />}
             footer={(handleCancel, handleOk) => (
-                                <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={handleOk}>Ok</Button>
-                                </div>
-                            )}
-                                onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
-                                onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
-                            >
+              <div>
+                <Button type="primary" onClick={handleOk}>Ok</Button>
+              </div>
+            )}
+            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+          >
             <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
               <EyeOutlined /> detail
             </Button>
@@ -93,7 +92,7 @@ const Page: React.FC = () => {
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
     setPageTugas(newPage);
     setPageSizeTugas(newPageSize);
-};
+  };
 
   if (updateValidating) {
     return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
@@ -117,21 +116,21 @@ const Page: React.FC = () => {
           Daftar Job
         </h1>
       </Space>
-        <Table
-          columns={columnJobs}
-          dataSource={apiResponse.data}
-          pagination={{
-            current: pageTugas,
-            pageSize: pageSizeTugas,
-            total: apiResponse.data.count,
-            position: ['bottomCenter'],
-            onChange: (pageTugas, pageSizeTugas) => {
-                handlePageChangeTugas(pageTugas, pageSizeTugas)
-            },
+      <Table
+        columns={columnJobs}
+        dataSource={apiResponse.data}
+        pagination={{
+          current: pageTugas,
+          pageSize: pageSizeTugas,
+          total: apiResponse.data.count,
+          position: ['bottomCenter'],
+          onChange: (pageTugas, pageSizeTugas) => {
+            handlePageChangeTugas(pageTugas, pageSizeTugas)
+          },
         }}
-          style={{ marginLeft: '20px' }}
-          className='custom-table'
-        />
+        style={{ marginLeft: '20px' }}
+        className='custom-table'
+      />
     </div>
   );
 };
