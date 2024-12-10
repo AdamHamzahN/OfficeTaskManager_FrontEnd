@@ -66,7 +66,7 @@ const Page: React.FC = () => {
               content={<ModalDetailJobs idJobs={idJob} />}
               footer={(handleCancel) => (
                 <div>
-                  <Button type="primary" onClick={handleCancel}>Ok</Button>
+                  <Button type="primary" onClick={handleCancel}>OK</Button>
                 </div>
               )}
               onCancel={() => console.log('Cancel clicked')}
@@ -85,7 +85,7 @@ const Page: React.FC = () => {
               footer={(handleCancel) => (
                 <div>
                   <Button onClick={handleCancel}>Cancel</Button>
-                  <Button type="primary" onClick={handleEditJobs}>Ok</Button>
+                  <Button type="primary" onClick={handleEditJobs}>OK</Button>
                 </div>
               )}
               onCancel={() => console.log('Cancel clicked')}
