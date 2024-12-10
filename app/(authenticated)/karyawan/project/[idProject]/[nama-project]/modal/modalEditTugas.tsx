@@ -61,8 +61,8 @@ const ModalEditTugas: React.FC<{
                         style={{ display: 'none' }}
                         ref={fileInputRef}
                         onChange={handleFileUploadChange}
+                        required
                     />
-
                     <Button
                         htmlType='button'
                         block
