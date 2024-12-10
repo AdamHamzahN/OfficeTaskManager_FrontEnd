@@ -59,6 +59,7 @@ const Page: React.FC = () => {
       render: (record: KaryawanData) => {
         const idKaryawan = record.id;
         const currentJob = record.job.id;
+        console.log(record.job  )
         setJob(currentJob);
         return (
           <div style={{ display: 'flex', gap: '2px' }}>
@@ -235,34 +236,37 @@ const Page: React.FC = () => {
     }
   };
 
+
   //handle update job
   const handleJobUpdate = async (id: string, job: any, currentJob: any, handleCancel: any) => {
+    console.log(job , currentJob)
     if (job === currentJob) {
       handleCancel();
       return;
+    }else{
+      Modal.confirm({
+        title: 'Ubah Job?',
+        content: 'Apakah yakin ingin mengubah job karyawan ini?',
+        async onOk() {
+          try {
+            await karyawanRepository.api.editJob(id, { job: job });
+            Modal.success({
+              title: 'Berhasil',
+              content: 'Berhasil mengubah job karyawan',
+              async onOk() {
+                mutate();
+                handleCancel();
+              }
+            })
+          } catch (error) {
+            message.error('gagal mengupdate job')
+          }
+        },
+        onCancel() {
+          console.log('Dialog dibatalkan');
+        },
+      });
     }
-    Modal.confirm({
-      title: 'Ubah Job?',
-      content: 'Apakah yakin ingin mengubah job karyawan ini?',
-      async onOk() {
-        try {
-          await karyawanRepository.api.editJob(id, { job: job });
-          Modal.success({
-            title: 'Berhasil',
-            content: 'Berhasil mengubah job karyawan',
-            async onOk() {
-              mutate();
-              handleCancel();
-            }
-          })
-        } catch (error) {
-          message.error('gagal mengupdate job')
-        }
-      },
-      onCancel() {
-        console.log('Dialog dibatalkan');
-      },
-    });
   }
 
   return (

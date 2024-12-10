@@ -62,7 +62,7 @@ const Page: React.FC = () => {
         return (
           <div style={{display:'flex',gap:'2px'}}>
             <ModalComponent
-              title={'Detail Jobs'}
+              title={'Detail Job'}
               content={<ModalDetailJobs idJobs={idJob} />}
               footer={(handleCancel) => (
                 <div>

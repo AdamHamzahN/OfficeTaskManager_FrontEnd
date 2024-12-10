@@ -64,11 +64,11 @@ const columnJobs = [
       return (
         <div>
           <ModalComponent
-            title={'Detail Tugas'}
+            title={'Detail Job'}
             content={<ModalDetailJobs idJobs={idJob} />}
             footer={(handleCancel, handleOk) => (
               <div>
-                <Button type="primary" onClick={handleOk}>Ok</Button>
+                <Button type="primary" onClick={handleOk}>OK</Button>
               </div>
             )}
             onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
