@@ -63,18 +63,17 @@ const columnJobs = [
 
       return (
         <div>
-          <ModalComponent 
-          title={'Detail Tugas'} 
-          content={<ModalDetailJobs idJobs={idJob} />}
+          <ModalComponent
+            title={'Detail Job'}
+            content={<ModalDetailJobs idJobs={idJob} />}
             footer={(handleCancel, handleOk) => (
-                                <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={handleOk}>Ok</Button>
-                                </div>
-                            )}
-                                onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
-                                onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
-                            >
+              <div>
+                <Button type="primary" onClick={handleOk}>OK</Button>
+              </div>
+            )}
+            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+          >
             <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
               <EyeOutlined /> detail
             </Button>
@@ -93,7 +92,7 @@ const Page: React.FC = () => {
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
     setPageTugas(newPage);
     setPageSizeTugas(newPageSize);
-};
+  };
 
   if (updateValidating) {
     return <Spin style={{ textAlign: 'center', padding: '20px' }} />;

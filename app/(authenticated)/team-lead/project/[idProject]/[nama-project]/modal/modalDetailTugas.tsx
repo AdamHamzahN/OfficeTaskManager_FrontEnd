@@ -35,7 +35,10 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
     const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
 
     // alias untuk url file bukti tugas
-    const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti?.replace(/\\/g, '/')}`;
+    let fileHasilTugas = '';
+    if (detailTugas.data.file_bukti !== null) {
+        fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti?.replace(/\\/g, '/')}`;
+    }
     return (
         <div style={{ borderTop: '2px ' }}>
             <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>
@@ -66,13 +69,16 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
                 <>
                     <label htmlFor="waktu_selesai_approved" style={{ marginBottom: '8px', display: 'block' }}>Waktu Selesai</label>
                     <Input id="waktu_selesai_approved" value={formatTimeStr(detailTugas.data.updated_at)} style={{ marginBottom: '16px' }} />
-
-                    <label htmlFor="bukti_pengerjaan_approved" style={{ marginBottom: '8px', display: 'block' }}>Bukti Hasil Pengerjaan</label>
-                    <a href={fileHasilTugas} target="_blank" rel="noopener noreferrer">
-                        <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
-                            <SearchOutlined /> Lihat Hasil
-                        </Button>
-                    </a>
+                    {detailTugas.data.file_bukti !== null && (
+                        <>
+                            <label htmlFor="bukti_pengerjaan_approved" style={{ marginBottom: '8px', display: 'block' }}>Bukti Hasil Pengerjaan</label>
+                            <a href={fileHasilTugas} target="_blank" rel="noopener noreferrer">
+                                <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
+                                    <SearchOutlined /> Lihat Hasil
+                                </Button>
+                            </a>
+                        </>
+                    )}
                 </>
             )}
         </div>

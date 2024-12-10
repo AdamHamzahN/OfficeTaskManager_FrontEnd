@@ -48,7 +48,7 @@ const columnKaryawan = [
       const idKaryawan = record.id;
       return (
         <ModalComponent
-          title={'Detail Tugas'}
+          title={'Detail Karyawan'}
           content={<ModalDetailKaryawan idKaryawan={idKaryawan} />}
           footer={(handleCancel, handleOk) => (
             <div>
@@ -103,7 +103,7 @@ const Page: React.FC = () => {
 
         <Table
           columns={columnKaryawan}
-          dataSource={apiResponse.data.data}
+          dataSource={apiResponse.data}
           pagination={{
             current: pageTugas,
             pageSize: pageSizeTugas,

@@ -59,15 +59,15 @@ const Page: React.FC = () => {
       render: (record: KaryawanData) => {
         const idKaryawan = record.id;
         const currentJob = record.job.id;
+        console.log(record.job  )
         setJob(currentJob);
         return (
           <div style={{ display: 'flex', gap: '2px' }}>
             <ModalComponent
-              title={'Detail Tugas'}
+              title={'Detail Karyawan'}
               content={<ModalDetailKaryawan idKaryawan={idKaryawan} jobChange={setJob} />}
               footer={(handleCancel) => (
                 <div>
-                  <Button onClick={handleCancel}>Cancel</Button>
                   <Button type="primary"
                     onClick={() => {
                       handleJobUpdate(idKaryawan, job, currentJob, handleCancel)
@@ -85,7 +85,10 @@ const Page: React.FC = () => {
               title="Ubah Password"
               footer={(handleCancel) => (
                 <div>
-                  <Button onClick={handleCancel}>Cancel</Button>
+                  <Button onClick={() => {
+                    handleCancel()
+                    setNewPassword({ password: '' });
+                  }}>Cancel</Button>
                   <Button type='primary' onClick={editPassword}>OK</Button>
                 </div>
               )}
@@ -182,6 +185,7 @@ const Page: React.FC = () => {
         content: 'Password karyawan berhasil diubah...',
         okText: 'OK',
       });
+      setNewPassword({ password: '' });
       mutate();
       // setIsModalOpen(false); // Close the modal on success
     } catch (error) {
@@ -229,34 +233,37 @@ const Page: React.FC = () => {
     }
   };
 
+
   //handle update job
   const handleJobUpdate = async (id: string, job: any, currentJob: any, handleCancel: any) => {
+    console.log(job , currentJob)
     if (job === currentJob) {
       handleCancel();
       return;
+    }else{
+      Modal.confirm({
+        title: 'Ubah Job?',
+        content: 'Apakah yakin ingin mengubah job karyawan ini?',
+        async onOk() {
+          try {
+            await karyawanRepository.api.editJob(id, { job: job });
+            Modal.success({
+              title: 'Berhasil',
+              content: 'Berhasil mengubah job karyawan',
+              async onOk() {
+                mutate();
+                handleCancel();
+              }
+            })
+          } catch (error) {
+            message.error('gagal mengupdate job')
+          }
+        },
+        onCancel() {
+          console.log('Dialog dibatalkan');
+        },
+      });
     }
-    Modal.confirm({
-      title: 'Ubah Job?',
-      content: 'Apakah yakin ingin mengubah job karyawan ini?',
-      async onOk() {
-        try {
-          await karyawanRepository.api.editJob(id, { job: job });
-          Modal.success({
-            title: 'Berhasil',
-            content: 'Berhasil mengubah job karyawan',
-            async onOk() {
-              mutate();
-              handleCancel();
-            }
-          })
-        } catch (error) {
-          message.error('gagal mengupdate job')
-        }
-      },
-      onCancel() {
-        console.log('Dialog dibatalkan');
-      },
-    });
   }
 
   return (
@@ -270,7 +277,7 @@ const Page: React.FC = () => {
       }}
     >
 
-      <Space style={{ width: '100%', justifyContent: 'space-between'}}>
+      <Space style={{ width: '100%', justifyContent: 'space-between' }}>
         <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20 }}>
           Daftar Karyawan
         </h1>

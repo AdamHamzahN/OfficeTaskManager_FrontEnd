@@ -55,12 +55,12 @@ const api = {
 		try {
 			const tambahTeamLeadResponse = await http.post(url.tambahTeamLead(), body);
 			return {
-				tambahTeamLeadResponse: tambahTeamLeadResponse.body.response
+				tambahTeamLeadResponse: tambahTeamLeadResponse.body
+
 			};
 		} catch (error:any) {
 			const errorMessage = error.response.body.message[0];
            	throw new Error(errorMessage);
-			
 		}
 	},
 
