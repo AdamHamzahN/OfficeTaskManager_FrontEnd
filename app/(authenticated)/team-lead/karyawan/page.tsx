@@ -5,7 +5,6 @@ import { karyawanRepository } from '#/repository/karyawan'; // Ganti dengan jalu
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailKaryawan from './modalDetailKaryawan';
-import { render } from 'react-dom';
 
 interface KaryawanData {
   id: string;
