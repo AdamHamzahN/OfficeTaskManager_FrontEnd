@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Space, Table, Alert, Spin, Button, Switch } from 'antd';
+import { Table, Alert, Spin, Button, Switch } from 'antd';
 import { karyawanRepository } from '#/repository/karyawan'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
@@ -47,12 +47,11 @@ const columnKaryawan = [
       const idKaryawan = record.id;
       return (
         <ModalComponent
-          title={'Detail Tugas'}
+          title={'Detail Karyawan'}
           content={<ModalDetailKaryawan idKaryawan={idKaryawan} />}
           footer={(handleCancel, handleOk) => (
             <div>
-              <Button onClick={handleCancel}>Cancel</Button>
-              <Button type="primary" onClick={handleOk}>Ok</Button>
+              <Button type="primary" onClick={handleOk}>OK</Button>
             </div>
           )}
         >
@@ -96,14 +95,14 @@ const Page: React.FC = () => {
         borderRadius: 15,
       }}
     >
-      <Space style={{ marginLeft: '20px', marginBottom: '30px' }}>
-        <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0', marginTop: '30px' }}>
+
+        <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
           Daftar Karyawan
         </h1>
-      </Space>
+
         <Table
           columns={columnKaryawan}
-          dataSource={apiResponse.data.data}
+          dataSource={apiResponse.data}
           pagination={{
             current: pageTugas,
             pageSize: pageSizeTugas,
@@ -113,7 +112,6 @@ const Page: React.FC = () => {
                 handlePageChangeTugas(pageTugas, pageSizeTugas)
             },
         }}
-          style={{ marginLeft: '20px' }}
           className='custom-table'
           rowKey="id"
         />

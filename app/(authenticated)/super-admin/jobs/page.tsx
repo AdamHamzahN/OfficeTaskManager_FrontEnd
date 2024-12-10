@@ -62,12 +62,11 @@ const Page: React.FC = () => {
         return (
           <div style={{display:'flex',gap:'2px'}}>
             <ModalComponent
-              title={'Detail Jobs'}
+              title={'Detail Job'}
               content={<ModalDetailJobs idJobs={idJob} />}
               footer={(handleCancel) => (
                 <div>
-                  <Button onClick={handleCancel}>Cancel</Button>
-                  <Button type="primary" onClick={() => console.log('Ok clicked')}>Ok</Button>
+                  <Button type="primary" onClick={handleCancel}>Ok</Button>
                 </div>
               )}
               onCancel={() => console.log('Cancel clicked')}

@@ -32,9 +32,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const idUser = payload?.sub;
   const role = payload?.role;
 
-  //mengambil idUser dari params
-
-
   //cek apakah user berada di path / url tertentu
   const isSuperAdmin = pathname.includes(`/super-admin/`) && pathname.split('/super-admin/')[1];
   const isTeamLead = pathname.startsWith(`/team-lead/`) && pathname.split('/team-lead/')[1];
@@ -92,13 +89,13 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       /**
        * Memanggil hook untuk detail karyawan bila role user adalah karyawan
        */
-      const { data: karyawanData, isLoading: karyawanLoading } = role == 'Karyawan' ?
-        karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
+      // const { data: karyawanData, isLoading: karyawanLoading } = role == 'Karyawan' ?
+      //   karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
 
       /**
        * Handle loading
        */
-      let loading = userLoading || karyawanLoading;
+      let loading = userLoading;
       if (loading) {
         return <div style={{
           display: 'flex',
@@ -289,7 +286,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             >
               <div style={{ marginRight: 27, fontSize: 20, color: 'white' }}>
                 <ProfileComponent
-                  userData={userData} karyawanData={karyawanData?.data} role={role} idUser={idUser}
+                  userData={userData} role={role} idUser={idUser}
                 >
                   <a style={{ textDecoration: 'none', color: 'black' }}>
                     {userData?.data?.nama!}

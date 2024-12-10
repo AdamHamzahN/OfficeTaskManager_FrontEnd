@@ -30,8 +30,12 @@ const ModalDetailTask: React.FC<{idTask: string}> =({idTask}) => {
         return <>Error loading data</>
     }
 
+    console.log(detailTask.data)
     const fileDetailTask = `${config.baseUrl}/${detailTask.data.file_tugas.replace(/\\/g, '/')}`;
-    const fileHasilTask = `${config.baseUrl}/${detailTask.data.file_bukti.replace(/\\/g, '/')}`;
+    let fileHasilTask = '';
+    if (detailTask.data.file_bukti !== null) {
+        fileHasilTask = `${config.baseUrl}/${detailTask.data.file_bukti?.replace(/\\/g, '/')}`;
+    }
 
     return (
         <div style={{borderTop: 2}}>
@@ -61,12 +65,16 @@ const ModalDetailTask: React.FC<{idTask: string}> =({idTask}) => {
                     <label htmlFor="waktu_selesai_approved" style={{marginBottom: 8, display: 'block'}}>Waktu Selesai</label>
                     <Input id="waktu_selesai_approved" value={formatTimeStr(detailTask.data.updated_at)} style={{marginBottom: 16}}/>
 
-                    <label htmlFor="bukti_pengerjaan_approved" style={{marginBottom: 8, display: 'block'}}>Bukti Hasil Pengerjaan</label>
-                    <a href={fileHasilTask} target="_blank" rel="noopener noreferrer">
-                        <Button block style={{textAlign: 'left', marginBottom: 16}}>
-                            <SearchOutlined /> Lihat Hasil
-                        </Button>
-                    </a>
+                    {detailTask.data.file_bukti !== null && (
+                        <>
+                            <label htmlFor="bukti_pengerjaan_approved" style={{ marginBottom: '8px', display: 'block' }}>Bukti Hasil Pengerjaan</label>
+                            <a href={fileHasilTask} target="_blank" rel="noopener noreferrer">
+                                <Button block style={{ textAlign: 'left', marginBottom: '16px' }}>
+                                    <SearchOutlined /> Lihat Hasil
+                                </Button>
+                            </a>
+                        </>
+                    )}
                 </>
             )}
         </div>

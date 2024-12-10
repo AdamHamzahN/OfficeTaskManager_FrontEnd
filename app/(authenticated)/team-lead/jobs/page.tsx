@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Space, Table, Tag, Alert, Spin, Button } from 'antd';
+import { Table, Tag, Alert, Spin, Button } from 'antd';
 import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
@@ -63,18 +63,17 @@ const columnJobs = [
 
       return (
         <div>
-          <ModalComponent 
-          title={'Detail Tugas'} 
-          content={<ModalDetailJobs idJobs={idJob} />}
+          <ModalComponent
+            title={'Detail Job'}
+            content={<ModalDetailJobs idJobs={idJob} />}
             footer={(handleCancel, handleOk) => (
-                                <div>
-                                    <Button onClick={handleCancel}>Cancel</Button>
-                                    <Button type="primary" onClick={handleOk}>Ok</Button>
-                                </div>
-                            )}
-                                onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
-                                onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
-                            >
+              <div>
+                <Button type="primary" onClick={handleOk}>OK</Button>
+              </div>
+            )}
+            onOk={() => console.log('Ok clicked')}  // Tambahkan handler onOk
+            onCancel={() => console.log('Cancel clicked')}  // Tambahkan handler onCancel
+          >
             <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
               <EyeOutlined /> detail
             </Button>
@@ -93,7 +92,7 @@ const Page: React.FC = () => {
   const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
     setPageTugas(newPage);
     setPageSizeTugas(newPageSize);
-};
+  };
 
   if (updateValidating) {
     return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
@@ -112,11 +111,11 @@ const Page: React.FC = () => {
         borderRadius: 15,
       }}
     >
-      <Space style={{ marginLeft: '20px', marginBottom: '10px' }}>
-        <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0', marginTop: '30px' }}>
+
+        <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
           Daftar Job
         </h1>
-      </Space>
+        
         <Table
           columns={columnJobs}
           dataSource={apiResponse.data}
@@ -129,7 +128,6 @@ const Page: React.FC = () => {
                 handlePageChangeTugas(pageTugas, pageSizeTugas)
             },
         }}
-          style={{ marginLeft: '20px' }}
           className='custom-table'
         />
     </div>

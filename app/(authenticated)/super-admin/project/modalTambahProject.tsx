@@ -1,5 +1,5 @@
 
-import React, { useRef,useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Input, Form, DatePicker, Select, Button, message } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import dayjs from "dayjs";
@@ -7,24 +7,24 @@ import { teamleadRepository } from '#/repository/teamlead';
 
 interface ModalTambahProject {
     createproject: (projectData: {
-                                nama_project: string, 
-                                id_team_lead: string, 
-                                nama_team: string, 
-                                start_date: string, 
-                                end_date: string, 
-                                file_project: File | null
-                                }) => void;
+        nama_project: string,
+        id_team_lead: string,
+        nama_team: string,
+        start_date: string,
+        end_date: string,
+        file_project: File | null
+    }) => void;
 }
 
-const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
+const TambahProject: React.FC<ModalTambahProject> = ({ createproject }) => {
     const [formData, setFormData] = useState<{
-        nama_project: string, 
-        id_team_lead: string, 
-        nama_team: string, 
-        start_date: string, 
-        end_date: string, 
+        nama_project: string,
+        id_team_lead: string,
+        nama_team: string,
+        start_date: string,
+        end_date: string,
         file_project: File | null
-        }>({
+    }>({
         nama_project: '',
         id_team_lead: '',
         nama_team: '',
@@ -61,7 +61,7 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
         value: teamLead.id,
         label: `${teamLead.nama}`
     })) || []
-    
+
     const handleChange = (key: keyof typeof formData, value: any) => {
         // const updatedFormData = {
         //     ...formData,
@@ -82,7 +82,7 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
     };
 
     // handle TANGGAL 
-    const {RangePicker} = DatePicker;
+    const { RangePicker } = DatePicker;
     const handleDateChange = (dates: any, dateStrings: [string, string]) => {
         handleChange('start_date', dateStrings[0]);
         handleChange('end_date', dateStrings[1]);
@@ -90,7 +90,7 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
 
     // handle buttom uploud file
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const handleButtonClick = (event:React.MouseEvent<HTMLElement>) => {
+    const handleButtonClick = (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
         if (fileInputRef.current) {
             fileInputRef.current.click();
@@ -120,7 +120,7 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
             <Form.Item label='Team Lead:'>
                 <Select
                     placeholder="Team lead"
-                    style={{  marginLeft: 18, width: 335 }}
+                    style={{ marginLeft: 18, width: 335 }}
                     onChange={handleSelectChange}
                     options={options}
                     value={formData.id_team_lead || undefined}
@@ -145,7 +145,7 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
             </Form.Item>
 
             <Form.Item label='Upload File:'>
-                <input 
+                <input
                     type="file"
                     accept="application/pdf"
                     style={{ display: 'none' }}
@@ -153,17 +153,17 @@ const TambahProject: React.FC<ModalTambahProject> = ({createproject}) => {
                     onChange={handleFileChange}
                 />
 
-                <Button 
-                    htmlType="button" 
-                    block 
-                    onClick={handleButtonClick} 
+                <Button
+                    htmlType="button"
+                    block
+                    onClick={handleButtonClick}
                     style={{ marginLeft: 14, width: 334 }}
-                >  
-                    <UploadOutlined/>Upload file project
+                >
+                    <UploadOutlined />Upload file project
                 </Button>
                 {formData.file_project && <p style={{ marginLeft: 14, marginTop: '8px' }}>{formData.file_project.name}</p>}
             </Form.Item>
-            
+
         </>
     );
 };

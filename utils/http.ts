@@ -7,19 +7,20 @@ import { attachSuperagentLogger } from "./http_logger";
 import { TokenUtil } from './token';
 import { JwtToken } from "./jwtToken";
 
-let AuthIntercept = superagentIntercept((err: any, res: any) => {
-    if ((res && res.status === 401)) {
-        console.log('AuthIntercept 401');
-        TokenUtil.clearAccessToken();
-        TokenUtil.persistToken();
-        window.location.href = "/login";
-    }
-});
-
 /**
  * Mengambil token dari local storage
  */
 let token = JwtToken.getAuthData()?.token;
+
+/**
+ * Interceptor untuk menangani error 401 Unauthorized
+ */
+let AuthIntercept = superagentIntercept((err: any, res: any) => {
+    if ((res && res.status === 401 && token == 'undifined')) {
+        console.log('AuthIntercept 401');
+        window.location.href = "/login";
+    }
+});
 
 export const http = {
     get: (url: string, opts = {}) => {
