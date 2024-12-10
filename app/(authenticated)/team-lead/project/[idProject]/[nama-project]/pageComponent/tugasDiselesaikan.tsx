@@ -153,6 +153,7 @@ const TugasDiselesaikan: React.FC<{
             />
             <ModalComponent
                 title={'Note'}
+                onCancel={handleNoteCancel}
                 content={
                     <div>
                         <p>Masukkan Note :</p>

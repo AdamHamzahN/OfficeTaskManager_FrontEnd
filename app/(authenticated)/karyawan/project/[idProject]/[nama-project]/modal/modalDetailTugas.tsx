@@ -21,10 +21,6 @@ const formatTimeStr = (dateStr: string) => {
 const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
 
     const { data: detailTugas, error, isValidating: loading } = tugasRepository.hooks.useGetTugasById(idTugas);
-
-    const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
-
-    const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti?.replace(/\\/g, '/')}`;
     
     if (loading) {
         console.log('Loading data...');
@@ -35,6 +31,8 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
         console.error('Error fetching data:', error);
         return <div>Error loading data</div>; // Tangani error jika ada
     }
+    const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
+    const fileHasilTugas = `${config.baseUrl}/${detailTugas.data.file_bukti?.replace(/\\/g, '/')}`;
     return (
         <div style={{ borderTop: '2px ' }}>
             <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>

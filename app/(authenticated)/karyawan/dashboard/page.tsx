@@ -100,21 +100,23 @@ const Page: React.FC = () => {
 
   const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
 
+
   const {
-    data: daftarTugas,
+    data: daftarTugas = { data: [], count: 0 },
     error: daftarTugasError,
     isValidating: daftarTugasValidate,
-  } = tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
-    idUser!,
-    tugasProject?.id_project || null,  // Berikan nilai default jika undefined
-    pageTugas,
-    pageSizeTugas
-  );
+  } = tugasProject?.id_project
+      ? tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
+        idUser,
+        tugasProject.id_project,
+        pageTugas,
+        pageSizeTugas
+      )
+      : { data: [], error: null, isValidating: false };
   // Mengatur status loading
   const loading = tugasProjectValidating || daftarTugasValidate;
 
   const { data, count } = daftarTugas || { data: [], count: 0 };
-
 
   return (
     <div
