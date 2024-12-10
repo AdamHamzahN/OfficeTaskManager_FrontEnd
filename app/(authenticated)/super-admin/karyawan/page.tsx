@@ -147,9 +147,6 @@ const Page: React.FC = () => {
   //set selected id karyawan
   const [selectedIdKaryawan, setSelectedIdKaryawan] = useState<string | null>(null);
 
-  // state alert warning
-  const [showAlert, setShowAlert] = useState(false);
-
   //useEffect error logging
   useEffect(() => {
     console.log('apiResponse:', apiResponse);
@@ -169,7 +166,7 @@ const Page: React.FC = () => {
   // handle edit password
   const editPassword = async () => {
     if (!newPassword.password) {
-      setShowAlert(true);
+      message.warning('Field password tidak boleh kosong.')
       return;
     }
     if (newPassword.password.length < 6) {
@@ -197,8 +194,8 @@ const Page: React.FC = () => {
     const newStatus = status ? 'inactive' : 'active';
     try {
       await karyawanRepository.api.updateStatusKeaktifanKaryawan(id, { status: newStatus });
+      message.success(`Status keaktifan berhasil diubah menjadi ${newStatus}.`);
       mutate();
-      message.success('Status berhasil diperbarui');
     } catch (e) {
       return e;
     }
@@ -272,25 +269,6 @@ const Page: React.FC = () => {
         // justifyContent: 'space-between',
       }}
     >
-      {/* ALERT WARNING */}
-      {showAlert && (
-        <>
-          {/* Full-screen overlay to block interaction */}
-          <div className='alert-overlay' />
-
-          {/* Alert container */}
-          <div className="alert-container">
-            <Alert
-              message="Warning"
-              description="Semua field harus diisi."
-              type="warning"
-              showIcon
-              closable
-              onClose={() => setShowAlert(false)}
-            />
-          </div>
-        </>
-      )}
 
       <Space style={{ width: '100%', justifyContent: 'space-between'}}>
         <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20 }}>

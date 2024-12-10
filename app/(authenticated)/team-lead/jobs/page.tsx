@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Space, Table, Tag, Alert, Spin, Button } from 'antd';
+import { Table, Tag, Alert, Spin, Button } from 'antd';
 import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang sesuai jika berbeda
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
@@ -112,11 +112,11 @@ const Page: React.FC = () => {
         borderRadius: 15,
       }}
     >
-      <Space style={{ marginLeft: '20px', marginBottom: '10px' }}>
-        <h1 style={{ fontSize: '36px', fontFamily: 'Roboto, sans-serif', marginBottom: '0', marginTop: '30px' }}>
+
+        <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
           Daftar Job
         </h1>
-      </Space>
+        
         <Table
           columns={columnJobs}
           dataSource={apiResponse.data}
@@ -129,7 +129,6 @@ const Page: React.FC = () => {
                 handlePageChangeTugas(pageTugas, pageSizeTugas)
             },
         }}
-          style={{ marginLeft: '20px' }}
           className='custom-table'
         />
     </div>

@@ -41,7 +41,7 @@ const Page: React.FC = () => {
     const newStatus = status ? 'inactive' : 'active';
     try {
       await teamleadRepository.api.editStatusKeaktifan(id, { status: newStatus });
-      message.success('Status keaktifan berhasil diperbarui');
+      message.success(`Status keaktifan berhasil diubah menjadi ${newStatus}.`);
       mutate();
     } catch (error) {
       message.error('Gagal memperbarui status keaktifan');
@@ -87,11 +87,11 @@ const Page: React.FC = () => {
   // handle edit password
   const editPassword = async () => {
     if (!newPassword.password) {
-      message.warning("Harap isi semua field yang diperlukan.");
+      message.warning("Field password tidak boleh kosong.");
       return;
     }
     if(newPassword.password.length < 6){
-      message.warning("Password minimal 6 karakter.");
+      message.warning("Password harus terdiri dari 6 karakter");
       return;
     }
     try {
@@ -113,7 +113,6 @@ const Page: React.FC = () => {
       title: 'Nama Team Lead',
       dataIndex: 'nama',
       key: 'nama',
-      // render: (record: any) => record.nama ? record.nama : 'N/A',
     },
 
     {
@@ -130,7 +129,6 @@ const Page: React.FC = () => {
     },
     {
       title: 'Aksi',
-      // dataIndex: 'address',
       key: 'aksi',
       render: (record: any) => (
         <ModalComponent
@@ -191,11 +189,9 @@ const Page: React.FC = () => {
           )}
           content={(
             <>
-              {/* <p>Tambah Team Lead</p> */}
-              {/* <Form> */}
               <Form.Item
                 label="Nama"
-              // name="name"
+                name="name"
               >
                 <Input
                   placeholder='Masukkan nama'
@@ -207,7 +203,7 @@ const Page: React.FC = () => {
 
               <Form.Item
                 label="Username"
-              // name="username"
+                name="username"
               >
                 <Input
                   placeholder='Masukkan username'
@@ -218,7 +214,7 @@ const Page: React.FC = () => {
 
               <Form.Item
                 label="Email"
-              // name="email"
+                name="email"
               >
                 <Input
                   placeholder='Masukkan email'
@@ -227,7 +223,6 @@ const Page: React.FC = () => {
                   style={{ marginLeft: 28, width: 357 }}
                 />
               </Form.Item>
-              {/* </Form> */}
             </>
           )}
         >
@@ -252,29 +247,7 @@ const Page: React.FC = () => {
           },
       }}
       />
-      {/* <ModalComponent
-         title="Ubah Password"
-         footer={(handleCancel) => (
-          <div>
-            <Button onClick={editPassword}>Ok</Button>
-            <Button onClick={handleCancel}>Cancel</Button>
-          </div>
-         )}
-          content={(
-            <>
-              <p>Masukkan Password Baru</p>
-                <Input.Password 
-                  placeholder="Masukkan password" 
-                  value={newPassword.password}
-                  onChange={(e) => setNewPassword({ ...newPassword, password: e.target.value})}
-                />
-            </>
-          
-          )}
-        >
-        </ModalComponent> */}
-
-
+      
     </div>
   );
 };

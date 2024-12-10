@@ -7,10 +7,9 @@ import { karyawanRepository } from '#/repository/karyawan';
 const ProfileComponent: React.FC<{
   children: React.ReactNode,
   userData: any,
-  karyawanData: any
   idUser: any,
   role:any,
-}> = ({ children, userData, karyawanData, idUser, role }) => {
+}> = ({ children, userData, idUser, role }) => {
   const [open, setOpen] = useState(false);
   let [isModalOpen, setIsModalOpen] = useState(false); // state modal Password
   let [modalAlamat, setModalAlamat] = useState(false); // state modal Alamat
@@ -20,10 +19,18 @@ const ProfileComponent: React.FC<{
     new_password: '',
     confirm_new_password: ''
   });
+
+  // Memanggil hook untuk detail karyawan bila role karyawan
+  const { data: karyawanData, isLoading: karyawanLoading, mutate } = role == 'Karyawan' ?
+        karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
+  console.log('sad', karyawanData?.data?.alamat)
+
   //state form alamat
   const [newAlamat, setNewAlamat] = useState<{ alamat: string }>({
     alamat: karyawanData?.data?.alamat ? karyawanData?.data?.alamat : ''
   });
+
+  
 
   // close modal
   const handleCancel = () => {
@@ -39,11 +46,11 @@ const ProfileComponent: React.FC<{
    */
   const editPassword = async () => {
     if (!newPassword.current_password || !newPassword.new_password || !newPassword.confirm_new_password) {
-      message.error('semua field harus di isi')
+      message.warning('Field password tidak boleh kosong.')
       return;
     }
     if (newPassword.new_password !== newPassword.confirm_new_password) {
-      message.error('mohon konfirmasi password dengan benar')
+      message.warning('Mohon konfirmasi password dengan benar')
       return;
     }
     try {
@@ -69,23 +76,26 @@ const ProfileComponent: React.FC<{
    */
   const editAlamat = async () => {
     if (!newAlamat.alamat) {
-      message.error('mohon masukkan alamat dengan benar')
+      message.warning('Field alamat wajib diisi.')
     }
-    try {
-      const response = await karyawanRepository.api.editAlamat(karyawanData?.id, { alamat: newAlamat.alamat });
-      if (response.karyawanResponse.statusCode === 200) {
-        Modal.success({
-          title: 'Berhasil Diubah',
-          content: 'Alamat Berhasil Diubah',
-          okText: 'OK',
-        });
-        setModalAlamat(false);
-      } else {
-        message.error(response.karyawanResponse.message)
-      }
-      setIsModalOpen(false);
-    } catch (error: any) {
-      message.error(error.message);
+    else {
+      try {
+        const response = await karyawanRepository.api.editAlamat(karyawanData?.data?.id, { alamat: newAlamat.alamat });
+        if (response.karyawanResponse.statusCode === 200) {
+          Modal.success({
+            title: 'Berhasil Diubah',
+            content: 'Alamat Berhasil Diubah',
+            okText: 'OK',
+          });
+          mutate?.();
+          setModalAlamat(false);
+        } else {
+          message.error(response.karyawanResponse.message)
+        }
+        setIsModalOpen(false);
+        } catch (error: any) {
+          message.error(error.message);
+          }
     }
   };
 
@@ -139,23 +149,23 @@ const ProfileComponent: React.FC<{
     } else {
       return (
         <>
-          <p style={{ margin: 0 }}>Nik :</p>
-          <p>{karyawanData?.nik}</p>
+          <p style={{ margin: 0 }}>NIK :</p>
+          <p>{karyawanData?.data?.nik}</p>
 
           <p style={{ margin: 0 }}>Nama :</p>
           <p>{userData?.data.nama}</p>
 
           <p style={{ margin: 0 }}>Alamat :</p>
           {
-            karyawanData?.alamat !== null ? (
-              <p style={{wordWrap: "break-word", maxWidth: "280px"}}>{karyawanData?.alamat}<a onClick={() => { setModalAlamat(true); hide() }}><EditOutlined /></a></p>
+            karyawanData?.data?.alamat !== null ? (
+              <p style={{wordWrap: "break-word", maxWidth: "280px"}}>{karyawanData?.data?.alamat}<a style={{ marginLeft: 5 }} onClick={() => { setModalAlamat(true); hide() }}><EditOutlined /></a></p>
             ) : (
-              <p>kosong <a onClick={() => { setModalAlamat(true); hide() }}><EditOutlined /></a></p>
+              <p>kosong <a style={{ marginLeft: 5 }} onClick={() => { setModalAlamat(true); hide() }}> <EditOutlined /></a></p>
             )
           }
 
           <p style={{ margin: 0 }}>Gender :</p>
-          <p>{karyawanData?.gender}</p>
+          <p>{karyawanData?.data?.gender}</p>
 
           <p style={{ margin: 0 }}>Username :</p>
           <p>{userData?.data.username}</p>
@@ -211,7 +221,7 @@ const ProfileComponent: React.FC<{
         </div>
       </Modal>
 
-      {/* Modal Ubah Password */}
+      {/* Modal Ubah Alamat */}
       <Modal title="Ubah Alamat" open={modalAlamat} onOk={editAlamat} onCancel={handleCancel}>
         <div style={{ borderTop: '1px solid lightgray', padding: '20px', borderBottom: '1px solid lightgray' }}>
           <p>Masukkan Alamat Tempat Tinggal</p>
