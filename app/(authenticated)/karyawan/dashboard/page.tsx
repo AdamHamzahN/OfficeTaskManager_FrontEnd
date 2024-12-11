@@ -81,7 +81,6 @@ const columnTugasProject = [
           default: return '#4CAF50';
         }
       };
-
       return <Tag color={getColor()}>{status}</Tag>;
     }
   },

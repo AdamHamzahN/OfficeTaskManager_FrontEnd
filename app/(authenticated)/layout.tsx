@@ -38,7 +38,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const isKaryawan = pathname.startsWith('/karyawan/') && pathname.split('/karyawan/')[1];
   const isProjectActive = pathname.includes('/project');
 
-  console.log(isSuperAdmin && role === 'Super Admin')
   //variable cek user
   let checkUser = false;
 
