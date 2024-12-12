@@ -163,7 +163,7 @@ const Page: React.FC = () => {
 
       <div className="project-sedang-dalam-pengerjaan">
         <div className="title" style={{ fontFamily: "Roboto, sans-serif", textAlign: "center", fontSize: 40 }}>
-          <h1>Sedang dalam Pengerjan</h1>
+          <h1>Sedang dalam Pengerjaan</h1>
         </div>
 
 

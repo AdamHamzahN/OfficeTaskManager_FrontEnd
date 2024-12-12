@@ -97,21 +97,18 @@ const Page: React.FC = () => {
   };
 
 
-  const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser)
-
+  const { data: tugasProject, error: tugasProjectError, isValidating: tugasProjectValidating } = dashboardRepository.hooks.useGetTugasKaryawanByProject(idUser);
 
   const {
     data: daftarTugas = { data: [], count: 0 },
     error: daftarTugasError,
     isValidating: daftarTugasValidate,
-  } = tugasProject?.id_project
-      ? tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
-        idUser,
-        tugasProject.id_project,
-        pageTugas,
-        pageSizeTugas
-      )
-      : { data: [], error: null, isValidating: false };
+  } = tugasRepository.hooks.useGetTugasProjectKaryawanByIdUser(
+    idUser,
+    tugasProject?.id_project || '', // Gunakan nilai default jika id_project tidak tersedia
+    pageTugas,
+    pageSizeTugas
+  );
   // Mengatur status loading
   const loading = tugasProjectValidating || daftarTugasValidate;
 
@@ -232,7 +229,9 @@ const Page: React.FC = () => {
           {loading ? (
             <Spin style={{ textAlign: 'center', padding: '20px', display: 'block' }} />
           ) : daftarTugasError ? (
-            <Alert message="Error fetching data" type="error" />
+            <div style={{ textAlign: 'center', padding: '20px', fontSize: '30px' }}>
+              <h4>Belum Ada Project</h4>
+            </div>
           ) : tugasProject?.nama_project !== null ? (
             <div style={{ textAlign: 'center', fontSize: '29px' }}>
               <h3>Tugas {tugasProject?.nama_project}</h3>
