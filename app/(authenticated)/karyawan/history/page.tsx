@@ -3,6 +3,7 @@ import { Table, Space, Collapse, Spin, Alert, Tag, Input, Pagination, Button } f
 import { historyRepository } from '#/repository/history'; // Import historyRepository
 import { useEffect, useState } from 'react';
 import { JwtToken } from '#/utils/jwtToken';
+import TableComponent from '#/component/TableComponent';
 
 const { Panel } = Collapse;
 const { Search } = Input;
@@ -39,7 +40,7 @@ const columnHistory = [
  * Component untuk mengambil data history dan menampilkannya
  *  Note : Di pisah dari page agar ketika fetching ulang hanya collapse history saja yang render ulang
  */
-const HistoryItem: React.FC<{ searchText: string }> = ({searchText}) => {
+const HistoryItem: React.FC<{ searchText: string }> = ({ searchText }) => {
   //Ambil id user dari token di local storage
   const id_user = JwtToken.getPayload().sub;
   //State Untuk Page
@@ -53,7 +54,7 @@ const HistoryItem: React.FC<{ searchText: string }> = ({searchText}) => {
   };
 
   // Ambil data menggunakan id_user sebagai parameter
-  const { data: historyResponse, error: updateError, isValidating: updateValidating} = historyRepository.hooks.useGetHistoryById(id_user, page, pageSize, searchText);
+  const { data: historyResponse, error: updateError, isValidating: updateValidating } = historyRepository.hooks.useGetHistoryById(id_user, page, pageSize, searchText);
 
   // Loading state ketika data sedang diambil
   if (updateValidating) {
@@ -73,7 +74,8 @@ const HistoryItem: React.FC<{ searchText: string }> = ({searchText}) => {
             <Table
               columns={columnHistory}
               dataSource={project.tugas}
-            />
+              pagination={false}
+            />  
           </Panel>
         </Collapse>
       ))}
@@ -125,13 +127,13 @@ const Page: React.FC = () => {
 
         {/* Search input positioned at the top-right corner */}
         <div style={{ position: 'absolute', top: 30, right: 24 }}>
-        <Button style={{marginRight:5}} onClick={getAllHistory}>All</Button>
+          <Button style={{ marginRight: 5 }} onClick={getAllHistory}>All</Button>
           <Search
             placeholder="Search Nama Project"
             style={{ width: '400px' }}
             allowClear
             onSearch={(value) => onSearch(value)}
-            // onChange={(e)=>setSearchText(e.target.value)}
+          // onChange={(e)=>setSearchText(e.target.value)}
           />
         </div>
         {/* Panggil History Item */}

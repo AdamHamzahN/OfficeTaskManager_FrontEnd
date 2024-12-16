@@ -7,6 +7,9 @@ import CardProjectDashboard from "#/component/CardProjectDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { useParams } from "next/navigation";
 import { slugify } from "#/utils/slugify";
+import TableComponent from "#/component/TableComponent";
+import Container from "#/component/ContainerComponent";
+
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -75,14 +78,7 @@ const Page: React.FC = () => {
   const loading = updateValidating || progressValidating;
 
   return (
-    <div
-      style={{
-        padding: 24,
-        minHeight: '100vh',
-        backgroundColor: '#fff',
-        borderRadius: 15,
-      }}
-    >
+    <Container>
       <Row gutter={[16, 10]} style={{ marginBottom: 48, display: 'flex' }}>
         {/* 3 update Project Terbaru */}
         <Col xs={24} md={12} lg={14} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -105,12 +101,19 @@ const Page: React.FC = () => {
               ) : updateError ? (
                 <Alert message="Error fetching data" type="error" />
               ) : updateProjectTerbaru !== null ? (
-                <Table
-                  dataSource={updateProjectTerbaru}
+                // <Table
+                //   dataSource={updateProjectTerbaru}
+                //   columns={projectTerbaru}
+                //   pagination={false}
+                //   className="card-table"
+                //   style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                // />
+                <TableComponent
+                  data={updateProjectTerbaru}
                   columns={projectTerbaru}
+                  loading={loading}
+                  className={"card-table"}
                   pagination={false}
-                  className="card-table"
-                  style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                 />
               ) : (
                 <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -132,7 +135,7 @@ const Page: React.FC = () => {
             boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
           }}>
 
-            <div style={{ display: 'flex', alignItems: 'center',justifyContent: 'center',margin:50 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: 50 }}>
 
               <div style={{ textAlign: 'center', marginRight: 20, }}>
                 <h2 style={{ fontSize: 30 }}>{`${projectDalamProses?.count} Project`}</h2>
@@ -144,7 +147,7 @@ const Page: React.FC = () => {
               <div className="vertical-line" style={{
                 width: 5,
                 height: 200,
-                backgroundColor: 'black', 
+                backgroundColor: 'black',
                 margin: '10px 0',
                 borderRadius: 10
               }}></div>
@@ -196,7 +199,7 @@ const Page: React.FC = () => {
 
       </div>
 
-    </div>
+    </Container>
 
   )
 };

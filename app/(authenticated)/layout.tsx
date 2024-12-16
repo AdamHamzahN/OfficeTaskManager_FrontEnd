@@ -6,7 +6,6 @@ import { Layout, Menu, Spin, theme, Modal } from 'antd';
 import { useRouter, usePathname } from 'next/navigation';
 import { userRepository } from '#/repository/user';
 import ProfileComponent from '#/component/ProfileComponent';
-import { karyawanRepository } from '#/repository/karyawan';
 import { JwtToken } from '#/utils/jwtToken';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -16,8 +15,6 @@ interface AuthenticatedLayoutProps {
 }
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
-  const router = useRouter();
-  const pathname = usePathname() || '';
   // Mengambil data auth ( token dan expiryTime ) dari local storage
   let authData = JwtToken.getAuthData();
 
@@ -32,11 +29,13 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const idUser = payload?.sub;
   const role = payload?.role;
 
+  const router = useRouter();
+  const pathname = usePathname() || '';
+
   //cek apakah user berada di path / url tertentu
   const isSuperAdmin = pathname.includes(`/super-admin/`) && pathname.split('/super-admin/')[1];
   const isTeamLead = pathname.startsWith(`/team-lead/`) && pathname.split('/team-lead/')[1];
   const isKaryawan = pathname.startsWith('/karyawan/') && pathname.split('/karyawan/')[1];
-  const isProjectActive = pathname.includes('/project');
 
   //variable cek user
   let checkUser = false;
@@ -60,7 +59,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       });
     }
   }
-
   /**
    * Mengecek apakah token ada 
    */
@@ -80,16 +78,11 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     }
     if (checkUser) {
       const { token: { colorBgContainer } } = theme.useToken();
+      const isProjectActive = pathname.includes('/project');
       /**
        * Memanggil hook untuk detail user
        */
       const { data: userData, isLoading: userLoading } = userRepository.hooks.useGetUser(idUser);
-
-      /**
-       * Memanggil hook untuk detail karyawan bila role user adalah karyawan
-       */
-      // const { data: karyawanData, isLoading: karyawanLoading } = role == 'Karyawan' ?
-      //   karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
 
       /**
        * Handle loading

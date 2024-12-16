@@ -4,10 +4,13 @@ import { Table, Button, Switch, Tag, Modal, Input, Form, Spin, Alert, message } 
 import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { teamleadRepository } from '#/repository/teamlead';
 import ModalComponent from '#/component/ModalComponent';
+import Container from '#/component/ContainerComponent';
+import TableComponent from '#/component/TableComponent';
 
 const Page: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [modalTambahTeamLead, SetModalTambahTeamLead] = useState(false);
 
   const [newPassword, setNewPassword] = useState<{ password: string }>({
     password: ''
@@ -21,15 +24,7 @@ const Page: React.FC = () => {
 
   const [selectedIdTeamLead, setSelectedIdTeamLead] = useState<string | null>(null);
 
-  const { data: namaTeamLead, error: errorNamaTeamLead, isValidating: validateNamaTeamLead, mutate } =
-    teamleadRepository.hooks.useNamaTeamLead(page, pageSize);
-
-  if (validateNamaTeamLead) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-  if (errorNamaTeamLead) {
-    return <Alert message="Error fetching data" type="error" />;
-  }
+  const { data: teamLead, isValidating: loading, mutate } = teamleadRepository.hooks.useNamaTeamLead(page, pageSize);
 
   const handlePageChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
@@ -64,7 +59,7 @@ const Page: React.FC = () => {
        * Cek apakah berhasil?
        */
       console.log(response.tambahTeamLeadResponse)
-       if(response.tambahTeamLeadResponse.statusCode === 201 ){
+      if (response.tambahTeamLeadResponse.statusCode === 201) {
         //bila berhasil tampilkan success message
         Modal.success({
           title: 'Team Lead Ditambahkan',
@@ -75,9 +70,12 @@ const Page: React.FC = () => {
           },
         });
         mutate();
-        setNewTeamLead({nama: '', username: '', email: ''});
+        SetModalTambahTeamLead(false);
+        setNewTeamLead({ nama: '', username: '', email: '' });
+      }else if(response.tambahTeamLeadResponse.statusCode !== 201) {
+        return message.error(response.tambahTeamLeadResponse.message);
       }
-    } catch (error:any) {
+    } catch (error: any) {
       message.warning(error.message);
     }
   };
@@ -88,7 +86,7 @@ const Page: React.FC = () => {
       message.warning("Field password tidak boleh kosong.");
       return;
     }
-    if(newPassword.password.length < 6){
+    if (newPassword.password.length < 6) {
       message.warning("Password harus terdiri dari 6 karakter");
       return;
     }
@@ -99,7 +97,7 @@ const Page: React.FC = () => {
         content: 'Password team lead berhasil diubah...',
         okText: 'OK',
       });
-      setNewPassword({password:''});
+      setNewPassword({ password: '' });
       mutate()
     } catch (error) {
       console.error('Gagal edit password:', error);
@@ -162,16 +160,12 @@ const Page: React.FC = () => {
             <EditOutlined /> Edit Password
           </Tag>
         </ModalComponent>
-
       )
     },
   ];
 
-  // const dataSource = Array.isArray(namaTeamLead) ? namaTeamLead : [];
-  // console.log(dataSource)
-
   return (
-    <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15 }}>
+    <Container>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20 }}>
           Daftar Team Lead
@@ -185,6 +179,8 @@ const Page: React.FC = () => {
               <Button type='primary' onClick={tambahTeamLead}>OK</Button>
             </>
           )}
+          visible={modalTambahTeamLead}
+          onCancel={()=>SetModalTambahTeamLead(false)}
           content={(
             <>
               <Form.Item
@@ -224,29 +220,24 @@ const Page: React.FC = () => {
             </>
           )}
         >
-          <Button type="primary" >
+          <Button type="primary" onClick={()=>SetModalTambahTeamLead(true)}>
             <PlusOutlined />Tambah
           </Button>
         </ModalComponent>
-
       </div>
-
-      <Table
+      {/* Perbaikan Table */}
+      <TableComponent
+        data={teamLead?.data}
         columns={columns}
-        dataSource={namaTeamLead.data} 
-        size="middle"
-        pagination={{
-          current: page,
-          pageSize: pageSize,
-          total: namaTeamLead?.count,
-          position: ['bottomCenter'],
-          onChange: (page, pageSize) => {
-              handlePageChange(page, pageSize)
-          },
-      }}
+        loading={loading}
+        page={page}
+        pageSize={pageSize}
+        total={teamLead?.count}
+        pagination={true}
+        className="w-full custom-table"
+        onPageChange={handlePageChange}
       />
-      
-    </div>
+    </Container>
   );
 };
 

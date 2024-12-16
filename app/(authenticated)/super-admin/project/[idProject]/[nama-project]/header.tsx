@@ -8,13 +8,13 @@ import { projectRepository } from "#/repository/project";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import TextArea from "antd/es/input/TextArea";
+import { formatTimeStr } from "#/utils/formatTime";
 
 const Header: React.FC <{
     data: any
     idUser: string
     refreshTable: () => void
-    formatTimeStr: any
-}> = ({data, idUser ,refreshTable, formatTimeStr}) => {
+}> = ({data, idUser ,refreshTable}) => {
 
     const params = useParams();
     const idProject = params?.idProject as string;

@@ -5,10 +5,12 @@ import { karyawanRepository } from '#/repository/karyawan'; // Ganti dengan jalu
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailKaryawan from './modalDetailKaryawan';
+import Container from '#/component/ContainerComponent';
+import TableComponent from '#/component/TableComponent';
 
 interface KaryawanData {
   id: string;
-  user: { nama: string ,status: string};
+  user: { nama: string, status: string };
   nik: string;
   job: { nama_job: string };
   status_project: string;
@@ -33,7 +35,7 @@ const columnKaryawan = [
   {
     title: 'Status Keaktifan',
     key: 'status',
-    render:  (record: KaryawanData) => record?.user ? record.user.status : 'N/A'
+    render: (record: KaryawanData) => record?.user ? record.user.status : 'N/A'
   },
   {
     title: 'Status Project',
@@ -65,57 +67,48 @@ const columnKaryawan = [
 ];
 
 const Page: React.FC = () => {
-  const [pageTugas, setPageTugas] = useState(1);
-  const [pageSizeTugas, setPageSizeTugas] = useState(10);
-  const { data: apiResponse, error: updateError, isValidating: updateValidating } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
-  
-  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
-    setPageTugas(newPage);
-    setPageSizeTugas(newPageSize);
-};
-  useEffect(() => {
-    console.log('apiResponse:', apiResponse);
-    console.log('Error:', updateError);
-  }, [apiResponse, updateError]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const { data: apiResponse, isValidating: loading } = karyawanRepository.hooks.useAllKaryawan(page, pageSize);
 
-  if (updateValidating) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-
-  if (updateError) {
-    return <Alert message="Error fetching data" type="error" />;
-  }
+  const handlePageChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    setPageSize(newPageSize);
+  };
 
   return (
-    <div
-      style={{
-        padding: 24,
-        minHeight: '100vh',
-        backgroundColor: '#fff',
-        borderRadius: 15,
-      }}
-    >
+    <Container>
+      <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
+        Daftar Karyawan
+      </h1>
 
-        <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
-          Daftar Karyawan
-        </h1>
-
-        <Table
-          columns={columnKaryawan}
-          dataSource={apiResponse.data}
-          pagination={{
-            current: pageTugas,
-            pageSize: pageSizeTugas,
-            total: apiResponse.data.count,
-            position: ['bottomCenter'],
-            onChange: (pageTugas, pageSizeTugas) => {
-                handlePageChangeTugas(pageTugas, pageSizeTugas)
-            },
+      {/* <Table
+        columns={columnKaryawan}
+        dataSource={apiResponse.data}
+        pagination={{
+          current: pageTugas,
+          pageSize: pageSizeTugas,
+          total: apiResponse.data.count,
+          position: ['bottomCenter'],
+          onChange: (pageTugas, pageSizeTugas) => {
+            handlePageChangeTugas(pageTugas, pageSizeTugas)
+          },
         }}
-          className='custom-table'
-          rowKey="id"
-        />
-    </div>
+        className='custom-table'
+        rowKey="id"
+      /> */}
+      <TableComponent
+        data={apiResponse?.data}
+        columns={columnKaryawan}
+        loading={loading}
+        page={page}
+        pageSize={pageSize}
+        total={apiResponse?.count}
+        pagination={true}
+        className="w-full custom-table"
+        onPageChange={handlePageChange}
+      />
+    </Container>
   );
 };
 

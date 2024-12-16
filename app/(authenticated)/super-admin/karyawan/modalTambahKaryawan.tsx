@@ -26,12 +26,13 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Input untuk Nik */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="Nik" style={{ width: "120px" }}>NIK:</label>
+        <label htmlFor="Nip" style={{ width: "120px" }}>NIP :</label>
         <Input
-          id="Nik"
+          id="Nip"
           value={nik}
-          onChange={(e) => setNik(e.target.value)}
-          placeholder="Masukkan NIK Karyawan"
+          onChange={(e) => { setNik(e.target.value)}}
+          placeholder="Masukkan NIP Karyawan"
+          type="number"
           style={{ flex: 1 }}
         />
       </div>
@@ -87,7 +88,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
 
       {/* Dropdown untuk Job */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="job" style={{ width: "120px" }}>Jobs:</label>
+        <label htmlFor="job" style={{ width: "120px" }}>Job:</label>
 
         {/* Jika loading tampilkan spinner */}
         {loading && <p>Loading jobs...</p>}

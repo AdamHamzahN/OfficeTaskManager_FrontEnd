@@ -4,11 +4,12 @@ import ModalComponent from "#/component/ModalComponent";
 import { EyeOutlined } from "@ant-design/icons";
 import { tugasRepository } from "#/repository/tugas";
 import ModalDetailTask from "./modalDetailTask";
+import { formatTimeStr } from "#/utils/formatTime";
+import TableComponent from "#/component/TableComponent";
 
 const TableTask: React.FC<{
     idProject: string,
-    formatTimeStr: (text: string) => string
-}> = ({idProject, formatTimeStr}) => {
+}> = ({idProject}) => {
     const [pageTask, setPageTask] = useState(1);
     const [pageSizeTask, setPageSizeTask] = useState(5);
     const {data: taskProject, error: errorTask, isValidating: validateTask} 
@@ -95,7 +96,7 @@ const TableTask: React.FC<{
                     </h1>
             </Row>
 
-            <Table
+            {/* <Table
                 dataSource={taskProject?.data}
                 columns={columns}
                 loading={validateTask}
@@ -108,6 +109,17 @@ const TableTask: React.FC<{
                         handlePageChangeTask(pageTask, pageSizeTask)
                     },
                 }}
+            /> */}
+            <TableComponent
+                data={taskProject?.data}
+                columns={columns}
+                loading={validateTask}
+                page={pageTask}
+                pageSize={pageSizeTask}
+                total={taskProject?.count}
+                pagination={true}
+                className="w-full custom-table"
+                onPageChange={handlePageChangeTask}
             />
         </>
     )

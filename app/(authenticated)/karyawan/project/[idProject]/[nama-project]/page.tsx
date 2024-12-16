@@ -67,7 +67,9 @@ const Page = () => {
                     data={teamProject}
                     pageTeam={pageTeam}
                     pageSizeTeam={pageSizeTeam}
-                    handlePageChange={handlePageChange} />
+                    handlePageChange={handlePageChange}
+                    loading={validateTeam}
+                    />
             </div>
             <TugasComponent idUser={idUser} id_project={idProject} status={detailProject.data.status} formatTimeStr={formatTimeStr} />
         </div>

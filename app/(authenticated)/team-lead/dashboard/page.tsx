@@ -6,6 +6,8 @@ import CardDashboard from "#/component/CardDashboard";
 import { dashboardRepository } from "#/repository/dashboard";
 import { JwtToken } from "#/utils/jwtToken";
 import { slugify } from "#/utils/slugify";
+import Container from "#/component/ContainerComponent";
+import TableComponent from "#/component/TableComponent";
 
 const formatTimeStr = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -119,14 +121,7 @@ const Page: React.FC = () => {
     const error = updateError || progressError || tugasError;
 
     return (
-        <div
-            style={{
-                padding: 24,
-                minHeight: '100vh',
-                backgroundColor: '#fff',
-                borderRadius: 15,
-            }}
-        >
+        <Container>
             <Row gutter={[16, 10]} style={{ marginBottom: 48, display: 'flex', justifyContent: 'center' }}>
                 {/* 3 update Project Terbaru */}
                 <Col xs={24} md={12} lg={10} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -148,12 +143,19 @@ const Page: React.FC = () => {
                             ) : error ? (
                                 <Alert message="Error fetching data" type="error" />
                             ) : updateProjectTerbaru !== null ? (
-                                <Table
-                                    className="card-table"
-                                    dataSource={updateProjectTerbaru}
+                                // <Table
+                                //     className="card-table"
+                                //     dataSource={updateProjectTerbaru}
+                                //     columns={columnProjectTerbaru}
+                                //     pagination={false}
+                                //     style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                                // />
+                                <TableComponent
+                                    data={updateProjectTerbaru}
                                     columns={columnProjectTerbaru}
+                                    loading={loading}
+                                    className={"card-table"}
                                     pagination={false}
-                                    style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                                 />
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -183,12 +185,19 @@ const Page: React.FC = () => {
                             ) : error ? (
                                 <Alert message="Error fetching data" type="error" />
                             ) : updateTugasTerbaru !== null ? (
-                                <Table
-                                    className="card-table"
-                                    dataSource={updateTugasTerbaru}
+                                // <Table
+                                //     className="card-table"
+                                //     dataSource={updateTugasTerbaru}
+                                //     columns={columnTugasTerbaru}
+                                //     pagination={false}
+                                //     style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                                // />
+                                <TableComponent
+                                    data={updateTugasTerbaru}
                                     columns={columnTugasTerbaru}
+                                    className={"card-table"}
                                     pagination={false}
-                                    style={{ fontSize: '14px', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+
                                 />
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -233,7 +242,7 @@ const Page: React.FC = () => {
                     )}
                 </Row>
             </div>
-        </div>
+        </Container>
     );
 };
 
