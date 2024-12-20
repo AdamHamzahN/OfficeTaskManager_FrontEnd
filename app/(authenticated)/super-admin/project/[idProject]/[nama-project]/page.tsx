@@ -16,27 +16,19 @@ import TableTask from "./tableTask";
 const DetailProject: React.FC<{
     nama_team: any,
     idProject: string,
-    teamData: string,
-    pageTeam: any,
-    pageSizeTeam: any,
-    handlePageChange: any,
-    formatTimeStr: (text: string) => string
     // mutateTeam: any,
     // refreshTable: () => void
-}> = ({ idProject, nama_team, teamData, pageTeam, pageSizeTeam, handlePageChange, formatTimeStr }) => {
+// }> = ({ idProject, nama_team, teamData, pageTeam, pageSizeTeam, handlePageChange, formatTimeStr }) => {
+}> = ({ nama_team, idProject}) => {
     return (
         <>
             <TableTeam
                 idProject={idProject}
                 nama_team={nama_team}
-                data={teamData}
-                pageTeam={pageTeam}
-                pageSizeTeam={pageSizeTeam}
-                handlePageChange={handlePageChange}
             // mutate={mutateTeam}
             // refreshTable={refreshTable}
             />
-            <TableTask idProject={idProject} formatTimeStr={formatTimeStr} />
+            <TableTask idProject={idProject} />
         </>
     );
 };
@@ -148,7 +140,6 @@ const Page = () => {
         setNoteProject('');
         setCurrentProjectId(null)
     };
-
 
     const loading = validateDetailProject
     const error = errorDetailProject
@@ -303,13 +294,8 @@ const Page = () => {
             
                 <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15, marginTop: 30 }}>
                     <DetailProject
-                        pageTeam={pageTeam}
-                        pageSizeTeam={pageSizeTeam}
-                        handlePageChange={handlePageChange}
                         nama_team={detailProject?.data.nama_team}
                         idProject={idProject}
-                        teamData={teamProject}
-                        formatTimeStr={formatTimeStr}
                     />
                 </div>
         </>

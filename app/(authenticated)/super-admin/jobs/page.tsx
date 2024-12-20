@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Table, Alert, Spin, Button, Modal, message } from 'antd';
 import { jobsRepository } from '#/repository/jobs';
 import { EyeOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
@@ -7,29 +7,9 @@ import ModalComponent from '#/component/ModalComponent';
 import ModalDetailJobs from './modalDetailJobs';
 import ModalEditJobs from './modalEditJobs';
 import ModalTambahJobs from './modalTambahJobs';
-
-const formatTimeStr = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-};
-
-interface JobData {
-  id: string;
-  nama_job: string;
-  jumlah_karyawan: string;
-  deskripsi_job: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-}
-
+import TableComponent from '#/component/TableComponent';
+import { formatTimeStr } from '#/utils/formatTime';
+import Container from '#/component/ContainerComponent';
 
 const Page: React.FC = () => {
   /**
@@ -55,12 +35,12 @@ const Page: React.FC = () => {
     {
       title: 'Aksi',
       key: 'aksi',
-      render: (record: JobData) => {
+      render: (record:any) => {
         const idJob = record.id;
         const nama_job = record.nama_job;
         const deskripsi_job = record.deskripsi_job;
         return (
-          <div style={{display:'flex',gap:'2px'}}>
+          <div style={{ display: 'flex', gap: '2px' }}>
             <ModalComponent
               title={'Detail Job'}
               content={<ModalDetailJobs idJobs={idJob} />}
@@ -69,7 +49,6 @@ const Page: React.FC = () => {
                   <Button type="primary" onClick={handleCancel}>OK</Button>
                 </div>
               )}
-              onCancel={() => console.log('Cancel clicked')}
             >
               <Button
                 style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}
@@ -82,19 +61,21 @@ const Page: React.FC = () => {
             <ModalComponent
               title={'Edit Jobs'}
               content={<ModalEditJobs editjob={setEditsJob} job={editsJob} />}
-              footer={(handleCancel) => (
+              footer={() => (
                 <div>
-                  <Button onClick={handleCancel}>Cancel</Button>
+                  <Button onClick={()=>setModalEditOpen(false)}>Cancel</Button>
                   <Button type="primary" onClick={handleEditJobs}>OK</Button>
                 </div>
               )}
-              onCancel={() => console.log('Cancel clicked')}
+              visible={modalEditOpen && selectedJobId === idJob} 
+              onCancel={()=>setModalEditOpen(false)}
             >
               <Button
                 style={{ backgroundColor: 'rgba(254, 243, 232, 1)', color: '#EA7D2A', border: 'none' }}
                 onClick={() => {
                   setSelectedJobId(idJob);
-                  setEditsJob({ nama_job: nama_job, deskripsi_job: deskripsi_job }); // Mengisi data edit
+                  setEditsJob({ nama_job: nama_job, deskripsi_job: deskripsi_job });
+                  setModalEditOpen(true);
                 }}
               >
                 <EditOutlined /> Edit
@@ -116,15 +97,17 @@ const Page: React.FC = () => {
     deskripsi_job: '',
   });
 
+  const [modalTambahOpen,setModalTambahOpen]= useState(false);
+  const [modalEditOpen,setModalEditOpen]= useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4);
 
-  const [pageTugas, setPageTugas] = useState(1);
-  const [pageSizeTugas, setPageSizeTugas] = useState(10);
-  const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
+  const { data ,isValidating:loading, mutate} = jobsRepository.hooks.useAllJobs(page, pageSize);
 
-  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
-    setPageTugas(newPage);
-    setPageSizeTugas(newPageSize);
+  const handlePageChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    setPageSize(newPageSize);
   };
 
   const tambahJob = async () => {
@@ -139,7 +122,8 @@ const Page: React.FC = () => {
         content: 'Berhasil menambahkan Job baru!',
       });
       mutate()
-      // setIsModalOpen(false); // Close the modal on success
+      setNewJob({nama_job:'',deskripsi_job:''})
+      setModalTambahOpen(false)
     } catch (error) {
       console.error('Gagal menambahkan Job:', error);
     }
@@ -158,24 +142,16 @@ const Page: React.FC = () => {
         content: 'Berhasil mengedit Job!',
       });
       mutate()
-      // setIsModalOpen(false); // Close the modal on success
+      setModalEditOpen(false);
     } catch (error) {
       console.error('Gagal mengedit Job:', error);
     }
   };
 
-  if (updateValidating) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-
-  if (updateError) {
-    return <Alert message="Error fetching data" type="error" />;
-  }
-
   return (
-    <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#fff', borderRadius: 15 }}>
+    <Container>
       <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20}}>
+        <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20 }}>
           Daftar Job
         </h1>
 
@@ -184,31 +160,30 @@ const Page: React.FC = () => {
           content={<ModalTambahJobs createjob={setNewJob} />}
           footer={(handleCancel) => (
             <div>
-              <Button onClick={handleCancel}>Cancel</Button>
+              <Button onClick={()=>setModalTambahOpen(false)}>Cancel</Button>
               <Button type="primary" onClick={tambahJob}>Tambah</Button>
             </div>
           )}
+          visible={modalTambahOpen}
+          onCancel={()=>setModalTambahOpen(false)}
         >
-          <Button type="primary">
-            <PlusOutlined />Tambah
+          <Button type="primary" onClick={()=>setModalTambahOpen(true)}>
+            <PlusOutlined/>Tambah
           </Button>
         </ModalComponent>
       </Space>
-      <Table
+      <TableComponent
+        data={data?.data}
         columns={columnJobs}
-        dataSource={apiResponse.data}
-        pagination={{
-          current: pageTugas,
-          pageSize: pageSizeTugas,
-          total: apiResponse.count,
-          position: ['bottomCenter'],
-          onChange: (pageTugas, pageSizeTugas) => {
-            handlePageChangeTugas(pageTugas, pageSizeTugas)
-          },
-        }}
-        className="custom-table"
+        loading={loading}
+        page={page}
+        pageSize={pageSize}
+        total={data?.count}
+        pagination={true}
+        className="w-full custom-table"
+        onPageChange={handlePageChange}
       />
-    </div>
+    </Container>
   );
 };
 

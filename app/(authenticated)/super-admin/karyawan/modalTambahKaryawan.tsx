@@ -26,19 +26,20 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Input untuk Nik */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="Nik" style={{ width: "120px" }}>NIK:</label>
+        <label htmlFor="Nip" style={{ width: "120px" }}>NIP :</label>
         <Input
-          id="Nik"
+          id="Nip"
           value={nik}
-          onChange={(e) => setNik(e.target.value)}
-          placeholder="Masukkan NIK Karyawan"
+          onChange={(e) => { setNik(e.target.value)}}
+          placeholder="Masukkan NIP Karyawan"
+          type="number"
           style={{ flex: 1 }}
         />
       </div>
 
       {/* Input untuk Nama */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="nama" style={{ width: "120px" }}>Nama:</label>
+        <label htmlFor="nama" style={{ width: "120px" }}>Nama :</label>
         <Input
           id="nama"
           value={nama}
@@ -50,7 +51,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
 
       {/* Dropdown untuk Gender */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="gender" style={{ width: "120px" }}>Gender:</label>
+        <label htmlFor="gender" style={{ width: "120px" }}>Gender :</label>
         <Select
           placeholder="Pilih Gender"
           style={{ flex: 1 }}
@@ -63,7 +64,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
 
       {/* Input untuk Email */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="email" style={{ width: "120px" }}>Email:</label>
+        <label htmlFor="email" style={{ width: "120px" }}>Email :</label>
         <Input
           id="email"
           value={email}
@@ -75,7 +76,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
 
       {/* Input untuk Username */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="username" style={{ width: "120px" }}>Username:</label>
+        <label htmlFor="username" style={{ width: "120px" }}>Username :</label>
         <Input
           id="username"
           value={username}
@@ -87,7 +88,7 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
 
       {/* Dropdown untuk Job */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <label htmlFor="job" style={{ width: "120px" }}>Jobs:</label>
+        <label htmlFor="job" style={{ width: "120px" }}>Job :</label>
 
         {/* Jika loading tampilkan spinner */}
         {loading && <p>Loading jobs...</p>}

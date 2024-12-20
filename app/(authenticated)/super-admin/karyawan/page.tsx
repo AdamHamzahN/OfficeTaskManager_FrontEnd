@@ -7,6 +7,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailKaryawan from './modalDetailKaryawan';
 import ModalTambahKaryawan from './modalTambahKaryawan';
+import TableComponent from '#/component/TableComponent';
+import Container from '#/component/ContainerComponent';
 
 interface KaryawanData {
   id: string;
@@ -59,13 +61,14 @@ const Page: React.FC = () => {
       render: (record: KaryawanData) => {
         const idKaryawan = record.id;
         const currentJob = record.job.id;
-        console.log(record.job  )
         setJob(currentJob);
         return (
           <div style={{ display: 'flex', gap: '2px' }}>
             <ModalComponent
               title={'Detail Karyawan'}
               content={<ModalDetailKaryawan idKaryawan={idKaryawan} jobChange={setJob} />}
+              visible={modalDetailKaryawan && selectedIdKaryawan === idKaryawan} 
+              onCancel={() => setModalDetailKaryawan(false)}
               footer={(handleCancel) => (
                 <div>
                   <Button type="primary"
@@ -76,7 +79,7 @@ const Page: React.FC = () => {
               )
               }
             >
-              <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
+              <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }} onClick={() => {setModalDetailKaryawan(true);setSelectedIdKaryawan(idKaryawan);}}>
                 <EyeOutlined /> Detail
               </Button>
             </ModalComponent >
@@ -120,14 +123,20 @@ const Page: React.FC = () => {
     }
   ];
 
+  //state modal tambah
+  const [modalTambahKaryawan, setModalTambahKaryawan] = useState(false);
+
+  //state modal detail
+  const [modalDetailKaryawan, setModalDetailKaryawan] = useState(false);
+
   // useState page
-  const [pageTugas, setPageTugas] = useState(1);
+  const [page, setPage] = useState(1);
 
   // useState page size
-  const [pageSizeTugas, setPageSizeTugas] = useState(10);
+  const [pageSize, setPageSize] = useState(2);
 
   //hook get all karyawan
-  const { data: apiResponse, error: updateError, isValidating: updateValidating, mutate } = karyawanRepository.hooks.useAllKaryawan(pageTugas, pageSizeTugas);
+  const { data: apiResponse, isValidating: loading, mutate } = karyawanRepository.hooks.useAllKaryawan(page, pageSize);
 
   // useState form create karyawan
   const [newKaryawan, setNewKaryawan] = useState<{ nik: string, nama: string, gender: string, email: string, username: string, job: string }>({
@@ -139,6 +148,7 @@ const Page: React.FC = () => {
     job: '',
   });
 
+
   //useState form update password
   const [newPassword, setNewPassword] = useState<{ password: string }>({
     password: ''
@@ -149,22 +159,6 @@ const Page: React.FC = () => {
 
   //set selected id karyawan
   const [selectedIdKaryawan, setSelectedIdKaryawan] = useState<string | null>(null);
-
-  //useEffect error logging
-  useEffect(() => {
-    console.log('apiResponse:', apiResponse);
-    console.log('Error:', updateError);
-  }, [apiResponse, updateError]);
-
-  // handle loading fetch
-  if (updateValidating) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-
-  //handle fetch error
-  if (updateError) {
-    return <Alert message="Error fetching data" type="error" />;
-  }
 
   // handle edit password
   const editPassword = async () => {
@@ -206,9 +200,9 @@ const Page: React.FC = () => {
   }
 
   //handle pagination
-  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
-    setPageTugas(newPage);
-    setPageSizeTugas(newPageSize);
+  const handlePageChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    setPageSize(newPageSize);
   };
 
   //handle tambah karyawan
@@ -225,6 +219,7 @@ const Page: React.FC = () => {
           content: 'Berhasil menambahkan Karyawan baru!',
         });
         mutate();
+        setModalTambahKaryawan(false);
       } else {
         message.warning(response.karyawanResponse.message);
       }
@@ -233,14 +228,14 @@ const Page: React.FC = () => {
     }
   };
 
-
   //handle update job
   const handleJobUpdate = async (id: string, job: any, currentJob: any, handleCancel: any) => {
-    console.log(job , currentJob)
+    console.log(job, currentJob)
     if (job === currentJob) {
       handleCancel();
+      setModalDetailKaryawan(false);
       return;
-    }else{
+    } else {
       Modal.confirm({
         title: 'Ubah Job?',
         content: 'Apakah yakin ingin mengubah job karyawan ini?',
@@ -255,6 +250,7 @@ const Page: React.FC = () => {
                 handleCancel();
               }
             })
+            setModalDetailKaryawan(false);
           } catch (error) {
             message.error('gagal mengupdate job')
           }
@@ -267,16 +263,7 @@ const Page: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        padding: 24,
-        minHeight: '100vh',
-        backgroundColor: '#fff',
-        borderRadius: 15,
-        // justifyContent: 'space-between',
-      }}
-    >
-
+    <Container>
       <Space style={{ width: '100%', justifyContent: 'space-between' }}>
         <h1 style={{ fontSize: 30, paddingTop: 20, paddingBottom: 20 }}>
           Daftar Karyawan
@@ -284,34 +271,32 @@ const Page: React.FC = () => {
         <ModalComponent
           title={'Tambah Karyawan Baru'}
           content={<ModalTambahKaryawan createkaryawan={setNewKaryawan} />}
-          footer={(handleCancel) => (
+          visible={modalTambahKaryawan}
+          onCancel={() => setModalTambahKaryawan(false)}
+          footer={() => (
             <div>
-              <Button onClick={handleCancel}>Cancel</Button>
+              <Button onClick={()=>setModalTambahKaryawan(false)}>Cancel</Button>
               <Button type="primary" onClick={tambahKaryawan}>Tambah</Button>
             </div>
           )}
         >
-          <Button type="primary">
+          <Button type="primary" onClick={() => setModalTambahKaryawan(true)}>
             <PlusOutlined />Tambah
           </Button>
         </ModalComponent>
       </Space>
-      <Table
+      <TableComponent
+        data={apiResponse?.data}
         columns={columnKaryawan}
-        dataSource={apiResponse.data}
-        pagination={{
-          current: pageTugas,
-          pageSize: pageSizeTugas,
-          total: apiResponse.count,
-          position: ['bottomCenter'],
-          onChange: (pageTugas, pageSizeTugas) => {
-            handlePageChangeTugas(pageTugas, pageSizeTugas)
-          },
-        }}
-        className='custom-table'
-        rowKey="id"
+        loading={loading}
+        page={page}
+        pageSize={pageSize}
+        total={apiResponse?.count}
+        pagination={true}
+        className="w-full custom-table"
+        onPageChange={handlePageChange}
       />
-    </div>
+    </Container>
   );
 };
 

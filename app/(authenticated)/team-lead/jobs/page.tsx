@@ -5,6 +5,8 @@ import { jobsRepository } from '#/repository/jobs'; // Ganti dengan jalur yang s
 import { EyeOutlined } from "@ant-design/icons";
 import ModalComponent from '#/component/ModalComponent';
 import ModalDetailJobs from './modalDetailJobs';
+import TableComponent from '#/component/TableComponent';
+import Container from '#/component/ContainerComponent';
 
 const formatTimeStr = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -84,52 +86,33 @@ const columnJobs = [
 ];
 
 const Page: React.FC = () => {
-  const [pageTugas, setPageTugas] = useState(1);
-  const [pageSizeTugas, setPageSizeTugas] = useState(10);
-  const { data: apiResponse, error: updateError, isValidating: updateValidating } = jobsRepository.hooks.useAllJobs(pageTugas, pageSizeTugas);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const { data: apiResponse, isValidating: loading } = jobsRepository.hooks.useAllJobs(page, pageSize);
 
-  const handlePageChangeTugas = (newPage: number, newPageSize: number) => {
-    setPageTugas(newPage);
-    setPageSizeTugas(newPageSize);
+  const handlePageChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    setPageSize(newPageSize);
   };
 
-  if (updateValidating) {
-    return <Spin style={{ textAlign: 'center', padding: '20px' }} />;
-  }
-
-  if (updateError) {
-    return <Alert message="Error fetching data" type="error" />;
-  }
-
   return (
-    <div
-      style={{
-        padding: 24,
-        minHeight: '100vh',
-        backgroundColor: '#fff',
-        borderRadius: 15,
-      }}
-    >
-
-        <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
-          Daftar Job
-        </h1>
-        
-        <Table
-          columns={columnJobs}
-          dataSource={apiResponse.data}
-          pagination={{
-            current: pageTugas,
-            pageSize: pageSizeTugas,
-            total: apiResponse.data.count,
-            position: ['bottomCenter'],
-            onChange: (pageTugas, pageSizeTugas) => {
-                handlePageChangeTugas(pageTugas, pageSizeTugas)
-            },
-        }}
-          className='custom-table'
-        />
-    </div>
+    <Container>
+      <h1 style={{ fontSize: '30px', paddingBottom: '20px', paddingTop: '20px' }}>
+        Daftar Job
+      </h1>
+      {/* Perbaikan Table */}
+      <TableComponent
+        data={apiResponse?.data}
+        columns={columnJobs}
+        loading={loading}
+        page={page}
+        pageSize={pageSize}
+        total={apiResponse?.count}
+        pagination={true}
+        className="w-full custom-table"
+        onPageChange={handlePageChange}
+      />
+    </Container>
   );
 };
 

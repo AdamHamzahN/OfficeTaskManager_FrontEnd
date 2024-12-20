@@ -66,7 +66,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
 
     return (
         <div>
-            <label htmlFor="nama_tugas" style={{ marginBottom: '8px', display: 'block' }}>Nama Tugas</label>
+            <label htmlFor="nama_tugas" style={{ display: 'block' }}>Nama Tugas</label>
             <Input
                 value={formData.nama_tugas}
                 onChange={(e) => handleChange('nama_tugas', e.target.value)}
@@ -74,7 +74,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 style={{marginBottom: '8px'}}
             />
 
-            <label htmlFor="karyawan" style={{ marginBottom: '8px', display: 'block' }}>Karyawan</label>
+            <label htmlFor="karyawan" style={{  display: 'block' }}>Karyawan</label>
             <Select
                 id="karyawan"
                 placeholder="Pilih Karyawan"
@@ -84,7 +84,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 style={{marginBottom: '8px',width: '100%' }}
             />
 
-            <label htmlFor="deskripsi" style={{ marginBottom: '8px', display: 'block' }}>Deskripsi Tugas</label>
+            <label htmlFor="deskripsi" style={{ display: 'block' }}>Deskripsi Tugas</label>
             <TextArea
                 autoSize={{ minRows: 3, maxRows: 9 }}
                 style={{
@@ -98,7 +98,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 placeholder="Masukkan deskripsi tugas"
             />
 
-            <label htmlFor="deadline" style={{ marginBottom: '8px', display: 'block' }}>Deadline</label>
+            <label htmlFor="deadline" style={{  display: 'block' }}>Deadline</label>
             <DatePicker
                 style={{ width: '100%',marginBottom: '8px' }}
                 onChange={(date, dateString) => handleChange('deadline', dateString)}
@@ -107,7 +107,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 placeholder="Pilih deadline"
             />
 
-            <label htmlFor="detail_tugas" style={{ marginBottom: '8px', display: 'block' }}>File Detail Tugas</label>
+            <label htmlFor="detail_tugas" style={{ display: 'block' }}>File Detail Tugas</label>
             <input
                 type="file"
                 style={{ display: 'none' }}
@@ -119,7 +119,7 @@ const ModalTambahTugas: React.FC<ModalTambahTugasProps> = ({ create_tugas, karya
                 htmlType="button"
                 block
                 onClick={handleButtonClick}
-                style={{ marginTop: '8px', width: '100%' }}
+                style={{ width: '100%' }}
                 icon={<UploadOutlined />}
             >
                 Masukkan File

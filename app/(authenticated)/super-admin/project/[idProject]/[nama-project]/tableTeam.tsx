@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Row, Table } from "antd";
-import { title } from "process";
-import { render } from "react-dom";
 import { JwtToken } from "#/utils/jwtToken";
+import TableComponent from "#/component/TableComponent";
+import { projectRepository } from "#/repository/project";
 
 const TableTeam: React.FC<{
-    data: any,
     idProject: string,
     nama_team: string,
-    pageTeam: any,
-    pageSizeTeam: any,
-    handlePageChange: any,
     // mutate: any,
     // refreshTable: () => void
-}> = ({ data, idProject, nama_team ,pageTeam,pageSizeTeam,handlePageChange}) => {
+}> = ({  idProject, nama_team }) => {
     const [taskCountAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
+    const [pageTeam, setPageTeam] = useState(1);
+    const [pageSizeTeam, setPageSizeTeam] = useState(5);
+    const handlePageChange = (newPage: number, newPageSize: number) => {
+        setPageTeam(newPage);
+        setPageSizeTeam(newPageSize);
+    };
     const [taskCountSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
+    const { data, isValidating: loading} = projectRepository.hooks.useTeamByProject(idProject, pageTeam, pageSizeTeam);
     const token = JwtToken.getAuthData().token || null;
-    // const [newNamaTeam, setNewNamaTeam] = useState(nama_team)
     useEffect(() => {
         const fetchTugas = async () => {
             try {
@@ -103,19 +105,18 @@ const TableTeam: React.FC<{
                     <span className="text-2xl">{nama_team}</span>
                 </h1>
             </Row>
-
-            <Table
-                dataSource={data?.data}
+            
+            {/* Perbaikan Table */}
+            <TableComponent
+                data={data?.data}
                 columns={columnTeam}
-                pagination={{
-                    current: pageTeam,
-                    pageSize: pageSizeTeam,
-                    total: data?.count,
-                    position: ['bottomCenter'],
-                    onChange: (pageTeam, pageSizeTeam) => {
-                        handlePageChange(pageTeam, pageSizeTeam)
-                    },
-                }}
+                loading={loading}
+                page={pageTeam}
+                pageSize={pageSizeTeam}
+                total={data?.count}
+                pagination={true}
+                className="w-full custom-table"
+                onPageChange={handlePageChange}
             />
         </>
     );

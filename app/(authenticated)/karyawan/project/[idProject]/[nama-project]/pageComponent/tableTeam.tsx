@@ -1,3 +1,4 @@
+import TableComponent from "#/component/TableComponent";
 import { JwtToken } from "#/utils/jwtToken";
 import { Row, Table } from "antd";
 import { useEffect, useState } from "react";
@@ -9,7 +10,8 @@ const TableTeam: React.FC<{
     pageTeam: any,
     pageSizeTeam: any,
     handlePageChange: any,
-}> = ({ data, nama_team, idProject, pageTeam, pageSizeTeam, handlePageChange }) => {
+    loading: any
+}> = ({ data, nama_team, idProject, pageTeam, pageSizeTeam, handlePageChange, loading }) => {
     const token = JwtToken.getAuthData().token || null;
     const [countAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [countSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
@@ -102,7 +104,7 @@ const TableTeam: React.FC<{
                 </div>
             </Row>
             <Row className="w-full">
-                <Table
+                {/* <Table
                     dataSource={data.data}
                     columns={columnTeam}
                     className="w-full custom-table"
@@ -115,6 +117,16 @@ const TableTeam: React.FC<{
                             handlePageChange(pageTeam, pageSizeTeam)
                         },
                     }}
+                /> */}
+                <TableComponent
+                    data={data.data}
+                    columns={columnTeam}
+                    loading={loading}
+                    page={pageTeam}
+                    pageSize={pageSizeTeam}
+                    total={data?.count}
+                    pagination={true}
+                    className="w-full custom-table"
                 />
             </Row>
         </div>

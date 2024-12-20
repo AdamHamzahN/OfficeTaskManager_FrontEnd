@@ -5,6 +5,7 @@ import ModalDetailTugas from "../modal/modalDetailTugas";
 import ModalEditTugas from "../modal/modalEditTugas";
 import { useState } from "react";
 import { tugasRepository } from "#/repository/tugas";
+import TableComponent from "#/component/TableComponent";
 
 
 const TugasBelumDiselesaikan: React.FC<{
@@ -52,7 +53,7 @@ const TugasBelumDiselesaikan: React.FC<{
             Modal.success({
                 title: 'Berhasil',
                 content: 'Berhasil mengubah status tugas',
-                onOk:() => {
+                onOk: () => {
                     modalInstance.destroy();
                     // setIsModalVisible(false);
                 }
@@ -143,9 +144,9 @@ const TugasBelumDiselesaikan: React.FC<{
                                     <Button type="primary" onClick={() => updateStatus({ destroy: handleCancel })}>Ubah</Button>
                                 </div>
                             )}
-                            // visible={isModalVisible}
-                            // onCancel={() => setIsModalVisible(false)}
-                            // maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
+                        // visible={isModalVisible}
+                        // onCancel={() => setIsModalVisible(false)}
+                        // maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}
                         >
                             <Button
                                 style={{
@@ -156,7 +157,7 @@ const TugasBelumDiselesaikan: React.FC<{
                                 onClick={() => {
                                     setIdTugas(idTugas)
                                     // setIsModalVisible(true)
-                                    setFormData({ status: status_tugas, file_bukti: null })  
+                                    setFormData({ status: status_tugas, file_bukti: null })
                                 }}
                             >
                                 <EditOutlined /> Edit
@@ -178,7 +179,7 @@ const TugasBelumDiselesaikan: React.FC<{
                 </div>
             </Row>
             <Row className="w-full">
-                <Table
+                {/* <Table
                     dataSource={data}
                     columns={columns}
                     className="w-full custom-table"
@@ -192,6 +193,16 @@ const TugasBelumDiselesaikan: React.FC<{
                             handlePageChangeTugas(pageTugas, pageSizeTugas)
                         },
                     }}
+                /> */}
+                <TableComponent
+                    data={data}
+                    columns={columns}
+                    loading={validateTugasBelumSelesai}
+                    page={page}
+                    pageSize={pageSize}
+                    total={count}
+                    pagination={true}
+                    className="w-full custom-table"
                 />
             </Row>
         </div>

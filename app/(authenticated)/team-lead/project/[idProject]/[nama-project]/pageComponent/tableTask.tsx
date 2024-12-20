@@ -6,6 +6,7 @@ import ModalTambahTugas from "../modal/modalTambahTugas";
 import { useState } from "react";
 import { tugasRepository } from "#/repository/tugas";
 import { projectRepository } from "#/repository/project";
+import TableComponent from "#/component/TableComponent";
 
 const TableTask: React.FC<{
     dataTugas: any,
@@ -18,8 +19,8 @@ const TableTask: React.FC<{
     formatTimeStr: (text: string) => string,
 }> = ({ dataTugas, status_project, idProject, pageTugas, pageSizeTugas, handlePageChangeTugas, refreshTable, formatTimeStr }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { data: tugasProject, error: errorTugas, isValidating: validateTugas, mutate: mutateTugas } = dataTugas;
-    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
+    const { data: tugasProject, isValidating: validateTugas, mutate: mutateTugas } = dataTugas;
+    const { data: teamProject, isValidating: validateTeam, mutate: mutateTeam } = projectRepository.hooks.useTeamByProject(idProject);
     const [formData, setFormData] = useState<{
         nama_tugas: string;
         deskripsi_tugas: string;
@@ -49,39 +50,44 @@ const TableTask: React.FC<{
 
     const createTask = async () => {
         const { nama_tugas, deskripsi_tugas, deadline, id_project, id_karyawan, file_tugas } = formData;
-
         if (!nama_tugas || !deskripsi_tugas || !deadline || !id_project || !id_karyawan || !file_tugas) {
             message.warning("Harap isi semua field yang diperlukan.");
             return;
-        }
-
-        try {
-            await tugasRepository.api.createTugas({
-                nama_tugas: nama_tugas,
-                deskripsi_tugas: deskripsi_tugas,
-                deadline: deadline,
-                id_project: id_project,
-                id_karyawan: id_karyawan,
-                file_tugas: file_tugas,
-            })
-            mutateTugas();
-            Modal.success({
-                title: 'Berhasil',
-                content: 'Berhasil menambah Tugas Baru',
-                onOk: () => {
-                    setFormData({
-                        nama_tugas: '',
-                        deskripsi_tugas: '',
-                        deadline: '',
-                        id_project,
-                        id_karyawan: '',
-                        file_tugas: null,
-                    });
-                    setIsModalVisible(false);
-                },
-            });
-        } catch (error) {
-            console.error('Gagal menambah Tugas', error);
+        } else if (file_tugas?.type !== 'application/pdf') {
+            message.warning("File tugas harus berupa PDF.");
+            return;
+        }else if (file_tugas?.size > 2 * 1024 * 1024) { // Maksimal 2MB
+            message.warning("Ukuran file tidak boleh lebih dari 2MB.");
+            return;
+        }else {
+            try {
+                await tugasRepository.api.createTugas({
+                    nama_tugas: nama_tugas,
+                    deskripsi_tugas: deskripsi_tugas,
+                    deadline: deadline,
+                    id_project: id_project,
+                    id_karyawan: id_karyawan,
+                    file_tugas: file_tugas,
+                })
+                mutateTugas();
+                Modal.success({
+                    title: 'Berhasil',
+                    content: 'Berhasil menambah Tugas Baru',
+                    onOk: () => {
+                        setFormData({
+                            nama_tugas: '',
+                            deskripsi_tugas: '',
+                            deadline: '',
+                            id_project,
+                            id_karyawan: '',
+                            file_tugas: null,
+                        });
+                        setIsModalVisible(false);
+                    },
+                });
+            } catch (error) {
+                console.error('Gagal menambah Tugas', error);
+            }
         }
     }
 
@@ -195,7 +201,7 @@ const TableTask: React.FC<{
                 </div>
             </Row>
             <Row className="w-full">
-                <Table
+                {/* <Table
                     dataSource={tugasProject?.data}
                     columns={columns}
                     className="w-full custom-table"
@@ -209,6 +215,16 @@ const TableTask: React.FC<{
                             handlePageChangeTugas(pageTugas, pageSizeTugas)
                         },
                     }}
+                /> */}
+                <TableComponent
+                    data={tugasProject?.data}
+                    columns={columns}
+                    page={pageTugas}
+                    pageSize={pageSizeTugas}
+                    total={tugasProject?.count}
+                    pagination={true}
+                    className="w-full custom-table"
+                    onPageChange={ handlePageChangeTugas}
                 />
             </Row>
         </div>

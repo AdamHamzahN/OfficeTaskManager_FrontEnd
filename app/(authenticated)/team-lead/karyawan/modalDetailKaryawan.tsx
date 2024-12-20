@@ -51,7 +51,7 @@ const ModalDetailKaryawan: React.FC<{ idKaryawan: string }> = ({ idKaryawan }) =
     return (
         <div>
             {/* NIK */}
-            <label htmlFor="nik" style={{ marginBottom: '8px', display: 'block' }}>NIK</label>
+            <label htmlFor="Nip" style={{ marginBottom: '8px', display: 'block' }}>NIP</label>
             <Input value={karyawanData?.nik} readOnly style={{ marginBottom: '16px' }} />
 
             {/* Nama Karyawan */}

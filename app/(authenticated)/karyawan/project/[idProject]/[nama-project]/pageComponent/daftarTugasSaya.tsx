@@ -4,19 +4,20 @@ import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, Search
 import ModalDetailTugas from "../modal/modalDetailTugas";
 import { tugasRepository } from "#/repository/tugas";
 import { useState } from "react";
+import TableComponent from "#/component/TableComponent";
 
 
 const DaftarTugasSaya: React.FC<{
-    dataDaftarTugas:any,
-    page:any,
+    dataDaftarTugas: any,
+    page: any,
     pageSize: any,
     handlePageChangeTugas: any,
     formatTimeStr: (text: string) => string,
     refreshTable: () => void,
-}> = ({ dataDaftarTugas,page,pageSize,handlePageChangeTugas, formatTimeStr,refreshTable }) => {
+}> = ({ dataDaftarTugas, page, pageSize, handlePageChangeTugas, formatTimeStr, refreshTable }) => {
 
     const { data: daftarTugas, error: errorDaftarTugas, isValidating: validateDaftarTugas } = dataDaftarTugas
-    const { data, count } = daftarTugas || {data:[] , count:0};
+    const { data, count } = daftarTugas || { data: [], count: 0 };
     const columns = [
         {
             title: 'Tugas',
@@ -95,20 +96,15 @@ const DaftarTugasSaya: React.FC<{
                 </div>
             </Row>
             <Row className="w-full">
-                <Table
-                    dataSource={data}
+                <TableComponent
+                    data={data}
                     columns={columns}
-                    className="w-full custom-table"  
                     loading={validateDaftarTugas}
-                    pagination={{
-                        current: page,
-                        pageSize: pageSize,
-                        total: count,
-                        position: ['bottomCenter'],
-                        onChange: (pageTugas, pageSizeTugas) => {
-                            handlePageChangeTugas(pageTugas, pageSizeTugas)
-                        },
-                    }}
+                    page={page}
+                    pageSize={pageSize}
+                    total={count}
+                    pagination={true}
+                    className="w-full custom-table"
                 />
             </Row>
         </div>

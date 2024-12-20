@@ -7,6 +7,7 @@ import { ArrowLeftOutlined, FileExcelOutlined, EditOutlined, EyeOutlined, Search
 import ModalTambahAnggota from "../modal/modalTambahAnggota";
 import { tugasRepository } from "#/repository/tugas";
 import { JwtToken } from "#/utils/jwtToken";
+import TableComponent from "#/component/TableComponent";
 
 const TableTeam: React.FC<{
     data: any,
@@ -26,7 +27,6 @@ const TableTeam: React.FC<{
     const [selectedKaryawan, setSelectedKaryawan] = useState<string | undefined>(undefined);
     const [newNamaTeam, setNewNamaTeam] = useState(nama_team);
     const [namaTeam, setNamaTeam] = useState('');
-
     /**
      * useEffect jumlah tugas
      */
@@ -215,19 +215,15 @@ const TableTeam: React.FC<{
                 </div>
             </Row>
             <Row className="w-full">
-                <Table
-                    dataSource={data?.data}
+                <TableComponent
+                    data={data?.data}
                     columns={columnTeam}
+                    page={page}
+                    pageSize={pageSize}
+                    total={data?.count}
+                    pagination={true}
                     className="w-full custom-table"
-                    pagination={{
-                        current: page,
-                        pageSize: pageSize,
-                        total: data?.count,
-                        position: ['bottomCenter'],
-                        onChange: (pageTugas, pageSizeTugas) => {
-                            handlePageChange(pageTugas, pageSizeTugas)
-                        },
-                    }}
+                    onPageChange={handlePageChange}
                 />
             </Row>
         </div>

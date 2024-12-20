@@ -22,15 +22,13 @@ const ProfileComponent: React.FC<{
 
   // Memanggil hook untuk detail karyawan bila role karyawan
   const { data: karyawanData, isLoading: karyawanLoading, mutate } = role == 'Karyawan' ?
-        karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false };
+        karyawanRepository.hooks.useGetKaryawanByIdUser(idUser!) : { data: null, isLoading: false,mutate:null };
   console.log('sad', karyawanData?.data?.alamat)
 
   //state form alamat
   const [newAlamat, setNewAlamat] = useState<{ alamat: string }>({
     alamat: karyawanData?.data?.alamat ? karyawanData?.data?.alamat : ''
   });
-
-  
 
   // close modal
   const handleCancel = () => {
@@ -88,6 +86,7 @@ const ProfileComponent: React.FC<{
             okText: 'OK',
           });
           mutate?.();
+          
           setModalAlamat(false);
         } else {
           message.error(response.karyawanResponse.message)
