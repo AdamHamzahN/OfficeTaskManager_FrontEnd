@@ -16,7 +16,7 @@ const ProjectList: React.FC<{
             marginBottom: 10,
             fontSize: '20px',
             padding: 3,
-            fontFamily: 'Roboto, sans-serif',
+            fontFamily: 'Plus Jakarta Sans, sans-serif',
 
         }}>
             <div style={{
@@ -37,7 +37,7 @@ const ProjectList: React.FC<{
             <div style={{ marginLeft: 10 }}>
                 <div>
                     <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}>Penanggung Jawab</h4>
-                    <span style={{ fontWeight: 'bold',fontSize:'16px',fontFamily:'Roboto' }}>{teamLead}</span>
+                    <span style={{ fontWeight: 'bold', fontSize: 17 , fontFamily: 'Roboto, sans-serif' }}>{teamLead}</span>
                 </div>
             </div>
             <div style={{ display: 'flex', borderRadius: 8, justifyContent: 'space-between', marginRight: 100 }}>

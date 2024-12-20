@@ -67,7 +67,7 @@ const TableTeam: React.FC<{
             render: (record: any) => record.karyawan ? record.karyawan.user.nama : 'N/A',
         },
         {
-            title: 'NIK',
+            title: 'NIP',
             key: 'nik',
             render: (record: any) => record.karyawan ? record.karyawan.nik : 'N/A',
         },

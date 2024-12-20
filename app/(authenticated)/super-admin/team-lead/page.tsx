@@ -64,7 +64,7 @@ const Page: React.FC = () => {
        * Cek apakah berhasil?
        */
       console.log(response.tambahTeamLeadResponse)
-       if(response.tambahTeamLeadResponse.statusCode === 201 ){
+      if(response.tambahTeamLeadResponse.statusCode === 201 ){
         //bila berhasil tampilkan success message
         Modal.success({
           title: 'Team Lead Ditambahkan',

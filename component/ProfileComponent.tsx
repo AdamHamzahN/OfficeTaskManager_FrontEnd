@@ -149,7 +149,7 @@ const ProfileComponent: React.FC<{
     } else {
       return (
         <>
-          <p style={{ margin: 0 }}>NIK :</p>
+          <p style={{ margin: 0 }}>NIP :</p>
           <p>{karyawanData?.data?.nik}</p>
 
           <p style={{ margin: 0 }}>Nama :</p>

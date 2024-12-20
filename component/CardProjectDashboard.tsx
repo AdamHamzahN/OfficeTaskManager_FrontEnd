@@ -32,9 +32,9 @@ const CardProjectDashboard: React.FC<{
                 </Link>
             </span>
         </div>
-        <div style={{ fontSize: 15, fontWeight: 'bold' }}>
-            <span style={{ fontWeight: 'bold' }}>{teamLead}</span>
-        </div>
+
+            <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 17 , fontWeight: 'bold' }}>{teamLead}</span>
+
         <div style={{ backgroundColor: 'rgba(242, 246, 249, 1)', display: 'flex', borderRadius: 8, marginTop: 5 }}>
             <div style={{ padding: 10, marginRight: 5 }}>
                 <h4 style={{ color: 'rgba(109, 117, 128, 1)' }}><CalendarOutlined /> Start Date</h4>

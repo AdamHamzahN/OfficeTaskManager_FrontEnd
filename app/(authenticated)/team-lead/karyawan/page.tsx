@@ -49,14 +49,14 @@ const columnKaryawan = [
         <ModalComponent
           title={'Detail Karyawan'}
           content={<ModalDetailKaryawan idKaryawan={idKaryawan} />}
-          footer={(handleCancel, handleOk) => (
+          footer={(handleOk) => (
             <div>
               <Button type="primary" onClick={handleOk}>OK</Button>
             </div>
           )}
         >
           <Button style={{ backgroundColor: 'rgba(244, 247, 254, 1)', color: '#1890FF', border: 'none' }}>
-            <EyeOutlined /> detail
+            <EyeOutlined /> Detail
           </Button>
         </ModalComponent>
       );
