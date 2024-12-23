@@ -119,7 +119,7 @@ const TableTeam: React.FC<{
                     }}
                 /> */}
                 <TableComponent
-                    data={data.data}
+                    data={data?.data}
                     columns={columnTeam}
                     loading={loading}
                     page={pageTeam}

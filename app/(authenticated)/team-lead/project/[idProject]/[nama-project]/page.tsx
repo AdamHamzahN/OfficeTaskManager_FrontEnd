@@ -767,7 +767,7 @@ const Page = () => {
             message.warning('Masukkan file terlebih dahulu!')
             return;
         } else if (status === 'done' && file_bukti!.type !== 'application/pdf') {
-            message.warning("File tugas harus berupa PDF.");
+            message.warning("File harus berupa PDF.");
             return;
         } else if (status === 'done' && file_bukti!.size > 2 * 1024 * 1024) { // Maksimal 2MB
             message.warning("Ukuran file tidak boleh lebih dari 2MB.");
