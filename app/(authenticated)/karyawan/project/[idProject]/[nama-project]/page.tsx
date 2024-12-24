@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { ArrowLeftOutlined, SearchOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useParams } from "next/navigation";
 import { projectRepository } from "#/repository/project";
-import TugasComponent from "./pageComponent/tugas";
 import { JwtToken } from "#/utils/jwtToken";
 import Link from "next/link";
 import ModalComponent from "#/component/ModalComponent";

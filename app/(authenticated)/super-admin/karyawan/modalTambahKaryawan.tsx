@@ -22,6 +22,15 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
     createkaryawan({ nik, nama, gender, email, username, job });
   }, [nik, nama, gender, email, username, job]);
 
+  const nikCreate = (value:any) => {
+    if (/^\d*$/.test(value)) {
+      setNik(value); // Perbarui nilai jika hanya angka
+    }
+    else{
+      setNik(nik); // Jika input bukan angka, reset nilai Nik
+    }
+  } 
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Input untuk Nik */}
@@ -30,9 +39,12 @@ const ModalTambahKaryawan: React.FC<ModalTambahKaryawanProps> = ({ createkaryawa
         <Input
           id="Nip"
           value={nik}
-          onChange={(e) => { setNik(e.target.value)}}
+          type="text"
+          onChange={(e) => {
+            //  setNik(e.target.value);
+             nikCreate(e.target.value); 
+            }}
           placeholder="Masukkan NIP Karyawan"
-          type="number"
           style={{ flex: 1 }}
         />
       </div>

@@ -133,7 +133,7 @@ const Page: React.FC = () => {
   const [page, setPage] = useState(1);
 
   // useState page size
-  const [pageSize, setPageSize] = useState(2);
+  const [pageSize, setPageSize] = useState(5);
 
   //hook get all karyawan
   const { data: apiResponse, isValidating: loading, mutate } = karyawanRepository.hooks.useAllKaryawan(page, pageSize);
