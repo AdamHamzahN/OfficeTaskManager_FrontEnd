@@ -1,61 +1,55 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Alert, Spin, Button, Modal, Input, Row, Table } from "antd";
-import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons";
+import { Alert, Spin, Button, Modal, Input, Row, Tag } from "antd";
+import { ArrowLeftOutlined, SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { JwtToken } from "#/utils/jwtToken";
 import { config } from "#/config/app";
 import { projectRepository } from "#/repository/project";
+import { tugasRepository } from "#/repository/tugas";
 import ModalDetailProject from "#/app/(authenticated)/team-lead/project/[idProject]/[nama-project]/modal/modalDetailProject";
+import ModalDetailTask from "./modalDetailTask";
 import Link from "next/link";
 import TextArea from "antd/es/input/TextArea";
 import ModalComponent from "#/component/ModalComponent";
-import TableTeam from "./tableTeam";
-import TableTask from "./tableTask";
-
-const DetailProject: React.FC<{
-    nama_team: any,
-    idProject: string,
-    // mutateTeam: any,
-    // refreshTable: () => void
-// }> = ({ idProject, nama_team, teamData, pageTeam, pageSizeTeam, handlePageChange, formatTimeStr }) => {
-}> = ({ nama_team, idProject}) => {
-    return (
-        <>
-            <TableTeam
-                idProject={idProject}
-                nama_team={nama_team}
-            // mutate={mutateTeam}
-            // refreshTable={refreshTable}
-            />
-            <TableTask idProject={idProject} />
-        </>
-    );
-};
+import TableComponent from "#/component/TableComponent";
 
 const Page = () => {
     const params = useParams();
     const idUser = params?.idUser as string;
     const idProject = params?.idProject as string;
+    const [taskCountAll, setTaskCountAll] = useState<{ [key: string]: number | null }>({});
     const [pageTeam, setPageTeam] = useState(1);
     const [pageSizeTeam, setPageSizeTeam] = useState(5);
-    const handlePageChange = (newPage: number, newPageSize: number) => {
+    const handlePageChangeTeam = (newPage: number, newPageSize: number) => {
         setPageTeam(newPage);
         setPageSizeTeam(newPageSize);
     };
 
-    const { data: detailProject, error: errorDetailProject, isValidating: validateDetailProject, mutate }
+    const [pageTask, setPageTask] = useState(1);
+    const [pageSizeTask, setPageSizeTask] = useState(5);
+    const handlePageChangeTask = (newPage: number, newPageSize: number) => {
+        setPageTask(newPage);
+        setPageSizeTask(newPageSize);
+    };
+
+    const [taskCountSelesai, setTaskCountSelesai] = useState<{ [key: string]: number | null }>({});
+    
+    const { data: detailProject, mutate }
     = projectRepository.hooks.useDetailProject(idProject);
     
-    const { data: teamProject, error: errorTeam, isValidating: validateTeam, mutate: mutateTeam }
+    const { data: teamProject, isValidating: validateTeam}
     = projectRepository.hooks.useTeamByProject(idProject, pageTeam, pageSizeTeam);
+
+    const {data: taskProject, isValidating: validateTask} 
+    = tugasRepository.hooks.useGetTugasByProject(idProject, pageTask, pageSizeTask);
+    
+    const token = JwtToken.getAuthData().token || null;
     
     const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
     const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
     const [noteProject, setNoteProject] = useState<string>('');
-    
-    console.log('ku1', detailProject?.data)
-    // const {nama_project, user, nama_team, status, start_date, end_date, file_project, file_hasil_project, note, updated_at} = detailProject?.data;
+
     const buttonStatusStyle = (status: string) => {
         switch (status) {
             case 'pending':
@@ -78,7 +72,6 @@ const Page = () => {
             await projectRepository.api.updateStatusProject(id_project, {
                 status_project: 'approved'
             });
-            // await refreshTable();
             Modal.success({
                 title: 'Project Diterima',
                 content: 'Project telah diterima',
@@ -99,7 +92,6 @@ const Page = () => {
                 status_project: 'redo',
                 note: note
             });
-            // await refreshTable();
             Modal.success({
                 title: 'Project Dikembalikan',
                 content: 'Project telah dikembalikan ke team lead',
@@ -141,15 +133,15 @@ const Page = () => {
         setCurrentProjectId(null)
     };
 
-    const loading = validateDetailProject
-    const error = errorDetailProject
+    // const loading = validateDetailProject
+    // const error = errorDetailProject
 
-    if (loading) {
-        return <Spin style={{ textAlign: 'center', padding: 20 }} />
-    }
-    if (error) {
-        return <Alert message="Error fetching data" type="error" />;
-    }
+    // if (loading) {
+    //     return <Spin style={{ textAlign: 'center', padding: 20 }} />
+    // }
+    // if (error) {
+    //     return <Alert message="Error fetching data" type="error" />;
+    // }
 
     const formatTimeStr = (dateStr: string) => {
         const date = new Date(dateStr);
@@ -162,9 +154,153 @@ const Page = () => {
         return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
     };
 
-    // const refreshTable = async () => {
-    //     await mutateDetailProject();
-    // }
+    // Table Team
+    useEffect(() => {
+        const fetchTugas = async () => {
+            try {
+                if (teamProject && token) {
+                    const counts = await Promise.all(teamProject.data.map(async (record: any) => {
+                        const idKaryawan = record.karyawan.id;
+                        const response = await fetch(`http://localhost:3222/tugas/${idKaryawan}/project/${idProject}/count-tugas`,
+                            {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        const data = await response.json();
+                        return { idKaryawan, countAll: data.countAll, countSelesai: data.countSelesai };
+                    }));
+
+                    const countAll = counts.reduce((acc: any, { idKaryawan, countAll }) => {
+                        acc[idKaryawan] = countAll;
+                        return acc;
+                    }, {});
+
+                    const countSelesai = counts.reduce((acc: any, { idKaryawan, countSelesai }) => {
+                        acc[idKaryawan] = countSelesai;
+                        return acc;
+                    }, {});
+
+                    setTaskCountAll(countAll);
+                    setTaskCountSelesai(countSelesai);
+                }
+            } catch (error) {
+                console.error('Error fetching task counts:', error);
+            }
+        };
+
+        if (teamProject) {
+            fetchTugas();
+        }
+    }, [teamProject, idProject]);
+
+        const columnTeam = [
+            {
+                title: 'Nama Karyawan',
+                key: 'karyawan.nama',
+                render: (record: any) => record.karyawan ? record.karyawan.user.nama : 'N/A',
+            },
+            {
+                title: 'NIP',
+                key: 'nik',
+                render: (record: any) => record.karyawan ? record.karyawan.nik : 'N/A',
+            },
+            {
+                title: 'Job',
+                key: 'job',
+                render: (record: any) => record.karyawan ? record.karyawan.job.nama_job : 'N/A',
+            },
+            {
+                title: 'Jumlah Tugas',
+                key: 'jumlah_tugas',
+                render: (record: any) => {
+                    const idKaryawan = record.karyawan.id;
+                    const data = taskCountAll[idKaryawan] !== undefined ? taskCountAll[idKaryawan] : 'Loading...';
+                    return data;
+                },
+            },
+            {
+                title: 'Tugas Selesai',
+                key: 'tugas_selesai',
+                render: (record: any) => {
+                    const idKaryawan = record.karyawan.id;
+                    const data = taskCountSelesai[idKaryawan] !== undefined ? taskCountSelesai[idKaryawan] : 'Loading...';
+                    return data;
+                },
+            },
+        ];
+
+    // Table Task 
+    const columns = [
+        {
+            title: 'Tugas',
+            dataIndex: 'nama_tugas',
+            key: 'nama_tugas'
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => {
+                const getColor = () => {
+                    switch(status) {
+                        case 'pending': return '#FFC107';
+                        case 'on-progress': return '#00BCD4';
+                        case 'redo': return '#F44336';
+                        case 'done': return '#2196F3';
+                        default: return '#4CAF50';
+                    }
+                };
+
+                return <Tag color={getColor()} style={{fontSize: 12}}>{status}</Tag>;
+            }
+        },
+        {
+            title: 'Deadline',
+            dataIndex: 'deadline',
+            key: 'deadline'
+        },
+        {
+            title: 'Waktu Update',
+            dataIndex: 'updated_at',
+            key: 'waktu update',
+            render: (text: string) => formatTimeStr(text)
+        },
+        {
+            title: 'Aksi',
+            key: 'aksi',
+            render: (record: any) => {
+                const idTask = record.id;
+
+                return (
+                    <>
+                        <ModalComponent
+                            title="Detail Tugas"
+                            content={<ModalDetailTask idTask={idTask} />}
+                            footer={(handleOk) => (
+                                <>
+                                    <Button type="primary" onClick={handleOk}>OK</Button>
+                                </>
+                            )}
+                        >
+                            <Button
+                                style={{
+                                    backgroundColor: 'rgba(244, 247, 254, 1)',
+                                    color: '#1890FF',
+                                    border: 'none',
+                                }}
+                            >
+                                <EyeOutlined/> Detail
+                            </Button>
+                        </ModalComponent>
+                    </>
+                );
+            }
+        }
+    ];
 
     return (
         <>
@@ -176,7 +312,7 @@ const Page = () => {
                         </Link>
                     </Button>
                     <h1 style={{ marginLeft: '8px', marginTop: '10px', fontSize: '25px', fontWeight: 'bold', fontFamily: 'Roboto, sans-serif' }}>
-                        {detailProject.data.nama_project}
+                        {detailProject?.data.nama_project}
                     </h1>
                 </div>
 
@@ -233,7 +369,7 @@ const Page = () => {
                         </button>
                     </ModalComponent>
 
-                    {detailProject.data.status === 'done' && (
+                    {detailProject?.data.status === 'done' && (
                         <ModalComponent
                             title="Cek Hasil"
                             content={
@@ -284,20 +420,56 @@ const Page = () => {
                     <button 
                         type="button"
                         className="border py-3 px-6 rounded"
-                        style={buttonStatusStyle(detailProject.data.status)}
+                        style={buttonStatusStyle(detailProject?.data.status)}
                     >
-                        {detailProject.data.status}
+                        {detailProject?.data.status}
                     </button>
                     
                 </div>
             </div>
             
-                <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15, marginTop: 30 }}>
-                    <DetailProject
-                        nama_team={detailProject?.data.nama_team}
-                        idProject={idProject}
-                    />
-                </div>
+            <div style={{ padding: 24, minHeight: '100vh', backgroundColor: '#FFFFFF', borderRadius: 15, marginTop: 30 }}>
+                
+                {/* Table Team */}
+                <Row className="mb-4">
+                    <h1 className="text-xl flex items-center">
+                        <span className="text-2xl">{detailProject?.data.nama_team}</span>
+                    </h1>
+                </Row>
+            
+                {/* Perbaikan Table */}
+                <TableComponent
+                    data={teamProject?.data}
+                    columns={columnTeam}
+                    loading={validateTeam}
+                    page={pageTeam}
+                    pageSize={pageSizeTeam}
+                    total={teamProject?.count}
+                    pagination={true}
+                    className="w-full custom-table"
+                    onPageChange={handlePageChangeTeam}
+                />
+
+                {/* Table Task */}
+                <Row className="mb-4 mt-5">
+                        <h1 className="text-xl flex items-center">
+                            <span className="text-2xl">Task Project</span>
+                        </h1>
+                </Row>
+
+                <TableComponent
+                data={taskProject?.data}
+                columns={columns}
+                loading={validateTask}
+                page={pageTask}
+                pageSize={pageSizeTask}
+                total={taskProject?.count}
+                pagination={true}
+                className="w-full custom-table"
+                onPageChange={handlePageChangeTask}
+            />
+
+            </div>
         </>
     );
 };

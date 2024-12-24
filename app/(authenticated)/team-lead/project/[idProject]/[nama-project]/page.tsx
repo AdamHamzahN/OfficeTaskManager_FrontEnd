@@ -491,7 +491,7 @@ const DetailProject: React.FC<{
                                     });
                                     setModalTambahTugas(true);
                                 }}>
-                                + Tambah Tugas
+                                <PlusOutlined /> Tambah Tugas
                             </button>
                         </ModalComponent>
                     )}
@@ -623,7 +623,7 @@ const TugasDiselesaikan: React.FC<{
                                 <div>
                                     <Button
                                         type="primary"
-                                        style={{ backgroundColor: '#F44336', borderColor: '#F44336' }}
+                                        className="redo-button"
                                         onClick={() => openNote(idTugas)}
                                     >
                                         Redo
@@ -631,7 +631,7 @@ const TugasDiselesaikan: React.FC<{
 
                                     <Button
                                         type="primary"
-                                        style={{ backgroundColor: '#4CAF50', borderColor: '#4CAF50' }}
+                                        className="approve-button"
                                         onClick={() => acceptTugas(idTugas)}
                                     >
                                         Approve
