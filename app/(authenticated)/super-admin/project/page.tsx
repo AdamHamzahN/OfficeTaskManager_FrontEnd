@@ -64,34 +64,46 @@ const Page: React.FC = () => {
     const tambahProject = async (handleCancel: () => void) => { 
         console.log('new project', newProject);
         if (!newProject.nama_project || !newProject.id_team_lead || !newProject.nama_team || !newProject.start_date || !newProject.end_date || !newProject.file_project) {
-            // alert('semua-nya isi dulu');
             message.warning("Harap isi semua field yang diperlukan.");
             return;
-        }
-        const nama_project = newProject.nama_project;
-        const id_team_lead = newProject.id_team_lead;
-        const nama_team = newProject.nama_team;
-        const start_date = newProject.start_date;
-        const end_date = newProject.end_date;
-        const file_project = newProject.file_project
+        } else{
+            if (newProject?.file_project === null || newProject?.file_project === undefined) {
+                message.warning('Masukkan file terlebih dahulu!')
+                return;
+            } else if (newProject?.file_project.type !== 'application/pdf' ) {
+                message.warning("File harus berupa PDF.");
+                return;
+            } else if (newProject?.file_project.size > 2 * 1024 * 1024) {
+                message.warning("Ukuran file tidak boleh lebih dari 2MB.");
+                return;
+            } else {
 
-        try {
-            await projectRepository.api.tambahProject({ 
-                nama_project, id_team_lead, nama_team, start_date, end_date, file_project
-            });
-            mutate()
-            Modal.success({
-                title: 'Project Ditambahkan',
-                content: 'Berhasil menambahkan Project baru!',
-                okText: 'OK',
-                onOk() {
-                    handleCancel();
-                    console.log('Project berhasil ditambahkan');
-                },
-            });
-            
-        } catch (error) {
-            console.error('gabisa blok', error)
+                const nama_project = newProject.nama_project;
+                const id_team_lead = newProject.id_team_lead;
+                const nama_team = newProject.nama_team;
+                const start_date = newProject.start_date;
+                const end_date = newProject.end_date;
+                const file_project = newProject.file_project
+
+                try {
+                    await projectRepository.api.tambahProject({ 
+                        nama_project, id_team_lead, nama_team, start_date, end_date, file_project
+                    });
+                    mutate()
+                    Modal.success({
+                        title: 'Project Ditambahkan',
+                        content: 'Berhasil menambahkan Project baru!',
+                        okText: 'OK',
+                        onOk() {
+                            handleCancel();
+                            console.log('Project berhasil ditambahkan');
+                        },
+                    });
+                    
+                } catch (error) {
+                    console.error('gabisa bro', error)
+                }
+            }
         }
     };
 
