@@ -256,10 +256,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
               className="absolute bottom-0 left-0 right-0  text-gray-400 text-center mb-6 transition-colors duration-300 hover:text-white"
             >
 
-              <a style={{ textDecoration: 'none' }} className=' text-gray-400' onClick={handleLogout} >
-                <h1 className="text-lg m-0" >
-                  <LogoutOutlined /> logout
-                </h1>
+              <a style={{ textDecoration: 'none', fontSize: 17 }} className=' text-gray-400' onClick={handleLogout} >
+                <LogoutOutlined /> Logout
               </a>
             </div>
           </Sider>

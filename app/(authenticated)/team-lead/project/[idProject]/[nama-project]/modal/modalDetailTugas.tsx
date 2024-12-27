@@ -32,7 +32,7 @@ const ModalDetailTugas: React.FC<{ idTugas: string }> = ({ idTugas }) => {
         return <div>Error loading data</div>; // Tangani error jika ada
     }
     // alias untuk url file detail tugas
-    const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas.replace(/\\/g, '/')}`;
+    const fileDetailTugas = `${config.baseUrl}/${detailTugas.data.file_tugas?.replace(/\\/g, '/')}`;
 
     // alias untuk url file bukti tugas
     let fileHasilTugas = '';
